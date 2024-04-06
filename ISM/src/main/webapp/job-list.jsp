@@ -175,7 +175,7 @@
                             <div class="d-flex">
                                 <div class="me-auto p-2 "></div>
                                 <div class="p-2 mt-3">
-                                    <a href="candidate-create.jsp" style="text-decoration: none;" type="button" class="button3">
+                                    <a href="job-create.jsp" style="text-decoration: none;" type="button" class="button3">
                                         <span class="button-text">Add New</span>
                                         <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                        viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"

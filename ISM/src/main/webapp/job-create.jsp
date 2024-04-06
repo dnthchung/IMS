@@ -1,6 +1,6 @@
 <%-- 
-    Document   : candidate-create
-    Created on : Apr 6, 2024, 4:46:35 PM
+    Document   : job-create
+    Created on : Apr 7, 2024, 12:33:21 AM
     Author     : chun
 --%>
 
@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Candidate Create</title>
+        <title>Create Job</title>
         <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
 
         <!-- Bootstrap 5 CSS -->
@@ -21,7 +21,7 @@
         <link rel="stylesheet"
               href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
         <!-- link to css -->
-        <link rel="stylesheet" href="CSS/candidate-create.css">
+        <link rel="stylesheet" href="CSS/job-create.css">
 
     </head>
     <body>
@@ -95,7 +95,7 @@
                 <nav class="navbar navbar-expand-sm ">
                     <div class="container-fluid">
                         <div class="mpage-name" href="#">
-                            <h2 class="" style="color: black;">Candidate</h2>
+                            <h2 class="" style="color: black;">Job</h2>
                         </div>
 
                         <div class="collapse navbar-collapse" id="mynavbar">
@@ -128,180 +128,41 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb" style="margin-left: 1em">
-                            <li class="breadcrumb-item"><a href="#">Candidate List</a></li>
+                            <li class="breadcrumb-item"><a href="#">Job List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a  href="candidate-create.jsp">Create Candidate</a>
+                                <a  href="candidate-create.jsp">Create Job</a>
                             </li>
                         </ol>
                     </nav>
                     <!-- content-card -->
-                    <div class="card mt-3 my-card">
+                    <div class="card my-card">
                         <div class="content">
                             <!-- class="content-1" -->
                             <div class="content-1">
 
                             </div>
                             <!-- class="content-2" -->
-
                             <div class="card-body">
                                 <form action="">
-
-                                    <h5 style="font-weight: bold;">I. Personal information</h5>
                                     <div class="part1 mt-3">
                                         <!-- row1 -->
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    Full name <span style="color: red;">*</span>
+                                                    Job title <span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <!-- full name -->
                                                         <input type="text" class="form-control"
-                                                               placeholder="type a name" required>
+                                                               placeholder="Type a title..." required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    Gmail <span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <!-- gmail -->
-                                                        <input type="text" class="form-control"
-                                                               placeholder="type an email..." required>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- row2 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    D.O.B
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="date" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Address
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control"
-                                                               placeholder="type an address...">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- row3 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Phone number
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control"
-                                                               placeholder="type a number...">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Gender <span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;"
-                                                         required>
-                                                        <select class="form-select">
-                                                            <option selected disabled>Status</option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <h5 style="font-weight: bold;">II. Professional information</h5>
-                                    <div class="part2 mt-3">
-                                        <!-- row1 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    CV attachment
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <!-- CV -->
-                                                        <input type="file" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Note
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <!-- note -->
-                                                        <input type="text" class="form-control" placeholder="N/A">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- row2 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Position <span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled style="font-size: small;">
-                                                                Select a position...
-                                                                ex:
-                                                                Backend developer, ...
-                                                            </option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Status <span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled>Select a status</option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- row3 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Skills <span style="color: red;">*</span>
+                                                    Skills<span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
@@ -332,64 +193,154 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-1"></div>
+                                        </div>
+                                        <!-- row2 -->
+                                        <div class="row mb-3">
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    Year of Experience
+                                                    Start Date<span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="number" min="0" class="form-control"
-                                                               placeholder="type a number...">
+                                                        <input type="date" class="form-control">
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-5 row">
+                                                <div class="col-md-3 part-title">
+                                                    End Date<span style="color: red;">*</span>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="input-group" style="padding: 0px !important;">
+                                                        <input type="date" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- row3 -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-5 row">
+                                                <div class="col-md-3 part-title">
+                                                    Salary Range
+                                                </div>
+                                                <div class="col-md-8 row">
+                                                    <div class="col-md-2">
+                                                        <div class="d-flex align-items-center" style="font-size: 14px; margin-top: 10px;">
+                                                            <span>From</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <input type="text" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div class="d-flex align-items-center" style="font-size: 14px; margin-top: 10px;">
+                                                            <span>to</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <input type="text" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-5 row">
+                                                <div class="col-md-3 part-title">
+                                                    Benefits<span style="color: red;">*</span>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="input-group" style="padding: 0px !important;">
+                                                        <select class="form-select"
+                                                                data-placeholder="Choose benefits ..."
+                                                                id="small-select2-options-multiple-field-benefits" multiple>
+                                                            <option>Lunch</option>
+                                                            <option>25 days off</option>
+                                                            <option>Team building</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="part2 mt-3">
+                                        <!-- row1 -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-5 row">
+                                                <div class="col-md-3 part-title">
+                                                    Working address
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="input-group" style="padding: 0px !important;">
+                                                        <!-- CV -->
+                                                        <input type="text" class="form-control" placeholder="Type an address...">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-5 row">
+                                                <div class="col-md-3 part-title">
+                                                    Level<span style="color: red;">*</span>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="input-group" style="padding: 0px !important;">
+                                                        <select class="form-select"
+                                                                data-placeholder="Choose levels ..."
+                                                                id="small-select2-options-multiple-field-levels" multiple>
+                                                            <option>Fresher</option>
+                                                            <option>Junior</option>
+                                                            <option>Intern</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- row2 -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-5 row">
+
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-5 row">
+                                                <div class="col-md-3 part-title">
+                                                    Description
+                                                </div>
+                                                <div class="col-md-8">
+<!--                                                    <div class="input-group" style="padding: 0px !important;">
+                                                        <select class="form-select">
+                                                            <option selected disabled>Select a status</option>
+                                                            <option value="1">Active</option>
+                                                            <option value="2">Inactive</option>
+                                                        </select>
+                                                    </div>-->
+                                                    <div class="form-floating" style="padding: 0px !important;">
+                                                        <textarea style="height: 200px" class="form-control" placeholder="Type description" id="floatingTextarea"></textarea>
+                                                        <label for="floatingTextarea">Comments</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- row3 -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-5 row">
+                                                
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-5 row">
+                                                
                                             </div>
                                         </div>
                                         <!-- row4 -->
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Recruiter <span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled style="font-size: small;">
-                                                                Recruiter name
-                                                            </option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div id="selectedSkills"></div>
+
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Highest level<span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled style="font-size: small;">
-                                                                Select hightest
-                                                                level...
-                                                            </option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-md-2"></div>
-                                            <div class="col-md-2">
-                                                <button
-                                                    style="border: none; background-color: #ffffff; text-decoration: underline;">
-                                                    Assign me
-                                                </button>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -400,10 +351,8 @@
                                         <button class="button-2"
                                                 style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
                                     </div>
-
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -426,6 +375,26 @@
         <script>
             //skill multi choice
             $('#small-select2-options-multiple-field-skills').select2({
+                theme: "bootstrap-5",
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                closeOnSelect: false,
+                selectionCssClass: 'select2--small',
+                dropdownCssClass: 'select2--small'
+            });
+            
+            //benefits multi choice
+            $('#small-select2-options-multiple-field-benefits').select2({
+                theme: "bootstrap-5",
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                closeOnSelect: false,
+                selectionCssClass: 'select2--small',
+                dropdownCssClass: 'select2--small'
+            });
+            
+            //levels multi choice
+            $('#small-select2-options-multiple-field-levels').select2({
                 theme: "bootstrap-5",
                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
                 placeholder: $(this).data('placeholder'),
