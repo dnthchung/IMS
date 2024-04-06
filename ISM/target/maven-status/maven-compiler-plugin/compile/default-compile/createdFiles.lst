@@ -1,7 +1,0 @@
-controller\HomeController.class
-com\g3\ism\resources\JakartaEE10Resource.class
-dao\UserDAO.class
-model\User$UserBuilder.class
-com\g3\ism\JakartaRestConfiguration.class
-utils\DBContext.class
-model\User.class
