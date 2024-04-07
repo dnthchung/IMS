@@ -89,9 +89,9 @@
                 </ul>
                 <hr>
             </div>
-            <!-- navgation bar + main content-->
+            <!-- navigation bar + main content-->
             <div class="main-content">
-                <!-- navgation bar -->
+                <!-- navigation bar -->
                 <nav class="navbar navbar-expand-sm ">
                     <div class="container-fluid">
                         <div class="mpage-name" href="#">
