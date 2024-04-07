@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Job Details</title>
+        <title>Interview Details</title>
         <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
 
         <!-- Bootstrap 5 CSS -->
@@ -132,6 +132,9 @@
                                 <a href="#">Interview Schedule List</a>
                             </li>
                             <li class="breadcrumb-item active" aria-current="page">
+                                <!--for interview-->
+                                <a href="#">Interview Schedule Details</a>
+                                <!--for manager-->
                                 <a href="#">New Interview Schedule</a>
                             </li>
                         </ol>
@@ -249,7 +252,11 @@
                                     </div>
 
                                     <div class="d-flex justify-content-center mt-5">
-                                        <a type="button" href="job-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
+                                        <!--interview button-->
+                                        <button class="button-2" style="background-color: #ABDF75; color: #fff; margin-right: 2em">Submit Result</button>
+                                        <!--manager button-->
+                                        <a type="button" href="interview-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
+                                        
                                         <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
                                     </div>
                                 </div>

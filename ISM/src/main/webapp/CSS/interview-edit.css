@@ -132,7 +132,7 @@
 
 .part-title {
     font-weight: 600;
-    font-size: 15px;
+    font-size: 17px;
 }
 
 /* side bar */
@@ -365,8 +365,8 @@ li {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    border: 1px solid #87CEEB; 
-    background-color: #87CEEB; 
+    border: 1px solid #ff9aa2;
+    background-color: #ff9aa2;
     border-radius: 0.25rem;
     padding: 0 20px;
     width: 187px;
@@ -378,7 +378,7 @@ li {
 
 .button33 .button-text {
     transform: translateX(0);
-    color: #fff; /* White Text */
+    color: #fff; 
     font-weight: 600;
     white-space: nowrap;
 }
@@ -388,7 +388,7 @@ li {
     right: 0px;
     height: 100%;
     width: 43px;
-    background-color: #00BFFF; 
+    background-color: #ff6b6b;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -396,7 +396,7 @@ li {
 }
 
 .button33:hover {
-    background: #00BFFF; 
+    background: #ff6b6b;
 }
 
 .button33:hover .button-text {
@@ -408,13 +408,12 @@ li {
     right: 0;
 }
 
-/* Adjustments for Active State */
 .button33:active .button-icon {
-    background-color: #87CEEB; /* Light Sky Blue for Icon */
+    background-color: #ff9aa2; /* Light Sky Blue for Icon */
 }
 
 .button33:active {
-    border: 1px solid #87CEEB; /* Light Sky Blue Border */
+    border: 1px solid #ff9aa2; /* Light Sky Blue Border */
 }
 
 
