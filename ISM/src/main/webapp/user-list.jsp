@@ -28,7 +28,7 @@
                     <div class="card mt-3 my-card">
                         <div class="content">
                             <div>
-                                <h4>Offer list</h4>
+                                <h4>User List</h4>
                                 <div>
                                     <div class="row mt-5">
                                         <div class="col-md-8">
@@ -47,17 +47,7 @@
                                             <div class="col-md-3 mt-3">
                                                 <div class="input-group" style="padding: 0px !important;">
                                                     <select class="form-select">
-                                                        <option selected>Department</option>
-                                                        <option value="1">Active</option>
-                                                        <option value="2">Inactive</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-10"></div>
-                                            <div class="col-md-3 mt-3">
-                                                <div class="input-group" style="padding: 0px !important;">
-                                                    <select class="form-select">
-                                                        <option selected>Status</option>
+                                                        <option selected>Role</option>
                                                         <option value="1">Active</option>
                                                         <option value="2">Inactive</option>
                                                     </select>
@@ -95,19 +85,6 @@
                                         </span>
                                     </a>
                                 </div>
-                                <div class="p-2 mt-3"> 
-                                    <button class="button31">
-                                        <span class="button-text">Export</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-to-line">
-                                            <path d="M5 3h14"/>
-                                            <path d="m18 13-6-6-6 6"/>
-                                            <path d="M12 7v14"/>
-                                            </svg>
-
-                                        </span>
-                                    </button>
-                                </div>
                             </div>
 
                             <div class="card mt-3">
@@ -116,11 +93,10 @@
                                         <table class="table text-center table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col"> <strong>Candidate Name</strong> </th>
+                                                    <th scope="col"> <strong>Username</strong> </th>
                                                     <th scope="col"> <strong>Email</strong> </th>
-                                                    <th scope="col"> <strong>Approver</strong> </th>
-                                                    <th scope="col"> <strong>Department</strong> </th>
-                                                    <th scope="col"> <strong>Notes</strong> </th>
+                                                    <th scope="col"> <strong>Phone No.</strong> </th>
+                                                    <th scope="col"> <strong>Role</strong> </th>
                                                     <th scope="col"> <strong>Status</strong> </th>
                                                     <th scope="col"> <strong>Action</strong> </th>
                                                 </tr>
@@ -128,12 +104,11 @@
                                             <tbody>
                                                 <!--  table data rows  -->
                                                 <tr>
-                                                    <td>Doan Thanh Chung</td>
+                                                    <td>Chungdt</td>
                                                     <td>chungdthe176077@fpt.edu.vn</td>
-                                                    <td>Lê Việt Anh</td>
-                                                    <td>Product Policy</td>
-                                                    <td>Approved by CS head</td>
-                                                    <td>Waiting for Approval</td>
+                                                    <td>0949602355</td>
+                                                    <td>Developer</td>
+                                                    <td>Active</td>
                                                     <td>
                                                         <a style="margin-right: 5px;text-decoration: none; color: black; "
                                                            href="#" class="icon-button">
