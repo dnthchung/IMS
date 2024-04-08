@@ -1,22 +1,13 @@
 <%-- Document : candidate-list Created on : Apr 6, 2024, 12:47:46 AM Author : chun --%>
-
+    <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     <%@page contentType="text/html" pageEncoding="UTF-8" %>
         <!DOCTYPE html>
         <html>
-
+            
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
             <title>Candidate List</title>
             <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
-
-            <!-- Bootstrap 5 CSS -->
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-                integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-                crossorigin="anonymous">
-            <!-- multi select -->
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-            <link rel="stylesheet"
-                href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
             <!-- link to css -->
             <link rel="stylesheet" href="CSS/candidate-list.css">
 
@@ -25,111 +16,13 @@
         <body>
             <!-- side bar -->
             <div class="d-flex flex-row">
-                <div class="d-flex flex-column flex-shrink-0 sidebar-wrap" id="sidebar">
-                    <a href="#" class="text-decoration-none logo-wrap">
-                        <div class="icon-wrap">
-                            <img src="Image/Logo/ims-logo.png" class="mlogo" />
-                        </div>
-                        <span style="font-weight: bolder ;font-size: 20px; color: #000;">ISM</span>
-                    </a>
-                    <hr>
-                    <ul class="nav nav-pills flex-column mb-auto mt-5">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link " aria-current="page">
-                                <div class="icon-wrap">
-                                    <i data-lucide="home"></i>
-                                </div>
-                                <span> Home</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link">
-                                <div class="icon-wrap">
-                                    <i data-lucide="users"></i>
-                                </div>
-                                <span>Candidate</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link">
-                                <div class="icon-wrap">
-                                    <i data-lucide="briefcase-business"></i>
-                                </div>
-                                <span>Job</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link">
-                                <div class="icon-wrap">
-                                    <i data-lucide="message-circle-code"></i>
-                                </div>
-                                <span>Interview</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link">
-                                <div class="icon-wrap">
-                                    <i data-lucide="file-check-2"></i>
-                                </div>
-                                <span>Offer</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link">
-                                <div class="icon-wrap">
-                                    <i data-lucide="user-plus"></i>
-                                </div>
-                                <span>User</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <hr>
-                </div>
+                <%@include file="Component/side-bar.jsp" %>
                 <!-- navigation bar + main content-->
                 <div class="main-content">
                     <!-- navigation bar -->
-                    <nav class="navbar navbar-expand-sm ">
-                        <div class="container-fluid">
-                            <div class="mpage-name" href="#">
-                                <h2 class="" style="color: black;">Candidate</h2>
-                            </div>
-
-                            <div class="collapse navbar-collapse" id="mynavbar">
-                                <ul class="navbar-nav me-auto">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#"></a>
-                                    </li>
-                                </ul>
-                                <!-- <div class="d-flex user-area">
-                                <div class="user-info d-flex flex-column align-items-center">
-                                    <span class="username">@chungdth</span>
-                                    <p>HR Department</p>
-                                </div>
-                                <div style="padding: 15px;">
-                                    <i style="height: 20px;" data-lucide="user"></i>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <a href="#" style="font-style: italic; color: black; margin-right: 20px;">Logout</a>
-                                </div>
-                            </div> -->
-                                <div class="d-flex" style="gap: 25px;">
-                                    <div class="button-2">
-                                        <a href="login.jsp" style="text-decoration: none; color: #000;">Login</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </nav>
+                    <%@include file="Component/nav-bar.jsp" %>
                     <!-- body -->
                     <div class="container-fluid mt-3">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb" style="margin-left: 1em">
-                                <li class="breadcrumb-item"><a href="#">Candidate List</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    <a href="#">Edit Candidate Information</a>
-                                </li>
-                            </ol>
-                        </nav>
                         <!-- content-card -->
                         <div class="card mt-3 my-card">
                             <div class="content">
