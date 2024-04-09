@@ -11,13 +11,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>sidebar</title>
-           
+
     </head>
     <body>
         <div class="d-flex flex-column flex-shrink-0 sidebar-wrap" id="sidebar">
             <a href="#" class="text-decoration-none logo-wrap">
                 <div class="icon-wrap">
-                    <img src="Image/Logo/ims-logo.png" class="mlogo" />
+                    <img src="${pageContext.request.contextPath}/Image/Logo/ims-logo.png" class="mlogo" />
                 </div>
                 <span style="font-weight: bolder ;font-size: 20px; color: #000;">ISM</span>
             </a>
@@ -64,7 +64,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link">
+                    <a href="userList" class="nav-link">
                         <div class="icon-wrap">
                             <i data-lucide="user-plus"></i>
                         </div>

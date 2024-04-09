@@ -25,7 +25,7 @@
         <nav class="navbar navbar-expand-sm ">
             <div class="container-fluid">
                 <div class="mpage-name">
-                    <h2 class="" style="color: black;">Home</h2>
+                    <h2 class="" style="color: black;">${URL}</h2>
                 </div>
                 <div class="collapse navbar-collapse" id="mynavbar">
                     <ul class="navbar-nav me-auto">

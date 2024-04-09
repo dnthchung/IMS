@@ -4,6 +4,7 @@
  */
 package model;
 
+import java.time.LocalDate;
 import lombok.*;
 
 @Builder
@@ -11,6 +12,18 @@ import lombok.*;
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
 public class User {
-    private Long userId;
-    private String userName;
+    private int userId;
+    private String fullName;
+    private String useName;
+    private String password;
+    private LocalDate dob;
+    private String phoneNumber;
+    private int userRoleId;
+    private int userStatusID;
+    private String email;
+    private String address;
+    private int gender;
+    private int departmentID;
+    private String note;
+    
 }
