@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.user;
+package controller.offer;
 
-import dao.UserDAO;
+import dao.OfferDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,17 +12,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import model.User;
-import model.UserRole;
-import model.UserStatus;
 
 /**
  *
- * @author chun
+ * @author tranh
  */
-@WebServlet(name="UserList", urlPatterns={"/user-list"})
-public class UserList extends HttpServlet {
+@WebServlet(name = "OfferListServlet", urlPatterns = {"/offer-list"})
+public class OfferListServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +37,10 @@ public class UserList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UserList</title>");
+            out.println("<title>Servlet OfferListServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UserList at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet OfferListServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,16 +58,10 @@ public class UserList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UserDAO userDAO = new UserDAO();
-        ArrayList<User> userList = userDAO.getAllUser();
-        ArrayList<UserStatus> userStatus = userDAO.getAllUserStatus();
-        ArrayList<UserRole> userRole = userDAO.getAllUserRole();
-
-        request.setAttribute("userList", userList);
-        request.setAttribute("userStatus", userStatus);
-        request.setAttribute("userRole", userRole);
-        request.setAttribute("URL", "User Management");
-        request.getRequestDispatcher("view/user/user-list.jsp").forward(request, response);
+        OfferDAO offerDAO = new OfferDAO();
+        request.setAttribute("offers", offerDAO.getAllOfferInformations());
+        request.setAttribute("offerStatuses", offerDAO.getAllOfferStatuses());
+        request.getRequestDispatcher("view/offer/offer-list.jsp").forward(request, response);
     }
 
     /**

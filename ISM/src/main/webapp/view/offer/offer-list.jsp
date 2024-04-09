@@ -59,8 +59,9 @@
                                                 <div class="input-group" style="padding: 0px !important;">
                                                     <select class="form-select">
                                                         <option selected>Status</option>
-                                                        <option value="1">Active</option>
-                                                        <option value="2">Inactive</option>
+                                                        <c:forEach var="offerStatus" items="${requestScope.offerStatuses}">
+                                                            <option value="${offerStatus.offerStatusId}">${offerStatus.statusName}</option>
+                                                        </c:forEach>
                                                     </select>
                                                 </div>
                                             </div>
@@ -84,7 +85,7 @@
                             <div class="d-flex">
                                 <div class="me-auto p-2 "></div>
                                 <div class="p-2 mt-3">
-                                    <a href="job-create.jsp" style="text-decoration: none;" type="button" class="button3">
+                                    <a href="create-offer" style="text-decoration: none;" type="button" class="button3">
                                         <span class="button-text">Add New</span>
                                         <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                        viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
@@ -128,31 +129,29 @@
                                             </thead>
                                             <tbody>
                                                 <!--  table data rows  -->
-                                                <tr>
-                                                    <td>Doan Thanh Chung</td>
-                                                    <td>chungdthe176077@fpt.edu.vn</td>
-                                                    <td>Lê Việt Anh</td>
-                                                    <td>Product Policy</td>
-                                                    <td>Approved by CS head</td>
-                                                    <td>Waiting for Approval</td>
-                                                    <td>
-                                                        <a style="margin-right: 5px;text-decoration: none; color: black; "
-                                                           href="#" class="icon-button">
-                                                            <i data-lucide="eye"></i>
-                                                        </a>
-                                                        <a style="margin-right: 5px;text-decoration: none; color: black;"
-                                                           href="#" class="icon-button">
-                                                            <i data-lucide="file-pen-line"></i>
-                                                        </a>
-                                                        <a style="text-decoration: none; color: black;" href="#"
-                                                           class="icon-button">
-                                                            <i data-lucide="trash-2"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
+                                                <c:forEach var="offer" items="${requestScope.offers}">
+                                                    <tr>
+                                                        <td>${offer.candidateName}</td>
+                                                        <td>${offer.email}</td>
+                                                        <td>${offer.approverName}</td>
+                                                        <td>${offer.departmentName}</td>
+                                                        <td>${offer.note}</td>
+                                                        <td>${offer.statusName}</td>
+                                                        <td>
+                                                            <a style="margin-right: 5px;text-decoration: none; color: black; "
+                                                               href="#" class="icon-button">
+                                                                <i data-lucide="eye"></i>
+                                                            </a>
+                                                            <a style="margin-right: 5px;text-decoration: none; color: black;"
+                                                               href="#" class="icon-button">
+                                                                <i data-lucide="file-pen-line"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
                                             </tbody>
                                         </table>
-                                        <div class="container row">
+                                        <div class="container-fluid row">
                                             <div class="col-md-10">
                                                 <!-- Your content -->
                                             </div>

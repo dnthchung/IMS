@@ -109,27 +109,31 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="part-title">Full Name</td>
-                                                        <td>Nguyen Xuan Pi</td>
+                                                        <td>${user.fullName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">D.O.B</td>
-                                                        <td>01/05/1996</td>
+                                                        <td>${user.dob}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Phone Number</td>
-                                                        <td>012345678</td>
+                                                        <td>${user.phoneNumber}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Role</td>
-                                                        <td>
-                                                            <p>Dev </p>
-                                                        </td>
+                                                        <c:forEach items="${userRole}" var="role">
+                                                            <c:if test="${user.userRoleId == role.userRoleId}">
+                                                                <td>${role.roleName}</td>
+                                                            </c:if>
+                                                        </c:forEach>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Status</td>
-                                                        <td>
-                                                            <p>Inactive</p>
-                                                        </td>
+                                                        <c:forEach items="${userStatus}" var="status">
+                                                            <c:if test="${user.userStatusId == status.userStatusId}">
+                                                                <td>${status.statusName}</td>
+                                                            </c:if>
+                                                        </c:forEach>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -143,31 +147,49 @@
                                                     <tr>
                                                         <td class="part-title">Email</td>
                                                         <td>
-                                                            <p>chungdt06.work@gmail.com</p>
+                                                            <p>${user.email}</p>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Address</td>
                                                         <td>
-                                                            Muc Uyen, Tan xa, Hoa Lac, Hanoi
+                                                            ${user.address}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Gender</td>
                                                         <td>
-                                                            <p>Male</p>
+                                                            <c:choose>
+                                                                <c:when test="${user.gender == 1}">
+                                                                    <p>Male</p>
+                                                                </c:when>
+                                                                <c:when test="${user.gender == 2}">
+                                                                    <p>Female</p>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <p>Unknown</p>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </td>
+
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Department</td>
                                                         <td>
-                                                            <p>HR Department</p>
+                                                            <p>${user.departmentId}</p>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Note</td>
                                                         <td>
-                                                            <p>N/A...</p>
+                                                            <c:choose>
+                                                                <c:when test="${not empty user.note}">
+                                                                    ${user.note}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    N/A
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -176,7 +198,7 @@
                                     </div>
 
                                     <div class="d-flex justify-content-center mt-5">
-                                        <a type="button" href="offer-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
+                                        <a type="button" href="user-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
                                         <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
                                     </div>
                                 </div>

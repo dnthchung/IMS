@@ -73,7 +73,7 @@
                             <div class="d-flex">
                                 <div class="me-auto p-2 "></div>
                                 <div class="p-2 mt-3">
-                                    <a href="user-create.jsp" style="text-decoration: none;" class="button3">
+                                    <a href="userCreate" style="text-decoration: none;" class="button3">
                                         <span class="button-text">Add New</span>
                                         <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                        viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
@@ -93,7 +93,7 @@
                                         <table class="table text-center table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col"> <strong>Username</strong> </th>
+                                                    <th scope="col"> <strong>Usename</strong> </th>
                                                     <th scope="col"> <strong>Email</strong> </th>
                                                     <th scope="col"> <strong>Phone No.</strong> </th>
                                                     <th scope="col"> <strong>Role</strong> </th>
@@ -102,8 +102,39 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                <c:forEach items="${userList}" var="user">
+                                                    <tr>
+                                                        <td>${user.useName}</td>
+                                                        <td>${user.email}</td>
+                                                        <td>${user.phoneNumber}</td>
+                                                        <c:forEach items="${userRole}" var="role">
+                                                            <c:if test="${user.userRoleId == role.userRoleId}">
+                                                                <td>${role.roleName}</td>
+                                                            </c:if>
+                                                        </c:forEach>
+                                                        <c:forEach items="${userStatus}" var="status">
+                                                            <c:if test="${user.userStatusId == status.userStatusId}">
+                                                                <td>${status.statusName}</td>
+                                                            </c:if>
+                                                        </c:forEach>
+                                                        <td>
+                                                            <a style="margin-right: 5px;text-decoration: none; color: black; "
+                                                               href="user-details?userId=${user.userId}" class="icon-button">
+                                                                <i data-lucide="eye"></i>
+                                                            </a>
+                                                            <a style="margin-right: 5px;text-decoration: none; color: black;"
+                                                               href="#" class="icon-button">
+                                                                <i data-lucide="file-pen-line"></i>
+                                                            </a>
+                                                            <a style="text-decoration: none; color: black;" href="#"
+                                                               class="icon-button">
+                                                                <i data-lucide="trash-2"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
                                                 <!--  table data rows  -->
-                                                <tr>
+<!--                                                <tr>
                                                     <td>Chungdt</td>
                                                     <td>chungdthe176077@fpt.edu.vn</td>
                                                     <td>0949602355</td>
@@ -123,10 +154,10 @@
                                                             <i data-lucide="trash-2"></i>
                                                         </a>
                                                     </td>
-                                                </tr>
+                                                </tr>-->
                                             </tbody>
                                         </table>
-                                        <div class="container row">
+                                        <div class="container-fluid row">
                                             <div class="col-md-10">
                                                 <!-- Your content -->
                                             </div>

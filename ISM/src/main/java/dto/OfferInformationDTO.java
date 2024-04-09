@@ -2,22 +2,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package model;
+package dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+
 /**
  *
- * @author chun
+ * @author tranh
  */
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRole {
-    private Long userRoleId;
-    private String roleName;
+@Builder
+public class OfferInformationDTO {
+    private Long offerId;
+    private String candidateName;
+    private String email;
+    private String approverName;
+    private String departmentName;
+    private String note;
+    private String statusName;
 }

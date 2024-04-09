@@ -30,29 +30,30 @@ public class UserDAO {
      * I. User
      * II. User Role
      * III. User Status
+     * IV. Department
      */
 
     //I. User
     //get list all user
-    public ArrayList<User> getAllUser() {
+    public ArrayList<User> getAllUser()  {
         ArrayList<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM [User]";
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 User user = User.builder()
-                        .userId(rs.getInt("UserID"))
+                        .userId(rs.getLong("UserID"))
                         .useName(rs.getString("Usename"))
                         .fullName(rs.getString("FullName"))
                         .password(rs.getString("Password"))
                         .dob(rs.getDate("DOB").toLocalDate())
                         .phoneNumber(rs.getString("PhoneNumber"))
                         .userRoleId(rs.getInt("UserRoleID"))
-                        .userStatusID(rs.getInt("UserStatusID"))
+                        .userStatusId(rs.getInt("UserStatusID"))
                         .email(rs.getString("Email"))
                         .address(rs.getString("Address"))
                         .gender(rs.getInt("Gender"))
-                        .departmentID(rs.getInt("DepartmentID"))
+                        .departmentId(rs.getLong("DepartmentID"))
                         .note(rs.getString("Note"))
                         .build();
                 userList.add(user);
@@ -77,11 +78,11 @@ public class UserDAO {
             preparedStatement.setDate(4, Date.valueOf(newUser.getDob()));
             preparedStatement.setString(5, newUser.getPhoneNumber());
             preparedStatement.setInt(6, newUser.getUserRoleId());
-            preparedStatement.setInt(7, newUser.getUserStatusID());
+            preparedStatement.setInt(7, newUser.getUserStatusId());
             preparedStatement.setString(8, newUser.getEmail());
             preparedStatement.setString(9, newUser.getAddress());
             preparedStatement.setInt(10, newUser.getGender());
-            preparedStatement.setInt(11, newUser.getDepartmentID());
+            preparedStatement.setLong(11, newUser.getDepartmentId());
             preparedStatement.setString(12, newUser.getNote());
 
             int rowsInserted = preparedStatement.executeUpdate();
@@ -102,18 +103,18 @@ public class UserDAO {
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return User.builder()
-                        .userId(rs.getInt("UserID"))
+                        .userId(rs.getLong("UserID"))
                         .useName(rs.getString("Usename"))
                         .fullName(rs.getString("FullName"))
                         .password(rs.getString("Password"))
                         .dob(rs.getDate("DOB").toLocalDate())
                         .phoneNumber(rs.getString("PhoneNumber"))
                         .userRoleId(rs.getInt("UserRoleID"))
-                        .userStatusID(rs.getInt("UserStatusID"))
+                        .userStatusId(rs.getInt("UserStatusID"))
                         .email(rs.getString("Email"))
                         .address(rs.getString("Address"))
                         .gender(rs.getInt("Gender"))
-                        .departmentID(rs.getInt("DepartmentID"))
+                        .departmentId(rs.getLong("DepartmentID"))
                         .note(rs.getString("Note"))
                         .build();
             }
@@ -136,11 +137,11 @@ public class UserDAO {
             preparedStatement.setDate(4, Date.valueOf(user.getDob()));
             preparedStatement.setString(5, user.getPhoneNumber());
             preparedStatement.setInt(6, user.getUserRoleId());
-            preparedStatement.setInt(7, user.getUserStatusID());
+            preparedStatement.setInt(7, user.getUserStatusId());
             preparedStatement.setString(8, user.getEmail());
             preparedStatement.setString(9, user.getAddress());
             preparedStatement.setInt(10, user.getGender());
-            preparedStatement.setInt(11, user.getDepartmentID());
+            preparedStatement.setLong(11, user.getDepartmentId());
             preparedStatement.setString(12, user.getNote());
             preparedStatement.setLong(13, user.getUserId());
 
@@ -162,7 +163,7 @@ public class UserDAO {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 UserRole role = UserRole.builder()
-                        .userRoleId(rs.getInt("UserRoleID"))
+                        .userRoleId(rs.getLong("UserRoleID"))
                         . roleName(rs.getString("RoleName"))
                         .build();
                 roleList.add(role);
@@ -184,8 +185,8 @@ public class UserDAO {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 UserStatus status = UserStatus.builder()
-                        .userStatus(rs.getInt("UserRoleID"))
-                        .statusName(rs.getString("RoleName"))
+                        .userStatusId(rs.getLong("UserStatusID"))
+                        .statusName(rs.getString("StatusName"))
                         .build();
                 userStatus.add(status);
             }
@@ -197,46 +198,32 @@ public class UserDAO {
         return null;
     }
     
-
+    //IV. Department
     public static void main(String[] args) {
         System.out.println("===Run Main Here===");
-//        UserDAO dao = new UserDAO();
-//        
-//        for (User u : dao.getAll()) {
-//            System.out.println(u);
-//        }
-//        System.out.println("hihi");
-//        System.out.println("=====");
-//        User uu = dao.getUserDetails(1);
-//        System.out.println(uu);
-        // Creating an instance of UserDAO
-        UserDAO userDAO = new UserDAO();
-
-        User userToUpdate = User.builder()
-                .userId(1) // ID of the user to update
-                .fullName("NewUserName")
-                .useName("NewUseName")
-                .password("NewPassword")
-                .dob(LocalDate.of(1990, 1, 1))
-                .phoneNumber("NewPhoneNumber")
-                .userRoleId(2)
-                .userStatusID(1)
-                .email("new@example.com")
-                .address("New Address")
-                .gender(1)
-                .departmentID(3)
-                .note("New note")
-                .build();
-
-        // Updating the user
-        boolean updated = userDAO.updateUser(userToUpdate);
-
-        if (updated) {
-            System.out.println("User details updated successfully.");
+        UserDAO udao = new UserDAO();
+        // Test getAllUserRole method
+        ArrayList<UserRole> roleList = udao.getAllUserRole();
+        if (roleList != null) {
+            System.out.println("User Role List:");
+            for (UserRole role : roleList) {
+                System.out.println(role);
+            }
         } else {
-            System.out.println("Failed to update user details.");
+            System.out.println("Failed to retrieve user role list.");
         }
-    }
 
-    
+        // Test getAllUserStatus method
+        ArrayList<UserStatus> statusList = udao.getAllUserStatus();
+        if (statusList != null) {
+            System.out.println("User Status List:");
+            for (UserStatus status : statusList) {
+                System.out.println(status);
+            }
+        } else {
+            System.out.println("Failed to retrieve user status list.");
+        }
+
+    }
+   
 }

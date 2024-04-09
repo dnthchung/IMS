@@ -64,7 +64,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="userList" class="nav-link">
+                    <a href="user-list" class="nav-link">
                         <div class="icon-wrap">
                             <i data-lucide="user-plus"></i>
                         </div>

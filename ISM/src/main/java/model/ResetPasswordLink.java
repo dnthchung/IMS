@@ -3,21 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDate;
+import lombok.*;
 /**
  *
  * @author chun
  */
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRole {
-    private Long userRoleId;
-    private String roleName;
+public class ResetPasswordLink {
+    private Long resetPasswordId;
+    private Long userId;
+    private LocalDate linkGeneratedTime;
+    private boolean isUsed;
 }

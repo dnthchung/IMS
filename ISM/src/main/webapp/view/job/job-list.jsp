@@ -93,9 +93,9 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                                  stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                                  class="lucide lucide-arrow-down-to-line">
-                                                <path d="M12 17V3"/>
-                                                <path d="m6 11 6 6 6-6"/>
-                                                <path d="M19 21H5"/>
+                                            <path d="M12 17V3"/>
+                                            <path d="m6 11 6 6 6-6"/>
+                                            <path d="M19 21H5"/>
                                             </svg>
                                         </span>
                                     </button>
@@ -109,23 +109,28 @@
                                             <thead>
                                                 <tr>
                                                     <th scope="col"> <strong>Job Title</strong> </th>
-                                                    <th scope="col"> <strong>Required Skills</strong> </th>
                                                     <th scope="col"> <strong>Start date</strong> </th>
                                                     <th scope="col"> <strong>End date</strong> </th>
-                                                    <th scope="col"> <strong>Level</strong> </th>
-                                                    <th scope="col"> <strong>Status</strong> </th>
-                                                    <th scope="col"> <strong>Action</strong> </th>
+                                                    <th scope="col"> <strong>Salary From</strong> </th>
+                                                    <th scope="col"> <strong>Salary To</strong> </th>
+                                                    <th scope="col"> <strong>Working Address</strong> </th>
+                                                    <th scope="col"> <strong>Description</strong> </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <!--  table data rows  -->
+                                                 <c:forEach var="j" items="${job}">
                                                 <tr>
-                                                    <td>Backend Developer</td>
-                                                    <td>NodeJS, Java</td>
-                                                    <td>22/02/2022</td>
-                                                    <td>22/05/2022</td>
-                                                    <td>Fresher, Junior</td>
-                                                    <td>Closed</td>
+                                                   
+
+                                                        <td>${j.jobTitle}</td>
+                                                        <td>${j.startDate}</td>
+                                                        <td>${j.endDate}</td>
+                                                        <td>${j.salaryFrom}</td>
+                                                        <td>${j.salaryTo}</td>
+                                                        <td>${j.workAddress}</td>
+                                                        <td>${j.description}</td>
+                                                   
                                                     <td>
                                                         <a style="margin-right: 5px;text-decoration: none; color: black; "
                                                            href="#" class="icon-button">
@@ -141,9 +146,11 @@
                                                         </a>
                                                     </td>
                                                 </tr>
+                                                
+                                                </c:forEach>  
                                             </tbody>
                                         </table>
-                                        <div class="container row">
+                                        <div class="container-fluid row">
                                             <div class="col-md-10">
                                                 <!-- Your content -->
                                             </div>

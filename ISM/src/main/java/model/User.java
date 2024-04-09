@@ -11,19 +11,33 @@ import lombok.*;
 @Data
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
+@Getter
+@Setter
 public class User {
-    private int userId;
-    private String fullName;
+    private Long userId;
     private String useName;
+    private String fullName;
     private String password;
     private LocalDate dob;
     private String phoneNumber;
     private int userRoleId;
-    private int userStatusID;
+    private int userStatusId;
     private String email;
     private String address;
     private int gender;
-    private int departmentID;
+    private Long departmentId;
     private String note;
-    
+
+    public String getGenderAsString() {
+        switch (gender) {
+            case 0:
+                return "Female";
+            case 1:
+                return "Male";
+            default:
+                return "Other";
+        }
+    }
+
+
 }

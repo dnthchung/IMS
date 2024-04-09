@@ -4,9 +4,10 @@
  */
 package model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 /**
  *
  * @author chun
@@ -16,6 +17,6 @@ import lombok.Data;
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
 public class UserStatus {
-    private int userStatus;
+    private Long userStatusId;
     private String statusName;
 }

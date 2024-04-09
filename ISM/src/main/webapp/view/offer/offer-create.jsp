@@ -26,9 +26,9 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb" style="margin-left: 1em">
-                            <li class="breadcrumb-item"><a href="#">Offer List</a></li>
+                            <li class="breadcrumb-item"><a href="offer-list">Offer List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a  href="candidate-create.jsp">Create Offer</a>
+                                <a  href="create-offer">Create Offer</a>
                             </li>
                         </ol>
                     </nav>
@@ -68,10 +68,10 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select">
-                                                            <option selected disabled>Select Candidate Name</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <option selected disabled>Select a type of contract</option>
+                                                            <c:forEach var="contractType" items="${requestScope.contractTypes}">
+                                                                <option value="${contractType.getContractTypeID()}">${contractType.getTypeName()}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
