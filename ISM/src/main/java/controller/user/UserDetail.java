@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import model.Department;
 import model.User;
 import model.UserRole;
 import model.UserStatus;
@@ -67,11 +68,19 @@ public class UserDetail extends HttpServlet {
         User user = userDAO.getUserDetails(userId);
         ArrayList<UserStatus> userStatus = userDAO.getAllUserStatus();
         ArrayList<UserRole> userRole = userDAO.getAllUserRole();
+        ArrayList<Department> departmentList = userDAO.getAllDeparmentForUser();
         
+        System.out.println("===Run Main Here===");
+        for (Department hi : departmentList) {
+            System.out.println(hi);
+        }
+
+        request.setAttribute("departmentList", departmentList);
         request.setAttribute("user", user);
         request.setAttribute("userStatus", userStatus);
         request.setAttribute("userRole", userRole);
         request.setAttribute("URL", "User Details");
+        
         request.getRequestDispatcher("view/user/user-details.jsp").forward(request, response);
     } 
 

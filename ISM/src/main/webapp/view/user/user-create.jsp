@@ -13,6 +13,7 @@
         <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
         <!-- link to css -->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user-create.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     </head>
     <body>
         <!-- side bar -->
@@ -26,200 +27,205 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb" style="margin-left: 1em">
-                            <li class="breadcrumb-item"><a href="#">User List</a></li>
+                            <li class="breadcrumb-item"><a href="user-list">User List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a  href="candidate-create.jsp">Create User</a>
+                                <a  href="user-create">Create User</a>
                             </li>
                         </ol>
                     </nav>
                     <!-- content-card -->
                     <div class="card my-card">
-                        <div class="content">
-                            <!-- class="content-1" -->
-                            <div class="content-1">
+                        <form id="blogForm" action="user-create" method="post">
+                            <div class="content">
+                                <!-- class="content-1" -->
+                                <div class="content-1">
 
+                                </div>
+                                <!-- class="content-2" -->
+                                <div class="card-body">
+                                    <form action="">
+                                        <div class="part1 mt-3">
+                                            <!-- row1 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-5 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Full Name<span style="color: red;">*</span>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <input name="fullNameSelected" type="text" class="form-control" placeholder="Type a name..." required/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-6 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Email<span style="color: red;">*</span>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <input name="emailSelected" type="text" class="form-control" placeholder="Type an email..." required/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- row2 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-5 row">
+                                                    <div class="col-md-3 part-title">
+                                                        D.O.B
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <input name="dateSelected" type="date" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-6 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Address
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <input name="addressSelected" type="text" class="form-control" placeholder="Type an address..."/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- row3 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-5 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Phone Number
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <input name="phoneSelected" type="text" class="form-control" placeholder="Type a number..."/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-6 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Gender<span style="color: red;">*</span>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <select class="form-select" name="genderSelected">
+                                                                <option selected disabled>Select a gender</option>
+                                                                <option value="1">Male</option>
+                                                                <option value="2">Female</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="part2 mt-3">
+                                            <!-- row1 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-5 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Role<span style="color: red;">*</span>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <select class="form-select" name="userRoleSelected">
+                                                                <option selected disabled>Select a role... </option>
+                                                                <c:forEach items="${userRole}" var="userRole">
+                                                                    <option value="${userRole.userRoleId}">${userRole.roleName}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-6 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Department<span style="color: red;">*</span>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <select class="form-select" name="departmentSelected">
+                                                                <option selected disabled> Type a department </option>
+                                                                <c:forEach items="${departmentList}" var="departmentList">
+                                                                    <option value="${departmentList.departmentId}">${departmentList.departmentName}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- row2 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-5 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Status<span style="color: red;">*</span>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <select class="form-select" name="statusSelected">
+                                                                <option  disabled>Select a status</option>
+                                                                <c:forEach items="${userStatus}" var="userStatus">
+                                                                    <c:if test="${userStatus.userStatusId == 1}">
+                                                                        <option selected value="${userStatus.userStatusId}">${userStatus.statusName}</option>
+                                                                    </c:if>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-6 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Note
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" style="padding: 0px !important;">
+                                                            <input name="noteSelected" type="text" class="form-control" placeholder="N/A">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- row3 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-5 row">
+
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-6 row">
+
+                                                </div>
+                                            </div>
+                                            <!-- row4 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-5 row">
+
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-6 row">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br><br>
+                                        <div class="d-flex justify-content-center">
+                                            <button class="button-2" type="submit"
+                                                    style="background-color: #ABDF75; color: #fff;" >Submit</button>
+                                            <button class="button-2"
+                                                    style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                            <!-- class="content-2" -->
-                            <div class="card-body">
-                                <form action="">
-                                    <div class="part1 mt-3">
-                                        <!-- row1 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Full Name<span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type a name..." required/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-6 row">
-                                                <div class="col-md-3 part-title">
-                                                    Email<span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type an email..." required/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- row2 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    D.O.B
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="date" class="form-control" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-6 row">
-                                                <div class="col-md-3 part-title">
-                                                    Address
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type an address..."/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- row3 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Phone Number
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type a number..."/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-6 row">
-                                                <div class="col-md-3 part-title">
-                                                    Gender<span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled>Select a gender</option>
-                                                            <option>Male</option>
-                                                            <option>Female</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="part2 mt-3">
-                                        <!-- row1 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Role<span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled>Select a position... ex: Backend developer</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-6 row">
-                                                <div class="col-md-3 part-title">
-                                                    Department<span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled> Type a department </option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- row2 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Status<span style="color: red;">*</span>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled>Select a status</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-6 row">
-                                                <div class="col-md-3 part-title">
-                                                    Note
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="N/A">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- row3 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-6 row">
-                                                
-                                            </div>
-                                        </div>
-                                        <!-- row4 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-6 row">
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br><br>
-                                    <div class="d-flex justify-content-center">
-                                        <button class="button-2"
-                                                style="background-color: #ABDF75; color: #fff;">Submit</button>
-                                        <button class="button-2"
-                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
 
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>        
         <!-- jQuery -->
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

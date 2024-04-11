@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import model.Department;
 import model.User;
 import model.UserRole;
 import model.UserStatus;
@@ -62,14 +63,17 @@ public class UserList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         UserDAO userDAO = new UserDAO();
         ArrayList<User> userList = userDAO.getAllUser();
         ArrayList<UserStatus> userStatus = userDAO.getAllUserStatus();
         ArrayList<UserRole> userRole = userDAO.getAllUserRole();
+        ArrayList<Department> departmentList = userDAO.getAllDeparmentForUser();
 
         request.setAttribute("userList", userList);
         request.setAttribute("userStatus", userStatus);
         request.setAttribute("userRole", userRole);
+        request.setAttribute("departmentList", departmentList);
         request.setAttribute("URL", "User Management");
         request.getRequestDispatcher("view/user/user-list.jsp").forward(request, response);
     }

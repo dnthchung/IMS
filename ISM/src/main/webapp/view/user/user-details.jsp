@@ -28,7 +28,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#">User List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a href="#">User Details</a>
+                                <a href="user-details">User Details</a>
                             </li>
                         </ol>
                     </nav>
@@ -175,9 +175,13 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Department</td>
-                                                        <td>
-                                                            <p>${user.departmentId}</p>
-                                                        </td>
+                                                        <c:forEach items="${departmentList}" var="department">
+                                                            <c:if test="${department.departmentId == user.departmentId}">
+                                                                <td>
+                                                                    <p>${department.departmentName}</p>
+                                                                </td>
+                                                            </c:if>
+                                                        </c:forEach>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Note</td>

@@ -46,10 +46,11 @@
                                             <div class="col-md-10"></div>
                                             <div class="col-md-3 mt-3">
                                                 <div class="input-group" style="padding: 0px !important;">
-                                                    <select class="form-select">
+                                                    <select class="form-select" name="roleSelected">
                                                         <option selected>Role</option>
-                                                        <option value="1">Active</option>
-                                                        <option value="2">Inactive</option>
+                                                        <c:forEach items="${userRole}" var="role" >
+                                                            <option value="${role.userRoleId}">${role.roleName}</option>
+                                                        </c:forEach>
                                                     </select>
                                                 </div>
                                             </div>
@@ -73,7 +74,7 @@
                             <div class="d-flex">
                                 <div class="me-auto p-2 "></div>
                                 <div class="p-2 mt-3">
-                                    <a href="userCreate" style="text-decoration: none;" class="button3">
+                                    <a href="user-create" style="text-decoration: none;" class="button3">
                                         <span class="button-text">Add New</span>
                                         <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                        viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
@@ -133,28 +134,6 @@
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
-                                                <!--  table data rows  -->
-<!--                                                <tr>
-                                                    <td>Chungdt</td>
-                                                    <td>chungdthe176077@fpt.edu.vn</td>
-                                                    <td>0949602355</td>
-                                                    <td>Developer</td>
-                                                    <td>Active</td>
-                                                    <td>
-                                                        <a style="margin-right: 5px;text-decoration: none; color: black; "
-                                                           href="#" class="icon-button">
-                                                            <i data-lucide="eye"></i>
-                                                        </a>
-                                                        <a style="margin-right: 5px;text-decoration: none; color: black;"
-                                                           href="#" class="icon-button">
-                                                            <i data-lucide="file-pen-line"></i>
-                                                        </a>
-                                                        <a style="text-decoration: none; color: black;" href="#"
-                                                           class="icon-button">
-                                                            <i data-lucide="trash-2"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>-->
                                             </tbody>
                                         </table>
                                         <div class="container-fluid row">

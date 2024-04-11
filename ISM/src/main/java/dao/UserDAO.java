@@ -9,10 +9,10 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Department;
 import model.User;
 import model.UserRole;
 import model.UserStatus;
@@ -43,8 +43,8 @@ public class UserDAO {
             while (rs.next()) {
                 User user = User.builder()
                         .userId(rs.getLong("UserID"))
-                        .useName(rs.getString("Usename"))
                         .fullName(rs.getString("FullName"))
+                        .useName(rs.getString("Usename"))
                         .password(rs.getString("Password"))
                         .dob(rs.getDate("DOB").toLocalDate())
                         .phoneNumber(rs.getString("PhoneNumber"))
@@ -70,7 +70,7 @@ public class UserDAO {
     
     //add/create new user
     public boolean addUser(User newUser) {
-        String sql = "INSERT INTO [User] (UserName, FullName, Password, DOB, PhoneNumber, UserRoleID, UserStatusID, Email, Address, Gender, DepartmentID, Note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO [User] (FullName, UseName, Password, DOB, PhoneNumber, UserRoleID, UserStatusID, Email, Address, Gender, DepartmentID, Note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, newUser.getFullName());
             preparedStatement.setString(2, newUser.getUseName()); 
@@ -199,29 +199,33 @@ public class UserDAO {
     }
     
     //IV. Department
+    public ArrayList<Department> getAllDeparmentForUser(){
+        ArrayList<Department> departmentList = new ArrayList<>();
+        String sql = "SELECT * FROM [Department]";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Department department = Department.builder()
+                        .departmentId(rs.getLong("DepartmentID"))
+                        .departmentName(rs.getString("DepartmentName"))
+                        .build();
+                departmentList.add(department);
+            }
+            return departmentList;
+        } catch (SQLException e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
     public static void main(String[] args) {
         System.out.println("===Run Main Here===");
         UserDAO udao = new UserDAO();
-        // Test getAllUserRole method
-        ArrayList<UserRole> roleList = udao.getAllUserRole();
-        if (roleList != null) {
-            System.out.println("User Role List:");
-            for (UserRole role : roleList) {
-                System.out.println(role);
-            }
-        } else {
-            System.out.println("Failed to retrieve user role list.");
-        }
-
-        // Test getAllUserStatus method
-        ArrayList<UserStatus> statusList = udao.getAllUserStatus();
-        if (statusList != null) {
-            System.out.println("User Status List:");
-            for (UserStatus status : statusList) {
-                System.out.println(status);
-            }
-        } else {
-            System.out.println("Failed to retrieve user status list.");
+        // Test update user 
+        ArrayList<Department> de = udao.getAllDeparmentForUser();
+        for(Department hi : de) {
+            System.out.println(hi);
         }
 
     }
