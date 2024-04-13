@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%-- 
     Document   : login
     Created on : Apr 5, 2024, 11:47:23 PM
@@ -11,7 +12,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login</title>
         <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
-        
+
         <!-- Bootstrap 5 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -32,46 +33,43 @@
                 </div>
             </div>
             <hr>
-            <form>
-                <div class="">
-                    <div class="col-md-12">
-                        <div class="mb-3">
+            <div class="">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <form action="login" method="POST">
                             <!-- user input -->
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" placeholder="Enter your username">
-                                <div>
-                                    <p class="mwrong-username">
-                                        wrong username
-                                    </p>
-                                </div>
+                                <input type="text" class="form-control" name="username" id="username" placeholder="Enter your username" required="Required field" title="Required field">
                             </div>
                             <!-- password input -->
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" placeholder="Enter your password">
-                                <div>
+                                <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required="Required field" title="Required field">
+                            </div>
+                            <div>
+                                <c:if test="${requestScope.isLoginError != null}">
                                     <p class="mwrong-password">
-                                        wrong password
+                                        ${requestScope.isLoginError}
                                     </p>
-                                </div>
+                                </c:if>
                             </div>
                             <div class="moption">
                                 <div class="mb-3 form-check">
                                     <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                                    <label class="form-check-label" for="rememberMe">Remember me?</label>
                                 </div>
                                 <div class="mb-3">
-                                    <a href="password-forgot.jsp">Forgot Password?</a>
+                                    <a href="forgot-password" style="color: black">Forgot Password?</a>
                                 </div>
                             </div>
                             <div class="center">
-                                <button class="button-2" style="background-color: #1E96FC; color: #fff">Login</button>
+                                <button type="submit" class="btn btn-secondary">Login</button>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
         <!-- Bootstrap Bundle JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

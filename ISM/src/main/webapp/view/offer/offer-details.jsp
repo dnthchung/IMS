@@ -27,14 +27,14 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb" style="margin-left: 1em">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Offer List</a></li>
+                            <li class="breadcrumb-item"><a href="offer-list">Offer List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
                                 <a href="#">Offer Details</a>
                             </li>
                         </ol>
                     </nav>
                     <div class="d-flex justify-content-end" style="margin-right: 1em">
-                        <p><i>Created on <strong>22/02/2022</strong> , last updated by <strong>chungdt1</strong> today</i></p>
+                        <p><i>Created on <strong>${offerInf.createdAt}</strong> , last updated by <strong>${offerInf.modifiedBy}</strong> ${offerInf.lastModified}</i></p>
                     </div>
                     <!-- content-card -->
                     <div class="card my-card">
@@ -46,32 +46,32 @@
                                 </div>
                                 <div class="col-md-6">
                                     <!--manager-->
-<!--                                    <button class="button323" style="margin-right: 10px">
-                                        <span class="button-text">Approve</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
-                                            <path d="M20 6 9 17l-5-5"/>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                    <button class="button32" style="margin-right: 10px">
-                                        <span class="button-text">Reject</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                            <path d="M18 6 6 18"/>
-                                            <path d="m6 6 12 12"/>
-                                            </svg>
-                                        </span>
-                                    </button>-->
-<!--                                    <button class="button33blue" style="margin-right: 10px">
-                                        <span class="button-text">Mark as Sent to Candidate</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send">
-                                            <path d="m22 2-7 20-4-9-9-4Z"/>
-                                            <path d="M22 2 11 13"/>
-                                            </svg>
-                                        </span>
-                                    </button>-->
+                                    <!--                                    <button class="button323" style="margin-right: 10px">
+                                                                            <span class="button-text">Approve</span>
+                                                                            <span class="button-icon">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
+                                                                                <path d="M20 6 9 17l-5-5"/>
+                                                                                </svg>
+                                                                            </span>
+                                                                        </button>
+                                                                        <button class="button32" style="margin-right: 10px">
+                                                                            <span class="button-text">Reject</span>
+                                                                            <span class="button-icon">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                                                <path d="M18 6 6 18"/>
+                                                                                <path d="m6 6 12 12"/>
+                                                                                </svg>
+                                                                            </span>
+                                                                        </button>-->
+                                    <!--                                    <button class="button33blue" style="margin-right: 10px">
+                                                                            <span class="button-text">Mark as Sent to Candidate</span>
+                                                                            <span class="button-icon">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send">
+                                                                                <path d="m22 2-7 20-4-9-9-4Z"/>
+                                                                                <path d="M22 2 11 13"/>
+                                                                                </svg>
+                                                                            </span>
+                                                                        </button>-->
                                     <button class="button33blue" style="margin-right: 10px; width: 180px !important">
                                         <span class="button-text">Accepted Offer</span>
                                         <span class="button-icon">
@@ -107,27 +107,27 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <table class="table table-striped">
+                                            <table class="table table-hover">
                                                 <thead>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
                                                         <td class="part-title">Candidate</td>
-                                                        <td>Nguyen Xuan Pi</td>
+                                                        <td>${offerInf.candidateName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Position</td>
-                                                        <td>Developer</td>
+                                                        <td>${offerInf.positionName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Approver</td>
-                                                        <td>Đoàn Chung</td>
+                                                        <td>${offerInf.approverName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Interview Info</td>
                                                         <td>
-                                                            <p>Interview SBA</p>
-                                                            <p>Interviewer: ThuyNT, HaNN2</p>
+                                                            <p>${requestScope.interviewSchedule.scheduleTitle}</p>
+                                                            <p>Interviewer: ${requestScope.interviewers}</p>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -136,75 +136,78 @@
                                                             <div class="d-flex ">
                                                                 <p style="margin-right: 10px">From</p>
                                                                 <p class="me-auto">
-                                                                    <strong>12/02/2022</strong>
+                                                                    <strong>${offerInf.contractFrom}</strong>
                                                                 </p>
                                                                 <p style="margin-right: 10px">To</p>
                                                                 <p>
-                                                                    <strong>12/02/2023</strong>
+                                                                    <strong>${offerInf.contractTo}</strong>
                                                                 </p>
                                                             </div>
                                                         </td>
                                                     <tr>
                                                         <td class="part-title">Interview Notes</td>
                                                         <td>
-                                                            <p>Candidate is fully-match with
-                                                                5 years experiences in IT
-                                                                industry</p>
+                                                            <p>${requestScope.interviewSchedule.notes}</p>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Status</td>
-                                                        <td>Draft</td>
+                                                        <td>${offerInf.statusName}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div class="col-md-1"></div>
                                         <div class="col-md-5">
-                                            <table class="table table-striped">
+                                            <table class="table table-hover">
                                                 <thead>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
                                                         <td class="part-title">Contract Type</td>
                                                         <td>
-                                                            <p>Full-time</p>
+                                                            ${offerInf.contractTypeName}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Level</td>
                                                         <td>
-                                                            Senior
+                                                            ${offerInf.levelName}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Department</td>
                                                         <td>
-                                                            <p>IT</p>
+                                                            ${offerInf.departmentName}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Recruiter Owner</td>
                                                         <td>
-                                                            <p>hi</p>
+                                                            ${offerInf.recruiter}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Due Date</td>
                                                         <td>
-                                                            <p>25/12/2021</p>
+                                                            ${offerInf.dueDate}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Basic Salary</td>
                                                         <td>
-                                                            <p>25.000.000<span> VND</span></p>
+                                                            <p>${offerInf.getFormattedSalary()}<span> VND</span></p>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Note</td>
                                                         <td>
-                                                            <p>N/A</p>
+                                                            <c:if test="${offerInf.note.isEmpty()}">
+                                                                N/A
+                                                            </c:if>
+                                                            <c:if test="${!offerInf.note.isEmpty()}">
+                                                                ${offerInf.note}
+                                                            </c:if>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -213,8 +216,10 @@
                                     </div>
 
                                     <div class="d-flex justify-content-center mt-5">
-                                        <a type="button" href="offer-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
-                                        <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
+                                        <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId != 3 && offerInf.statusName == 'Waiting for Approval'}">
+                                            <a type="button" href="offer-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
+                                        </c:if>
+                                        <a class="button-2" style="background-color: #EFA9AE; color: #fff" href="offer-list">Cancel</a>
                                     </div>
                                 </div>
                             </form>

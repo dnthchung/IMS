@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%-- 
     Document   : signIn
     Created on : Apr 5, 2024, 11:50:52 PM
@@ -32,48 +33,66 @@
                 </div>
             </div>
             <hr>
-            <form>
-                <div class="">
-                    <div class="mb-3">
-                        <div class="">
-                            <p class="mnoti">
-                                <span id="mtitle1" class="d-flex justify-content-center">Reset Password </span>
-                                <span id="mtitle2">Please set your new password</span> 
-                            </p>
-                            <br>
-                        </div>
-                        <div>
-                            <div class="d-flex justify-content-between">
-                                <label for="password">Password:</label>
-                                <input type="password" id="password" class="form-control" placeholder="Enter password"
-                                       required>
-                            </div>
-                            <div>
-                                <p class="mtip">"Use at least 1 letter, 1 number and 7 characters"</p>
-                                <div class="d-flex">
-                                    <!-- <p class="mwrong-password"> wrong password </p> -->
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="d-flex justify-content-between">
-                                <label for="re-password">Re-Password:</label>
-                                <input type="password" id="re-password" class="form-control" placeholder="Confirm password"
-                                       required>
-                            </div>
-                            <div>
-                                <!-- <p class="mwrong-re-password"> password does not match </p> -->
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-center" style="margin-top: 30px;">
-                            <button class="button-2" style="background-color: #1E96FC; color: #fff">Submit</button>
-                        </div>
+            <c:if test="${requestScope.tokenExpired != null}">
+                <div class="mb-3">
+                    <div class="">
+                        <p class="mnoti">
+                            <span id="mtitle2">${requestScope.tokenExpired}</span> 
+                        </p>
+                    </div>
+                    <div class="d-flex justify-content-center" style="margin-top: 30px;">
+                        <a class="button-2 btn btn-secondary" href="login">Cancel</a>
                     </div>
                 </div>
-            </form>
-        </div>
+            </c:if>
+            <c:if test="${requestScope.tokenExpired == null}">
+                <form action="reset-password" method="POST">
+                    <div class="">
+                        <div class="mb-3">
+                            <div class="">
+                                <p class="mnoti">
+                                    <span id="mtitle1" class="d-flex justify-content-center">Reset Password </span>
+                                    <span id="mtitle2">Please set your new password</span> 
+                                </p>
+                                <br>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between">
+                                    <label for="password">Password:</label>
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter password"
+                                           required>
+                                </div>
+                                <div>
+                                    <p class="mtip">"Use at least 1 letter, 1 number and 7 characters"</p>
+                                    <c:if test="${requestScope.passwordErr != null}">
+                                        <div class="d-flex">
+                                            <p class="mwrong-password">${requestScope.passwordErr}</p> 
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between">
+                                    <label for="re-password">Re-Password:</label>
+                                    <input type="password" id="re-password" name="re-password" class="form-control" placeholder="Confirm password"
+                                           required>
+                                </div>
+                                <c:if test="${requestScope.rePasswordErr != null}">
+                                    <div class="d-flex mt-3">
+                                        <p class="mwrong-password">${requestScope.rePasswordErr}</p> 
+                                    </div>
+                                </c:if> 
+                            </div>
 
+                            <input type="hidden" name="token" value="${requestScope.token}">
+                            <div class="d-flex justify-content-center" style="margin-top: 30px;">
+                                <button type="submit" class="button-2" style="background-color: #1E96FC; color: #fff">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </c:if>
+        </div>
 
         <!-- Bootstrap Bundle JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

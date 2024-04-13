@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.*;
 /**
  *
@@ -14,8 +14,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResetPasswordLink {
-    private Long resetPasswordId;
+    private String resetPasswordId;
     private Long userId;
-    private LocalDate linkGeneratedTime;
+    private LocalDateTime linkGeneratedTime;
     private boolean isUsed;
 }

@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.List;
 import model.Department;
 import model.User;
 import model.UserRole;
@@ -70,7 +71,26 @@ public class UserList extends HttpServlet {
         ArrayList<UserRole> userRole = userDAO.getAllUserRole();
         ArrayList<Department> departmentList = userDAO.getAllDeparmentForUser();
 
-        request.setAttribute("userList", userList);
+        int page, numberpage = 5;
+        int size = userList.size();
+        int num = (size % 5 == 0 ? (size / 5) : ((size / 5)) + 1);
+        String xpage = request.getParameter("page");
+        
+        if (xpage == null) {
+            page = 1;
+        } else {
+            page = Integer.parseInt(xpage);
+        }
+        
+        int start, end;
+        start = (page - 1) * numberpage;
+        end = Math.min(page * numberpage, size);
+        
+        List<User> listU = userDAO.getListbyPage(userList, start, end);
+        
+        request.setAttribute("listU", listU);
+        request.setAttribute("page", page);
+        request.setAttribute("num", num);
         request.setAttribute("userStatus", userStatus);
         request.setAttribute("userRole", userRole);
         request.setAttribute("departmentList", departmentList);

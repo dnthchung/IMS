@@ -13,6 +13,9 @@
         <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
         <!-- link to css -->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/offer-create.css">
+        <!--Flatpickr-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     </head>
     <body>
         <!-- side bar -->
@@ -41,7 +44,7 @@
                             </div>
                             <!-- class="content-2" -->
                             <div class="card-body">
-                                <form action="">
+                                <form action="create-offer" method="POST">
                                     <div class="part1 mt-3">
                                         <!-- row1 -->
                                         <div class="row mb-3">
@@ -51,11 +54,11 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
+                                                        <select class="form-select" name="candidateId" required="">
                                                             <option selected disabled>Select Candidate Name</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach var="candidate" items="${requestScope.offerableCandidate}">
+                                                                <option value="${candidate.candidateId}">${candidate.fullName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -67,7 +70,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
+                                                        <select class="form-select" name="contractTypeID" required="">
                                                             <option selected disabled>Select a type of contract</option>
                                                             <c:forEach var="contractType" items="${requestScope.contractTypes}">
                                                                 <option value="${contractType.getContractTypeID()}">${contractType.getTypeName()}</option>
@@ -85,11 +88,11 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
+                                                        <select class="form-select" name="positionId" required="">
                                                             <option selected disabled>Select a Position</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach var="position" items="${requestScope.positions}">
+                                                                <option value="${position.positionId}">${position.positionName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -101,11 +104,11 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
+                                                        <select class="form-select" name="levelId" required="">
                                                             <option selected disabled>Select a Level</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach var="level" items="${requestScope.levels}">
+                                                                <option value="${level.levelId}">${level.levelName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -119,11 +122,11 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
+                                                        <select class="form-select" name="approverId" required="">
                                                             <option selected disabled>Select an Approver</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach var="manager" items="${requestScope.activeManagers}">
+                                                                <option value="${manager.userId}">${manager.fullName} - ${manager.useName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -135,11 +138,11 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
+                                                        <select class="form-select" name="departmentId" required="">
                                                             <option selected disabled>Select an Department</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach var="dept" items="${requestScope.departments}">
+                                                                <option value="${dept.departmentId}">${dept.departmentName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -155,11 +158,11 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
+                                                        <select class="form-select" name="interviewScheduleId" required="">
                                                             <option selected disabled>Select an interview schedule title</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach var="interview" items="${requestScope.interviewSchedules}">
+                                                                <option value="${interview.interviewScheduleId}">${interview.scheduleTitle}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -171,19 +174,21 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled> ... </option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                        <select class="form-select" name="recruiterId" required="">
+                                                            <option selected disabled>Select a recruiter owner </option>
+                                                            <c:forEach var="recru" items="${requestScope.activeRecuiters}">
+                                                                <option value="${recru.userId}">${recru.fullName} - ${recru.useName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12">
-                                                    <div style="margin-top: 15px; margin-left: 175px">
-                                                        <a href="#" style="color: #000">Assigned to me</a>
+                                                <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId != 2}">
+                                                    <div class="col-md-12">
+                                                        <div style="margin-top: 15px; margin-left: 175px">
+                                                            <a href="#" style="color: #000">Assigned to me</a>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </c:if>
                                             </div>
                                         </div>
                                         <!-- row2 -->
@@ -195,11 +200,11 @@
                                                 <div class="col-md-8 d-flex">
                                                     <span style="margin-right: 10px;margin-top: 5px;">From </span>
                                                     <div class="cs-form col-md-5" style="margin-right: 10px">
-                                                        <input type="date" class="form-control" />
+                                                        <input type="date" id="inp-start-date" name="startDate" class="form-control"  required="" placeholder="DD/MM/YYYY"/>
                                                     </div>
                                                     <span style="margin-right: 10px;margin-top: 5px;">To </span>
                                                     <div class="cs-form col-md-5">
-                                                        <input type="date" class="form-control" />
+                                                        <input type="date" id="inp-end-date" name="endDate" class="form-control" required="" placeholder="DD/MM/YYYY" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -210,7 +215,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="date" class="form-control">
+                                                        <input type="date" id="inp-due-date" name="dueDate" class="form-control" required="" placeholder="DD/MM/YYYY">
                                                     </div>
                                                 </div>
                                             </div>
@@ -223,7 +228,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <p>Candidate is fully-match with 5 years experiences in IT industry</p>
+                                                        <p id="interviewNotes">Candidate is fully-match with 5 years experiences in IT industry</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -234,31 +239,22 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Enter basic salary ...">
+                                                        <input type="text" name="salary" class="form-control" placeholder="Enter basic salary ..." required="">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- row4 -->
                                         <div class="row mb-3">
-                                            <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Status
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <p>Waiting for Approval</p>
-                                                    </div>
-                                                </div>
+                                            <div class="col-md-6 row">
                                             </div>
-                                            <div class="col-md-1"></div>
                                             <div class="col-md-6 row">
                                                 <div class="col-md-3 part-title">
                                                     Notes
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="form-floating" style="padding: 0px !important;">
-                                                        <textarea style="height: 200px" class="form-control" placeholder="Type description" id="floatingTextarea"></textarea>
+                                                        <textarea style="height: 200px" name="note" class="form-control" placeholder="Type description" id="floatingTextarea"></textarea>
                                                         <label for="floatingTextarea">Comments</label>
                                                     </div>
                                                 </div>
@@ -270,8 +266,8 @@
                                     <div class="d-flex justify-content-center">
                                         <button class="button-2"
                                                 style="background-color: #ABDF75; color: #fff;">Submit</button>
-                                        <button class="button-2"
-                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
+                                        <a href="offer-list" class="button-2"
+                                           style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</a>
                                     </div>
                                 </form>
                             </div>
@@ -304,7 +300,7 @@
                 selectionCssClass: 'select2--small',
                 dropdownCssClass: 'select2--small'
             });
-            
+
             //benefits multi choice
             $('#small-select2-options-multiple-field-benefits').select2({
                 theme: "bootstrap-5",
@@ -314,7 +310,7 @@
                 selectionCssClass: 'select2--small',
                 dropdownCssClass: 'select2--small'
             });
-            
+
             //levels multi choice
             $('#small-select2-options-multiple-field-levels').select2({
                 theme: "bootstrap-5",
@@ -325,5 +321,42 @@
                 dropdownCssClass: 'select2--small'
             });
         </script>
+
+        <script>
+            flatpickr("#inp-start-date", {
+                dateFormat: "d/m/Y"
+            });
+
+        </script>
+
+        <script>
+            flatpickr("#inp-end-date", {
+                dateFormat: "d/m/Y"
+            });
+
+        </script>
+
+        <script>
+            flatpickr("#inp-due-date", {
+                dateFormat: "d/m/Y"
+            });
+
+        </script>
+
+        <script>
+            function updateInterviewNotes() {
+                var interviewScheduleId = document.querySelector('select[name="interviewScheduleId"]').value;
+                var interviewNotes = "";
+            <c:forEach var="interview" items="${requestScope.interviewSchedules}">
+                <c:if test="${interview.interviewScheduleId == interviewScheduleId}">
+                interviewNotes = "${interview.notes}";
+                </c:if>
+            </c:forEach>
+                document.querySelector('p[id="interviewNotes"]').textContent = interviewNotes;
+            }
+            window.onload = updateInterviewNotes;
+            document.querySelector('select[name="interviewScheduleId"]').onchange = updateInterviewNotes;
+        </script>
+
     </body>
 </html>

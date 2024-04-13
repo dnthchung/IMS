@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%-- 
     Document   : nav-bar
     Created on : Apr 7, 2024, 9:38:40 PM
@@ -34,24 +35,34 @@
                         </li>
                     </ul>
                     <!--đã login-->
-                    <!--                            <div class="d-flex user-area">
-                                                    <div class="user-info d-flex flex-column align-items-center">
-                                                        <span class="username">@chungdth</span>
-                                                        <p>HR Department</p>
-                                                    </div>
-                                                    <div style="padding: 15px;">
-                                                        <i style="height: 20px;" data-lucide="user"></i>
-                                                    </div>
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="#" style="font-style: italic; color: black; margin-right: 20px;">Logout</a>
-                                                    </div>
-                                                </div>-->
-                    <!--chưa login-->
-                    <div class="d-flex" style="gap: 25px;">
-                        <div class="button-2">
-                            <a href="login.jsp" style="text-decoration: none; color: #000;">Login</a>
+                    <c:if test="${sessionScope.loggedInUser != null}">
+                        <div class="d-flex user-area">
+                            <div class="user-info d-flex flex-column align-items-center">
+                                <span class="username">${sessionScope.loggedInUser.useName}</span>
+                                <c:forEach var="role" items="${sessionScope.userRoles}">
+                                    <c:if test="${role.userRoleId == sessionScope.loggedInUser.userRoleId}">
+                                        <p>${role.roleName}</p>
+                                    </c:if>
+                                </c:forEach>
+
+                            </div>
+                            <div style="padding: 15px;">
+                                <i style="height: 20px;" data-lucide="user"></i>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <a href="#" onclick="confirmLogout()" style="font-style: italic; color: black; margin-right: 20px;">Logout</a>
+                            </div>
                         </div>
-                    </div>
+                    </c:if>
+
+                    <!--chưa login-->
+                    <c:if test="${sessionScope.loggedInUser == null}">
+                        <div class="d-flex" style="gap: 25px;">
+                            <div class="button-2">
+                                <a href="login.jsp" style="text-decoration: none; color: #000;">Login</a>
+                            </div>
+                        </div>
+                    </c:if>
                 </div>
             </div>
         </nav>
@@ -64,8 +75,9 @@
         crossorigin="anonymous"></script>
         <!--lucide icon-->
         <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            lucide.createIcons();
+                                    lucide.createIcons();
         </script>
         <!--skill multi choice-->
         <script>
@@ -77,6 +89,30 @@
                 selectionCssClass: 'select2--small',
                 dropdownCssClass: 'select2--small'
             });
+        </script>
+
+        <script>
+            function confirmLogout() {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: "btn btn-secondary",
+                        cancelButton: "btn btn-secondary"
+                    },
+                    buttonsStyling: true
+                });
+                swalWithBootstrapButtons.fire({
+                    title: "Log Out",
+                    text: "Are you sure you want to log out?",
+                    showCancelButton: true,
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Cancel",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "logout";
+                    }
+                });
+            }
         </script>
     </body>
 </html>

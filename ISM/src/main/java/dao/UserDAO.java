@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Department;
@@ -127,23 +128,22 @@ public class UserDAO {
 
     // Update user details by userID
     public boolean updateUser(User user) {
-        String sql = "UPDATE [User] SET FullName = ?, UseName = ?, Password = ?, DOB = ?, "
+        String sql = "UPDATE [User] SET FullName = ?, UseName = ? , DOB = ?, "
                 + "PhoneNumber = ?, UserRoleID = ?, UserStatusID = ?, Email = ?, "
                 + "Address = ?, Gender = ?, DepartmentID = ?, Note = ? WHERE UserID = ?";
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, user.getFullName());
             preparedStatement.setString(2, user.getUseName());
-            preparedStatement.setString(3, user.getPassword());
-            preparedStatement.setDate(4, Date.valueOf(user.getDob()));
-            preparedStatement.setString(5, user.getPhoneNumber());
-            preparedStatement.setInt(6, user.getUserRoleId());
-            preparedStatement.setInt(7, user.getUserStatusId());
-            preparedStatement.setString(8, user.getEmail());
-            preparedStatement.setString(9, user.getAddress());
-            preparedStatement.setInt(10, user.getGender());
-            preparedStatement.setLong(11, user.getDepartmentId());
-            preparedStatement.setString(12, user.getNote());
-            preparedStatement.setLong(13, user.getUserId());
+            preparedStatement.setDate(3, Date.valueOf(user.getDob()));
+            preparedStatement.setString(4, user.getPhoneNumber());
+            preparedStatement.setInt(5, user.getUserRoleId());
+            preparedStatement.setInt(6, user.getUserStatusId());
+            preparedStatement.setString(7, user.getEmail());
+            preparedStatement.setString(8, user.getAddress());
+            preparedStatement.setInt(9, user.getGender());
+            preparedStatement.setLong(10, user.getDepartmentId());
+            preparedStatement.setString(11, user.getNote());
+            preparedStatement.setLong(12, user.getUserId());
 
             int rowsUpdated = preparedStatement.executeUpdate();
             return rowsUpdated > 0;
@@ -153,6 +153,51 @@ public class UserDAO {
         }
         return false;
     }
+    
+    // Search user by name + userRoleId
+    public ArrayList<User> searchUserByNameAndRole(String fullName, int userRoleId) {
+        ArrayList<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM [User] WHERE [FullName] LIKE ? AND [UserRoleID] = ?";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, "%" + fullName + "%"); 
+            preparedStatement.setInt(2, userRoleId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                User user = User.builder()
+                        .userId(rs.getLong("UserID"))
+                        .fullName(rs.getString("FullName"))
+                        .useName(rs.getString("Usename"))
+                        .password(rs.getString("Password"))
+                        .dob(rs.getDate("DOB").toLocalDate())
+                        .phoneNumber(rs.getString("PhoneNumber"))
+                        .userRoleId(rs.getInt("UserRoleID"))
+                        .userStatusId(rs.getInt("UserStatusID"))
+                        .email(rs.getString("Email"))
+                        .address(rs.getString("Address"))
+                        .gender(rs.getInt("Gender"))
+                        .departmentId(rs.getLong("DepartmentID"))
+                        .note(rs.getString("Note"))
+                        .build();
+                userList.add(user);
+            }
+            return userList;
+        } catch (SQLException e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    
+    //get list user by page
+    public List<User> getListbyPage(List<User> list, int start, int end) {
+        ArrayList<User> arr = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            arr.add(list.get(i));
+        }
+        return arr;
+    }
+    
     
     //II. User Role
     //get all role
@@ -220,14 +265,27 @@ public class UserDAO {
     }
     
     public static void main(String[] args) {
-        System.out.println("===Run Main Here===");
+        System.out.println("=== Run Main Here ===");
         UserDAO udao = new UserDAO();
-        // Test update user 
-        ArrayList<Department> de = udao.getAllDeparmentForUser();
-        for(Department hi : de) {
-            System.out.println(hi);
-        }
 
+        // Test searchUserByNameAndRole function
+        String fullName = "Chung"; // Sample full name
+        int userRoleId = 1; // Sample user role ID
+        ArrayList<User> userList = udao.searchUserByNameAndRole(fullName, userRoleId);
+
+        if (userList != null) {
+            if (userList.isEmpty()) {
+                System.out.println("No users found with the given name and role ID.");
+            } else {
+                System.out.println("Users found:");
+                for (User user : userList) {
+                    System.out.println(user);
+                }
+            }
+        } else {
+            System.out.println("An error occurred while searching for users.");
+        }
     }
+
    
 }

@@ -5,13 +5,6 @@
 package controller.user;
 
 import dao.UserDAO;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -20,10 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Random;
 import model.Department;
 import model.User;
 import model.UserRole;
@@ -35,8 +25,8 @@ import utils.VietnameseConverter;
  *
  * @author chun
  */
-@WebServlet(name = "UserCreate", urlPatterns = {"/user-create"})
-public class UserCreate extends HttpServlet {
+@WebServlet(name = "UserEdit", urlPatterns = {"/user-edit"})
+public class UserEdit extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -55,10 +45,10 @@ public class UserCreate extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UserCreate</title>");
+            out.println("<title>Servlet UserEdit</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UserCreate at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UserEdit at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -76,37 +66,40 @@ public class UserCreate extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         int flag = Integer.parseInt(request.getParameter("flag"));
         if (flag == 1) {
-            System.out.println("flag: " + flag);
+            int userId = Integer.parseInt(request.getParameter("userId"));
+            System.out.println("user id: " + userId);
             UserDAO userDAO = new UserDAO();
-            ArrayList<User> userList = userDAO.getAllUser();
+            User user = userDAO.getUserDetails(userId);
             ArrayList<UserStatus> userStatus = userDAO.getAllUserStatus();
             ArrayList<UserRole> userRole = userDAO.getAllUserRole();
             ArrayList<Department> departmentList = userDAO.getAllDeparmentForUser();
 
-            request.setAttribute("userList", userList);
             request.setAttribute("userStatus", userStatus);
             request.setAttribute("userRole", userRole);
+            request.setAttribute("user", user);
             request.setAttribute("departmentList", departmentList);
+            request.setAttribute("URL", "Edit User");
 
-            request.setAttribute("URL", "Create User");
-            request.getRequestDispatcher("view/user/user-create.jsp").forward(request, response);
-        }
-        else if(flag == 2){
+            request.getRequestDispatcher("view/user/user-edit.jsp").forward(request, response);
+        }else if (flag == 2) {
+            long userId = Long.parseLong(request.getParameter("userId"));
             System.out.println("flag: " + flag);
             // Get email from the request parameter
             String email = request.getParameter("email");
 
             // Check email existence
-            boolean emailExists = checkEmailExist(email);
+            boolean emailExists = checkEmailExistForEditUser(email,userId);
 
             // Send response
             try (PrintWriter out = response.getWriter()) {
                 out.print(emailExists);
             }
         }
-
+        
+        
     }
 
     /**
@@ -121,25 +114,23 @@ public class UserCreate extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Get user input from the form
-        String fullName = request.getParameter("fullNameSelected").trim();
-        String email = request.getParameter("emailSelected").trim();
-        String phone = request.getParameter("phoneSelected").trim();
-        LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateSelected").trim());
-        String address = request.getParameter("addressSelected").trim();
-        int gender = Integer.parseInt(request.getParameter("genderSelected"));
-        int userRoleId = Integer.parseInt(request.getParameter("userRoleSelected"));
-        Long departmentId = Long.valueOf(request.getParameter("departmentSelected"));
-        int userStatusId = Integer.parseInt(request.getParameter("statusSelected"));
-        String note = request.getParameter("noteSelected").trim();
+        Long userId = Long.valueOf(request.getParameter("user-Id"));
+        String fullName = request.getParameter("fullName");
+        String email = request.getParameter("email").trim();
+        String phone = request.getParameter("phone").trim();
+        LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
+        String address = request.getParameter("address").trim();
+        int gender = Integer.parseInt(request.getParameter("gender"));
+        int userRoleId = Integer.parseInt(request.getParameter("role"));
+        Long departmentId = Long.valueOf(request.getParameter("department"));
+        int userStatusId = Integer.parseInt(request.getParameter("status"));
+        String note = request.getParameter("note").trim();
         // Gen Use name from full name, check user exist = gen usename + check exist
-        String useName = checkUserExist(fullName);
-        //auto gen password 
-        String password = generatePassword();
+        String useName = checkUserExistForEditUser(fullName,userId);
 
         System.out.println("===== TEST ADD DATA =====");
-        System.out.println(useName);
         System.out.println(fullName);
-        System.out.println(password);
+        System.out.println(useName);
         System.out.println(dateOfBirth);
         System.out.println(phone);
         System.out.println(userRoleId);
@@ -149,23 +140,23 @@ public class UserCreate extends HttpServlet {
         System.out.println(gender);
         System.out.println(departmentId);
         System.out.println(note);
+        System.out.println(userId);
 
         //add to db & send mail if add done
         UserDAO userDAO = new UserDAO();
-        
+
         //check email
-        boolean check = checkEmailExist(email);
+        boolean check = checkEmailExistForEditUser(email, userId);
         System.out.println("email exist ko? -> " + check);
         if (check) {
             request.setAttribute("EMAIL", "Email had existed in system!");
-            request.setAttribute("URL", "Create User");
-            request.getRequestDispatcher("view/user/user-create.jsp").forward(request, response);
-        }else{
-            // Create new user object
+            request.setAttribute("URL", "Edit User");
+            request.getRequestDispatcher("view/user/user-edit.jsp").forward(request, response);
+        } else {
+            // Create new user object without password
             User newUser = User.builder()
                     .fullName(fullName)
                     .useName(useName)
-                    .password(password)
                     .dob(dateOfBirth)
                     .phoneNumber(phone)
                     .userRoleId(userRoleId)
@@ -175,22 +166,20 @@ public class UserCreate extends HttpServlet {
                     .gender(gender)
                     .departmentId(departmentId)
                     .note(note)
+                    .userId(userId)
                     .build();
 
-            boolean userAdded = userDAO.addUser(newUser);
-            if (userAdded) {
+            boolean userUpdated = userDAO.updateUser(newUser);
+            if (userUpdated) {
                 // User added successfully
-                System.out.println("User added successfully");
+                System.out.println("User updated successfully");
 
                 // Prepare email content
                 String emailContent = "<h3>This email is from IMS system</h3>\n"
-                        + "<p>Your account has been created. Please use the following credentials to login:</p>\n"
+                        + "<p>Your information has been updated. Please use the following credentials to login:</p>\n"
                         + "<ul>\n"
                         + " <li>\n"
-                        + "     User name: <i><strong>" + useName + "</strong></i>\n"
-                        + " </li>\n"
-                        + " <li>\n"
-                        + "     Password : <i><strong>" + password + "</strong></i>\n"
+                        + "     New User name: <i><strong>" + useName + "</strong></i>\n"
                         + " </li>\n"
                         + "</ul>\n"
                         + "<p>If anything wrong, please reach out to the recruiter <i>offer recruiter owner account</i>. We are so sorry for this inconvenience.</p>\n"
@@ -205,11 +194,10 @@ public class UserCreate extends HttpServlet {
                 System.out.println(emailContent);
                 response.sendRedirect("user-list");
             } else {
-                System.out.println("Failed to add user");
+                System.out.println("Failed to update user");
             }
         }
     }
-    
 
     /**
      * Returns a short description of the servlet.
@@ -219,40 +207,10 @@ public class UserCreate extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }
-
-    // ========================== GEN PASSWORD FUNCTION ===========================
-    public static String generatePassword() {
-        // Define the character sets for each type of character
-        String uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
-        String digits = "0123456789";
-        String specialCharacters = "!@#$%^&*-_+=~.<>?";
-
-        StringBuilder password = new StringBuilder();
-        Random random = new Random();
-        password.append(uppercaseLetters.charAt(random.nextInt(uppercaseLetters.length())));
-        password.append(lowercaseLetters.charAt(random.nextInt(lowercaseLetters.length())));
-        password.append(digits.charAt(random.nextInt(digits.length())));
-        password.append(specialCharacters.charAt(random.nextInt(specialCharacters.length())));
-
-        for (int i = 4; i < 10; i++) {
-            String randomSet = uppercaseLetters + lowercaseLetters + digits + specialCharacters;
-            password.append(randomSet.charAt(random.nextInt(randomSet.length())));
-        }
-        char[] passwordChars = password.toString().toCharArray();
-        for (int i = 0; i < passwordChars.length; i++) {
-            int randomIndex = random.nextInt(passwordChars.length);
-            char temp = passwordChars[i];
-            passwordChars[i] = passwordChars[randomIndex];
-            passwordChars[randomIndex] = temp;
-        }
-
-        return new String(passwordChars);
-    }
-    
+    }// </editor-fold>
     // ========================== GEN USENAME FUNCTION ex: chungdt1 ===========================
     //4 steps
+
     public static String[] splitFullName(String fullName) {
         if (fullName == null || fullName.isEmpty()) {
             return null;
@@ -299,27 +257,19 @@ public class UserCreate extends HttpServlet {
         String nonAcc = cn.toNonAccentVietnamese(origin);
         String lowerNonAcc = cn.toLowerCaseNonAccentVietnamese(origin);
 
-        System.out.println("===== TEST GEN USENAME =====");
-        System.out.println("nonAcc name: " + nonAcc);
-        System.out.println("lowerNonAcc: " + lowerNonAcc);
+        System.out.println(nonAcc);
+        System.out.println(lowerNonAcc);
 
         String[] nameParts = splitFullName(lowerNonAcc);
-        if (nameParts[1].isEmpty()) {
-            String ho1 = extractFirstCharacter(nameParts[0]);
-            String ten0 = nameParts[2];
-            String result = ten0 + ho1;
-            return result;
-        } else {
-            String ho1 = extractFirstCharacter(nameParts[0]);
-            String dem1 = extractFirstCharacter(nameParts[1]);
-            String ten0 = nameParts[2];
+        String ho1 = extractFirstCharacter(nameParts[0]);
+        String dem1 = extractFirstCharacter(nameParts[1]);
+        String ten0 = nameParts[2];
 
-            String result = ten0 + ho1 + dem1;
-            return result;
-        }
+        String result = ten0 + ho1 + dem1;
+        return result;
     }
 
-    public static String checkUserExist(String fullName) {
+    public static String checkUserExistForEditUser(String fullName, Long userId) {
         String useName = generateUseName(fullName);
         String finalUseName = "";
         String fullNameInput = fullName.trim().toLowerCase();
@@ -329,35 +279,37 @@ public class UserCreate extends HttpServlet {
         ArrayList<User> userList = userDAO.getAllUser();
         for (User u : userList) {
             String nameDB = u.getFullName().trim().toLowerCase();
-            if (nameDB.equals(fullNameInput)) {
-                count++; 
+            long userIdDB = u.getUserId();
+            if (nameDB.equals(fullNameInput) && userIdDB != userId) {
+                count++;
             }
         }
         if (count > 0) {
             System.out.println("Exist name like that in db oy oy!");
             finalUseName = useName + (count + 1);
         } else {
-            finalUseName = useName; 
+            finalUseName = useName;
         }
-        System.out.println("finalUseName: " + finalUseName);
+        System.out.println(finalUseName);
         return finalUseName;
     }
- 
-     // ========================== CHECK MAIL DUPLICATE ===========================
-    public boolean checkEmailExist(String email) {
+
+    // ========================== CHECK MAIL DUPLICATE ===========================
+    public boolean checkEmailExistForEditUser(String mail, Long userId) {
         UserDAO userDAO = new UserDAO();
         ArrayList<User> listUser = userDAO.getAllUser();
-        for(User u : listUser){
-            if(u.getEmail().trim().equalsIgnoreCase(email.trim())){
-                System.out.println("===== CHECK MAIL FUNC USER CREATE SVL =====");
-                System.out.println("mail db: " + u.getEmail());
-                System.out.println("mail input: " + email);
+        System.out.println("==== CHECK EMAIL FOR EDIT ====");
+        for (User u : listUser) {
+            if (u.getEmail().equalsIgnoreCase(mail) && u.getUserId() != userId) {
+                System.out.println("email exist in system");
                 return true;
+            } else if (u.getEmail().equalsIgnoreCase(mail) && u.getUserId() == userId) {
+                System.out.println("email exist but is ur old email");
+                return false;
             }
         }
-        System.out.println("===== CHECK MAIL FUNC =====");
-        System.out.println("Mail ok ko van de gi");
+        System.out.println("email ok");
         return false;
     }
-    
+
 }

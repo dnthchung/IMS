@@ -26,9 +26,9 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb" style="margin-left: 1em">
-                            <li class="breadcrumb-item"><a href="view/user/user.list.jsp">User List</a></li>
+                            <li class="breadcrumb-item"><a href="user-list">User List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a  href="candidate-create.jsp">Edit User</a>
+                                <a  href="user-edit?userId=${user.userId}">Edit User</a>
                             </li>
                         </ol>
                     </nav>
@@ -41,7 +41,7 @@
                             </div>
                             <!-- class="content-2" -->
                             <div class="card-body">
-                                <form action="">
+                                <form action="user-edit" method="post" id="user-edit">
                                     <div class="part1 mt-3">
                                         <!-- row1 -->
                                         <div class="row mb-3">
@@ -51,7 +51,8 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type a name..." required/>
+                                                        <input id="fullName" name="fullName" value="${user.getFullName()}" type="text" class="form-control" placeholder="Type a name..." required/>
+                                                        <input hidden id="user-Id" name="user-Id" value="${user.userId}"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -62,7 +63,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type an email..." required/>
+                                                        <input id="email" name="email" value="${user.getEmail()}" type="text" class="form-control" placeholder="Type an email..." required/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -75,7 +76,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="date" class="form-control" />
+                                                        <input id="dob" name="dob" value="${user.getDob()}" type="date" class="form-control"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -86,7 +87,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type an address..."/>
+                                                        <input id="address" name="address" value="${user.getAddress()}" type="text" class="form-control" placeholder="Type an address..."/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -99,7 +100,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type a number..."/>
+                                                        <input id="phone" name="phone" value="${user.getPhoneNumber()}" type="text" class="form-control" placeholder="Type a number..."/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -110,10 +111,16 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled>Select a gender</option>
-                                                            <option>Male</option>
-                                                            <option>Female</option>
+                                                        <select class="form-select" id="gender" name="gender">
+                                                            <option disabled>Select a gender</option>
+                                                            <c:if test="${user.getGender() == 1}">
+                                                                <option value="1" selected>Male</option>
+                                                                <option value="2" >Female</option>
+                                                            </c:if>
+                                                            <c:if test="${user.getGender() == 2}">
+                                                                <option value="2" selected>Female</option>
+                                                                <option value="1">Male</option>
+                                                            </c:if>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -129,11 +136,16 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled>Select a position... ex: Backend developer</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                        <select class="form-select" id="role" name="role">
+                                                            <option disabled>Select a position... ex: Backend developer</option>
+                                                            <c:forEach items="${userRole}" var="userRole">
+                                                                <c:if test="${userRole.userRoleId == user.userRoleId}">
+                                                                    <option selected value="${userRole.userRoleId}">${userRole.roleName}</option>
+                                                                </c:if>
+                                                                <c:if test="${userRole.userRoleId != user.userRoleId}">
+                                                                    <option value="${userRole.userRoleId}">${userRole.roleName}</option>
+                                                                </c:if> 
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -145,11 +157,16 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled> Type a department </option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                        <select class="form-select" id="department" name="department">
+                                                            <option disabled> Type a department </option>
+                                                            <c:forEach items="${departmentList}" var="departmentList">
+                                                                <c:if test="${departmentList.departmentId == user.departmentId}">
+                                                                    <option selected value="${departmentList.departmentId}">${departmentList.departmentName}</option>
+                                                                </c:if>
+                                                                <c:if test="${departmentList.departmentId != user.departmentId}">
+                                                                    <option value="${departmentList.departmentId}">${departmentList.departmentName}</option>
+                                                                </c:if>    
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -163,11 +180,16 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
+                                                        <select class="form-select" id="status" name="status">
                                                             <option selected disabled>Select a status</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach items="${userStatus}" var="userStatus">
+                                                                <c:if test="${userStatus.userStatusId == user.userStatusId}">
+                                                                    <option selected value="${userStatus.userStatusId}">${userStatus.statusName}</option>
+                                                                </c:if>
+                                                                <c:if test="${userStatus.userStatusId != user.userStatusId}">
+                                                                    <option value="${userStatus.userStatusId}">${userStatus.statusName}</option>
+                                                                </c:if>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -179,7 +201,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="N/A">
+                                                        <input id="note" name="note" value="${user.getNote()}" type="text" class="form-control" placeholder="N/A">
                                                     </div>
                                                 </div>
                                             </div>
@@ -207,10 +229,8 @@
                                     </div>
                                     <br><br>
                                     <div class="d-flex justify-content-center">
-                                        <button class="button-2"
-                                                style="background-color: #ABDF75; color: #fff;">Submit</button>
-                                        <button class="button-2"
-                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
+                                        <button class="button-2" type="submit" style="background-color: #ABDF75; color: #fff;">Submit</button>
+                                        <button class="button-2" style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -262,6 +282,67 @@
                 closeOnSelect: false,
                 selectionCssClass: 'select2--small',
                 dropdownCssClass: 'select2--small'
+            });
+        </script>
+        <!--sweet alert2-->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.querySelector('#user-edit').addEventListener('submit', function (e) {
+                e.preventDefault();
+                //1 check null -> check exist -> check format input
+                var userId = document.getElementById("user-Id").value;
+
+                var fullName = document.getElementById('fullName').value;
+                var email = document.getElementById('email').value;
+                var dob = document.getElementById('dob').value;
+                var address = document.getElementById('address').value;
+                var phone = document.getElementById('phone').value;
+                var gender = document.getElementById('gender').value;
+                var role = document.getElementById('role').value;
+                var department = document.getElementById('department').value;
+                var status = document.getElementById('status').value;
+                var note = document.getElementById('note').value;
+
+                if (fullName.trim() !== '' && email.trim() !== '' && dob.trim() !== '' && address.trim() !== '' && phone.trim() !== '' && gender.trim() !== '' && role.trim() !== '' && department.trim() !== '' && status.trim() !== '' ) {
+                    // AJAX request to check email existence
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            if (xhr.status === 200) {
+                                var emailExists = xhr.responseText;
+                                if (emailExists === "true") {
+                                    Swal.fire({
+                                        title: 'Fail!',
+                                        text: 'Email already exists!',
+                                        icon: 'error'
+                                    });
+                                } else {
+                                    // If email does not exist, show success message and submit form
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Edit User Success',
+                                        icon: 'success',
+                                        button: "Close"
+                                    }).then(() => {
+                                        document.getElementById("user-edit").submit();
+                                    });
+                                }
+                            } else {
+                                // Handle error
+                                console.error('AJAX request failed.');
+                            }
+                        }
+                    };
+                    xhr.open('GET', 'user-edit?userId=' + userId + '&flag=2', true);
+                    xhr.send();
+                } else {
+                    // if any field is empty thì
+                    Swal.fire({
+                        title: 'Fail!',
+                        text: 'Please fill in complete information!!',
+                        icon: 'error'
+                    });
+                }
             });
         </script>
     </body>

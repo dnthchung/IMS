@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import model.CandidateStatus;
 import model.Level;
 import model.Position;
@@ -24,7 +25,9 @@ import model.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class CandidateDTO {
+    private Long candidateId;
     private String fullName;
     private LocalDate dob;
     private String phoneNumber;
@@ -37,8 +40,10 @@ public class CandidateDTO {
     private CandidateStatus candidateStatus;
     private int yearOfExperience;
     private Level highestLevel;
-    private List<Skill> skills;
+    private List<Skill> skill;
     private User createBy;
     private LocalDate lastUpdateAt;
+    private User recruiter;
+    
     
 }

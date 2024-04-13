@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.offer;
+package controller.main;
 
-import dao.OfferDAO;
+import dao.AuthenticationDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,15 +13,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import model.ContractType;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
  * @author tranh
  */
-@WebServlet(name = "CreateOfferServlet", urlPatterns = {"/create-offer"})
-public class CreateOfferServlet extends HttpServlet {
+@WebServlet(name = "LoginController", urlPatterns = {"/login"})
+public class LoginController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +40,10 @@ public class CreateOfferServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CreateOfferServlet</title>");            
+            out.println("<title>Servlet LoginController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CreateOfferServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet LoginController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,15 +61,13 @@ public class CreateOfferServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        List<ContractType> contractTypes = getAllContractType();
-        request.setAttribute("contractTypes", contractTypes);
-        request.getRequestDispatcher("view/offer/offer-create.jsp").forward(request, response);
-    }
-    
-    private List<ContractType> getAllContractType() {
-        OfferDAO offerDAO = new OfferDAO();
-        return offerDAO.getAllContractTypes();
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null) {
+            response.sendRedirect("home");
+        } else {
+            request.getRequestDispatcher("view/main/login.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -82,7 +81,18 @@ public class CreateOfferServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        AuthenticationDAO authenticationDAO = new AuthenticationDAO();
+        User user = authenticationDAO.login(request.getParameter("username"), request.getParameter("password"));
+        if (user != null) {
+            HttpSession session = request.getSession();
+            session.setAttribute("loggedInUser", user);
+            UserDAO userDAO = new UserDAO();
+            session.setAttribute("userRoles", userDAO.getAllUserRole());
+            response.sendRedirect("home");
+        } else {
+            request.setAttribute("isLoginError", "Invalid username/password. Please try again");
+            request.getRequestDispatcher("view/main/login.jsp").forward(request, response);
+        }
     }
 
     /**

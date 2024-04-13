@@ -17,18 +17,18 @@
     <body>
         <!-- side bar -->
         <div class="d-flex flex-row">
-            <%@include file="Component/side-bar.jsp" %>
+            <%@include file="../../Component/side-bar.jsp" %>
             <!-- navigation bar + main content-->
             <div class="main-content">
                 <!-- navigation bar -->
-                <%@include file="Component/nav-bar.jsp" %>
+                <%@include file="../../Component/nav-bar.jsp" %>
                 <!-- body -->
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb" style="margin-left: 1em">
-                            <li class="breadcrumb-item"><a href="#">Candidate List</a></li>
+                            <li class="breadcrumb-item"><a href="candidate-list">Candidate List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a  href="candidate-create.jsp">Create Candidate</a>
+                                <a>Create Candidate</a>
                             </li>
                         </ol>
                     </nav>
@@ -41,11 +41,10 @@
                             </div>
                             <!-- class="content-2" -->
                             <div class="card-body">
-                                <form action="">
-
+                                <form action="candidate-create" method="post" enctype="multipart/form-data"> 
                                     <h5 style="font-weight: bold;">I. Personal information</h5>
                                     <div class="part1 mt-3">
-                                        <!-- row1 -->
+                                      <!-- row1 -->
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
@@ -55,20 +54,20 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <!-- full name -->
                                                         <input type="text" class="form-control"
-                                                               placeholder="type a name" required>
+                                                               placeholder="type a name"  name="fullName">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    Gmail <span style="color: red;">*</span>
+                                                    Email <span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <!-- gmail -->
                                                         <input type="text" class="form-control"
-                                                               placeholder="type an email..." required>
+                                                               placeholder="type an email..."  name="email">
                                                     </div>
                                                 </div>
                                             </div>
@@ -81,7 +80,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="date" class="form-control">
+                                                        <input type="date" class="form-control" name="dob">
                                                     </div>
                                                 </div>
                                             </div>
@@ -93,7 +92,7 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <input type="text" class="form-control"
-                                                               placeholder="type an address...">
+                                                               placeholder="type an address..."  name="address">
                                                     </div>
                                                 </div>
                                             </div>
@@ -107,7 +106,7 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <input type="text" class="form-control"
-                                                               placeholder="type a number...">
+                                                               placeholder="type a number..." name="phone" >
                                                     </div>
                                                 </div>
                                             </div>
@@ -118,10 +117,10 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" required>
-                                                            <option selected disabled>Status</option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
+                                                        <select class="form-select"  name="gender">
+                                                            <option value="0" selected>Female</option>
+                                                            <option value="1">Male</option>
+                                                            <option value="2">Female</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -140,7 +139,7 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <!-- CV -->
-                                                        <input type="file" class="form-control">
+                                                        <input type="file" class="form-control" accept=".pdf,.docx" name="file">
                                                     </div>
                                                 </div>
                                             </div>
@@ -152,7 +151,7 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <!-- note -->
-                                                        <input type="text" class="form-control" placeholder="N/A">
+                                                        <input type="text" class="form-control" placeholder="N/A" name="note">
                                                     </div>
                                                 </div>
                                             </div>
@@ -165,14 +164,10 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled style="font-size: small;">
-                                                                Select a position...
-                                                                ex:
-                                                                Backend developer, ...
-                                                            </option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
+                                                        <select class="form-select" name="position" >
+                                                            <c:forEach var="p" items="${position}">
+                                                                <option value="${p.positionId}">${p.positionName}</option>
+                                                            </c:forEach>                                                           
                                                         </select>
                                                     </div>
                                                 </div>
@@ -184,10 +179,10 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled>Select a status</option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
+                                                        <select class="form-select" name="status" >
+                                                            <c:forEach var="s" items="${status}">                                                           
+                                                                <option value="${s.candidateStatusId}">${s.statusName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -203,27 +198,10 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select"
                                                                 data-placeholder="Choose skills ..."
-                                                                id="small-select2-options-multiple-field-skills" multiple>
-                                                            <option>Java</option>
-                                                            <option>JavaScript</option>
-                                                            <option>Python</option>
-                                                            <option>C++</option>
-                                                            <option>HTML</option>
-                                                            <option>CSS</option>
-                                                            <option>PHP</option>
-                                                            <option>Ruby</option>
-                                                            <option>Swift</option>
-                                                            <option>Kotlin</option>
-                                                            <option>SQL</option>
-                                                            <option>Go</option>
-                                                            <option>C#</option>
-                                                            <option>Perl</option>
-                                                            <option>Objective-C</option>
-                                                            <option>Assembly</option>
-                                                            <option>TypeScript</option>
-                                                            <option>Rust</option>
-                                                            <option>Shell</option>
-                                                            <option>Scala</option>
+                                                                id="small-select2-options-multiple-field-skills" multiple  name="skill">
+                                                            <c:forEach var="sk" items="${skill}">                                                         
+                                                                <option value="${sk.skillId}">${sk.skillName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -236,7 +214,7 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <input type="number" min="0" class="form-control"
-                                                               placeholder="type a number...">
+                                                               placeholder="type a number..." name="yoe" >
                                                     </div>
                                                 </div>
                                             </div>
@@ -249,12 +227,10 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled style="font-size: small;">
-                                                                Recruiter name
-                                                            </option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
+                                                        <select class="form-select"  name="recruiter">
+                                                            <c:forEach var="r" items="${recruiter}">                                                         
+                                                                <option value="${r.userId}">${r.useName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -267,13 +243,10 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled style="font-size: small;">
-                                                                Select hightest
-                                                                level...
-                                                            </option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
+                                                        <select class="form-select" name="level" >
+                                                            <c:forEach var="l" items="${level}">                                                         
+                                                                <option value="${l.levelId}">${l.levelName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -291,10 +264,10 @@
                                     </div>
                                     <br><br>
                                     <div class="d-flex justify-content-center">
-                                        <button class="button-2"
+                                        <button class="button-2" type="submit"
                                                 style="background-color: #ABDF75; color: #fff;">Submit</button>
-                                        <button class="button-2"
-                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
+                                        <button class="button-2" type="reset"
+                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Reset</button>
                                     </div>
 
                                 </form>

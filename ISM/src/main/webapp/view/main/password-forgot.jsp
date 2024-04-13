@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%-- 
     Document   : password-forgot
     Created on : Apr 6, 2024, 12:04:29 AM
@@ -31,29 +32,35 @@
                     <p class="mbrand-name">IMS Recruitment</p>
                 </div>
             </div>
-            <hr>
-            <form>
+            <form action="forgot-password" method="POST">
                 <div class="">
                     <div class="mb-3">
                         <div class="">
                             <p class="mnoti">
                                 <span class="d-flex justify-content-center">Please enter your email </span>
-                                <span>and we'll send you a link to get back your account.</span>
+                                <span>and we'll send you a link to get back your account</span>
                             </p>
                         </div>
                         <!-- user input -->
-                        <div>
-                            <label for="username" class="form-label">Email:</label>
-                            <input type="text" class="form-control" id="username" placeholder="email">
-                            <div>
-                                <p class="mwrong-email">
-                                    wrong username
-                                </p>
+                        <div class="form-group row">
+                            <label for="inp-email" class="col-sm-2 col-form-label">Email:</label>
+                            <div class="col-sm-10">
+                                <input type="email" name="email" class="form-control" id="inp-email" value="${enteredEmail}" required="">
+                                <div>
+                                    <c:if test="${requestScope.notExistEmailError != null}">
+                                        <p class="mwrong-email">${requestScope.notExistEmailError}</p>
+                                    </c:if>
+                                </div>
+                                <div>
+                                    <c:if test="${requestScope.sendLinkSuccess != null}">
+                                        <p>${requestScope.sendLinkSuccess}</p>
+                                    </c:if>
+                                </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-evenly">
+                        <div class="d-flex justify-content-evenly mt-3">
                             <button class="button-2">Send</button>
-                            <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
+                            <a class="button-2" style="background-color: #EFA9AE; color: #fff" href="login">Cancel</a>
                         </div>
                     </div>
                 </div>

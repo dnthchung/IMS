@@ -32,53 +32,51 @@
                                 <h4>Offer list</h4>
                                 <div>
                                     <div class="row mt-5">
-                                        <div class="col-md-8">
-                                            <div class="col-md-3">
-                                                <!-- Search Area -->
-                                                <div class="input-group" style="padding: 0px !important;">
-                                                    <input type="text" class="form-control" placeholder="Search">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text">
-                                                            <i data-lucide="search"></i>
-                                                        </span>
+                                        <form action="offer-list" method="POST">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <!-- Search Area -->
+                                                    <div class="input-group" style="padding: 0px !important;">
+                                                        <input type="text" class="form-control" name="searchValue" placeholder="Search">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">
+                                                                <i data-lucide="search"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-group" style="padding: 0px !important;">
+                                                        <select class="form-select" name="dept">
+                                                            <option selected>Department</option>
+                                                            <c:forEach var="dept" items="${requestScope.departments}">
+                                                                <option value="${dept.departmentId}">${dept.departmentName}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-group" style="padding: 0px !important;">
+                                                        <select class="form-select" name="status">
+                                                            <option selected>Status</option>
+                                                            <c:forEach var="offerStatus" items="${requestScope.offerStatuses}">
+                                                                <option value="${offerStatus.offerStatusId}">${offerStatus.statusName}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-group" style="padding: 0px !important; ; ">
+                                                        <button type="submit" class="button-2 btn btn-secondary" style="max-height: 38px">Search</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-10"></div>
-                                            <div class="col-md-3 mt-3">
-                                                <div class="input-group" style="padding: 0px !important;">
-                                                    <select class="form-select">
-                                                        <option selected>Department</option>
-                                                        <option value="1">Active</option>
-                                                        <option value="2">Inactive</option>
-                                                    </select>
+                                            <c:if test="${requestScope.isEmptySearch == true}">
+                                                <div class="row">
+                                                    <span>No item matches with your search data.</span>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-10"></div>
-                                            <div class="col-md-3 mt-3">
-                                                <div class="input-group" style="padding: 0px !important;">
-                                                    <select class="form-select">
-                                                        <option selected>Status</option>
-                                                        <c:forEach var="offerStatus" items="${requestScope.offerStatuses}">
-                                                            <option value="${offerStatus.offerStatusId}">${offerStatus.statusName}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-10"></div>
-                                            <div class="col-md-3 mt-3">
-                                                <div class="input-group" style="padding: 0px !important; ; ">
-                                                    <button class="button-2" style="background-color: #1E96FC; color: #fff">Search</button>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3"></div>
-                                        </div>
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-6"></div>
-                                            </div>
-                                        </div>
+                                            </c:if>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -135,11 +133,16 @@
                                                         <td>${offer.email}</td>
                                                         <td>${offer.approverName}</td>
                                                         <td>${offer.departmentName}</td>
-                                                        <td>${offer.note}</td>
+                                                        <c:if test="${offer.note.isEmpty()}">
+                                                            <td>N/A</td>
+                                                        </c:if>
+                                                        <c:if test="${!offer.note.isEmpty()}">
+                                                            <td>${offer.note}</td>
+                                                        </c:if>
                                                         <td>${offer.statusName}</td>
                                                         <td>
                                                             <a style="margin-right: 5px;text-decoration: none; color: black; "
-                                                               href="#" class="icon-button">
+                                                               href="offer-details?offerId=${offer.offerId}" class="icon-button">
                                                                 <i data-lucide="eye"></i>
                                                             </a>
                                                             <a style="margin-right: 5px;text-decoration: none; color: black;"

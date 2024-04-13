@@ -25,12 +25,12 @@ public class Candidate {
     private String address;
     private int gender;
     private String cvAttachment;
-    private Position position;
+    private Long positionId;
     private String note;
     private Long candidateStatusId;
     private int yearOfExperience;
-    private Level highestLevel;
-    private List<Skill> skills;
-    private User createBy;
+    private Long highestLevel;
+    private Long createBy;
     private LocalDate lastUpdateAt;
+    private Long recruiterId;
 }

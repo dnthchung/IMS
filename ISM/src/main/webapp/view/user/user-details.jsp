@@ -26,9 +26,9 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb" style="margin-left: 1em">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">User List</a></li>
+                            <li class="breadcrumb-item"><a href="user-list">User List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a href="user-details">User Details</a>
+                                <a href="user-details?userId=${user.userId}">User Details</a>
                             </li>
                         </ol>
                     </nav>
@@ -202,7 +202,7 @@
                                     </div>
 
                                     <div class="d-flex justify-content-center mt-5">
-                                        <a type="button" href="user-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
+                                        <a type="button" href="user-edit?userId=${user.userId}&flag=1" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
                                         <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
                                     </div>
                                 </div>

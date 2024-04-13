@@ -6,14 +6,22 @@ package dao;
 
 import dto.OfferInformationDTO;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import model.Candidate;
 import model.ContractType;
+import model.Department;
+import model.InterviewSchedule;
+import model.Level;
 import model.Offer;
 import model.OfferStatus;
+import model.Position;
+import model.User;
 import utils.DBContext;
 
 /**
@@ -24,9 +32,7 @@ public class OfferDAO {
 
     public static void main(String[] args) {
         OfferDAO offerDAO = new OfferDAO();
-        for (OfferStatus o : offerDAO.getAllOfferStatuses()) {
-            System.out.println(o);
-        }
+        System.out.println(offerDAO.getInterviewersByScheduleId(16L));
     }
 
     public List<OfferInformationDTO> getAllOfferInformations() {
@@ -68,7 +74,120 @@ public class OfferDAO {
         }
         return offerInformationDTOs;
     }
-    
+
+    public OfferInformationDTO getOfferDetailsById(Long offerId) {
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("	SELECT o.OfferID\n"
+                        + ",c.FullName AS [CandidateName]\n"
+                        + ",ct.TypeName\n"
+                        + ",p.PositionName\n"
+                        + ",l.LevelName\n"
+                        + ",u.FullName AS [ApproverName]\n"
+                        + ",d.DepartmentName\n"
+                        + ",u2.useName AS [Recruiter]\n"
+                        + ",FORMAT(o.ContractFrom,'dd/MM/yyyy') AS ContractFrom\n"
+                        + ",FORMAT(o.ContractTo,'dd/MM/yyyy') AS ContractTo\n"
+                        + ",FORMAT(o.DueDate,'dd/MM/yyyy') AS DueDate\n"
+                        + ",o.BasicSalary\n"
+                        + ",o.Note\n"
+                        + ",os.StatusName\n"
+                        + ",u3.Usename AS ModifiedBy\n"
+                        + ",FORMAT(o.CreatedAt,'dd/MM/yyyy') AS CreatedAt\n"
+                        + ",FORMAT(o.LastModified,'dd/MM/yyyy') AS LastModified\n"
+                        + "FROM [Offer] o\n"
+                        + "JOIN [Candidate] c on o.CandidateID = c.CandidateID\n"
+                        + "JOIN [User] u ON o.Approver = u.UserID\n"
+                        + "JOIN [Department] d ON o.DepartmentID = d.DepartmentID\n"
+                        + "JOIN [OfferStatus] os ON o.OfferStatusID = os.OfferStatusID\n"
+                        + "JOIN [ContractType] ct ON o.ContractTypeID = ct.ContractTypeID\n"
+                        + "JOIN [Position] p ON o.PositionID = p.PositionID\n"
+                        + "JOIN [Level] l ON o.LevelID = l.LevelID\n"
+                        + "JOIN [User] u2 ON o.RecuiterOwner = u2.UserID\n"
+                        + "JOIN [User] u3 ON o.ModifiedBy = u3.UserID\n"
+                        + "WHERE o.OfferID = ?")) {
+            preparedStatement.setLong(1, offerId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return OfferInformationDTO.builder()
+                        .offerId(rs.getLong("OfferID"))
+                        .candidateName(rs.getString("CandidateName"))
+                        .contractTypeName(rs.getString("TypeName"))
+                        .positionName(rs.getString("PositionName"))
+                        .levelName(rs.getString("LevelName"))
+                        .approverName(rs.getString("ApproverName"))
+                        .departmentName(rs.getString("DepartmentName"))
+                        .recruiter(rs.getString("Recruiter"))
+                        .contractFrom(rs.getString("ContractFrom"))
+                        .contractTo(rs.getString("ContractTo"))
+                        .dueDate(rs.getString("DueDate"))
+                        .basicSalary(rs.getString("BasicSalary"))
+                        .note(rs.getString("Note"))
+                        .statusName(rs.getString("StatusName"))
+                        .createdAt(rs.getString("CreatedAt"))
+                        .modifiedBy(rs.getString("ModifiedBy"))
+                        .lastModified(rs.getString("LastModified"))
+                        .build();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public InterviewSchedule getInterviewScheduleInfByOfferId(Long offerId) {
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT isc.InterviewScheduleID, isc.ScheduleTitle, isc.Notes FROM InterviewSchedule isc\n"
+                        + "JOIN Offer o ON o.InterviewScheduleID = isc.InterviewScheduleID\n"
+                        + "WHERE o.OfferID = ?")) {
+            preparedStatement.setLong(1, offerId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return InterviewSchedule.builder()
+                        .interviewScheduleId(rs.getLong("InterviewScheduleID"))
+                        .scheduleTitle(rs.getString("ScheduleTitle"))
+                        .notes(rs.getString("Notes"))
+                        .build();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getInterviewersByScheduleId(Long scheduleId) {
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT STRING_AGG(u.Usename, ',') AS InterviewersName FROM Interviewer i\n"
+                        + "JOIN [User] u ON i.UserID = u.UserID\n"
+                        + "WHERE InterviewScheduleID = ?")) {
+            preparedStatement.setLong(1, scheduleId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return rs.getString("InterviewersName");
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<OfferStatus> getAllOfferStatuses() {
         List<OfferStatus> offerStatuses = new ArrayList<>();
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
@@ -109,12 +228,62 @@ public class OfferDAO {
                         .departmentId(rs.getLong("DepartmentID"))
                         .interviewScheduleId(rs.getLong("InterviewScheduleID"))
                         .recuiterOwner(rs.getLong("RecuiterOwner"))
-                        .contractFrom(rs.getDate("ContractFrom"))
-                        .contractTo(rs.getDate("ContractTo"))
-                        .dueDate(rs.getDate("DueDate"))
+                        .contractFrom(rs.getDate("ContractFrom").toLocalDate())
+                        .contractTo(rs.getDate("ContractTo").toLocalDate())
+                        .dueDate(rs.getDate("DueDate").toLocalDate())
                         .basicSalary(rs.getDouble("BasicSalary"))
                         .note(rs.getString("Note"))
                         .offerStatusId(rs.getLong("OfferStatusID"))
+                        .build();
+                offers.add(offer);
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return offers;
+    }
+
+    public List<OfferInformationDTO> searchOffers(String searchValue, String departmentId, String statusId) {
+        List<OfferInformationDTO> offers = new ArrayList<>();
+        String SQL = "SELECT o.OfferID\n"
+                + "      ,c.FullName AS [CandidateName]\n"
+                + "	  ,c.Email\n"
+                + "      ,u.FullName AS [ApproverName]\n"
+                + "      ,d.DepartmentName\n"
+                + "      ,o.Note\n"
+                + "      ,os.StatusName\n"
+                + "  FROM [Offer] o\n"
+                + "  JOIN [Candidate] c on o.CandidateID = c.CandidateID\n"
+                + "  JOIN [User] u ON o.Approver = u.UserID\n"
+                + "  JOIN [Department] d ON o.DepartmentID = d.DepartmentID\n"
+                + "  JOIN [OfferStatus] os ON o.OfferStatusID = os.OfferStatusID WHERE (c.FullName LIKE '%" + searchValue + "%'"
+                + " OR c.Email LIKE '%" + searchValue + "%') ";
+        if (!departmentId.equals("Department")) {
+            SQL += " AND o.DepartmentID = " + departmentId + " ";
+        }
+
+        if (!statusId.equals("Status")) {
+            SQL += "  AND o.OfferStatusID = " + statusId + " ";
+        }
+        System.out.println(SQL);
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement(SQL)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                OfferInformationDTO offer = OfferInformationDTO.builder()
+                        .offerId(rs.getLong("OfferID"))
+                        .candidateName(rs.getString("CandidateName"))
+                        .email(rs.getString("Email"))
+                        .approverName(rs.getString("ApproverName"))
+                        .departmentName(rs.getString("DepartmentName"))
+                        .note(rs.getString("Note"))
+                        .statusName(rs.getString("StatusName"))
                         .build();
                 offers.add(offer);
             }
@@ -154,17 +323,17 @@ public class OfferDAO {
         return contractTypes;
     }
 
-    public List<ContractType> getAllPositions() {
-        List<ContractType> contractTypes = new ArrayList<>();
+    public List<Position> getAllPositions() {
+        List<Position> positions = new ArrayList<>();
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
                 = connection.prepareStatement("SELECT * FROM [Position]")) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                ContractType contractType = ContractType.builder()
-                        .contractTypeID(rs.getLong(1))
-                        .typeName(rs.getString(2))
+                Position position = Position.builder()
+                        .positionId(rs.getLong("PositionID"))
+                        .positionName(rs.getString("PositionName"))
                         .build();
-                contractTypes.add(contractType);
+                positions.add(position);
             }
             if (preparedStatement != null) {
                 preparedStatement.close();
@@ -175,7 +344,218 @@ public class OfferDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return contractTypes;
+        return positions;
+    }
+
+    public List<Level> getAllLevels() {
+        List<Level> levels = new ArrayList<>();
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT * FROM [Level]")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Level level = Level.builder()
+                        .levelId(rs.getLong("LevelID"))
+                        .levelName(rs.getString("LevelName"))
+                        .build();
+                levels.add(level);
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return levels;
+    }
+
+    public List<Department> getAllDepartments() {
+        List<Department> departments = new ArrayList<>();
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT * FROM [Department]")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Department department = Department.builder()
+                        .departmentId(rs.getLong("DepartmentID"))
+                        .departmentName(rs.getString("DepartmentName"))
+                        .build();
+                departments.add(department);
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return departments;
+    }
+
+    public List<User> getAllActiveManager() {
+        List<User> users = new ArrayList<>();
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT * FROM [User]\n"
+                        + "WHERE UserRoleID = 4 AND UserStatusID = 1")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                User user = User.builder()
+                        .userId(rs.getLong("UserID"))
+                        .fullName(rs.getString("FullName"))
+                        .useName(rs.getString("UseName"))
+                        .build();
+                users.add(user);
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public List<User> getAllActiveRecuiter() {
+        List<User> users = new ArrayList<>();
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT * FROM [User]\n"
+                        + "WHERE UserRoleID = 2 AND UserStatusID = 1")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                User user = User.builder()
+                        .userId(rs.getLong("UserID"))
+                        .fullName(rs.getString("FullName"))
+                        .useName(rs.getString("UseName"))
+                        .build();
+                users.add(user);
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public List<Candidate> getOfferableCandidates() {
+        List<Candidate> candidates = new ArrayList<>();
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT c.* FROM Candidate c\n"
+                        + "INNER JOIN InterviewSchedule i ON c.CandidateID = i.CandidateID\n"
+                        + "LEFT JOIN Offer o ON c.CandidateID = o.CandidateID\n"
+                        + "WHERE i.Result = 'Passed'\n"
+                        + "AND (o.CandidateID IS NULL OR o.OfferStatusID IN (3, 6, 7))\n"
+                        + "AND c.CandidateStatusID = 1;")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Candidate candidate = Candidate.builder()
+                        .candidateId(rs.getLong("CandidateID"))
+                        .fullName(rs.getString("FullName"))
+                        .build();
+                candidates.add(candidate);
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return candidates;
+    }
+
+    public List<InterviewSchedule> getInterviewSchedule() {
+        List<InterviewSchedule> interviewSchedules = new ArrayList<>();
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT * FROM InterviewSchedule ins JOIN Candidate c ON ins.CandidateID = c.CandidateID\n"
+                        + "WHERE ins.CandidateID IN (SELECT c.CandidateID FROM Candidate c\n"
+                        + "		INNER JOIN InterviewSchedule i ON c.CandidateID = i.CandidateID\n"
+                        + "		LEFT JOIN Offer o ON c.CandidateID = o.CandidateID\n"
+                        + "		WHERE i.Result = 'Passed'\n"
+                        + "		AND (o.CandidateID IS NULL OR o.OfferStatusID IN (3, 6, 7))\n"
+                        + "		AND c.CandidateStatusID = 1)")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                InterviewSchedule interviewSchedule = InterviewSchedule.builder()
+                        .interviewScheduleId(rs.getLong("InterviewScheduleID"))
+                        .scheduleTitle(rs.getString("ScheduleTitle"))
+                        .notes(rs.getString("Note"))
+                        .candidateId(rs.getLong("CandidateID"))
+                        .build();
+                interviewSchedules.add(interviewSchedule);
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return interviewSchedules;
+    }
+
+    public boolean saveOffer(Offer offer) {
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("INSERT INTO Offer ([CandidateID]\n"
+                        + "      ,[ContractTypeID]\n"
+                        + "      ,[PositionID]\n"
+                        + "      ,[LevelID]\n"
+                        + "      ,[Approver]\n"
+                        + "      ,[DepartmentID]\n"
+                        + "      ,[InterviewScheduleID]\n"
+                        + "      ,[RecuiterOwner]\n"
+                        + "      ,[ContractFrom]\n"
+                        + "      ,[ContractTo]\n"
+                        + "      ,[DueDate]\n"
+                        + "      ,[BasicSalary]\n"
+                        + "      ,[Note]\n"
+                        + "      ,[OfferStatusID]\n"
+                        + "      ,[ModifiedBy]\n"
+                        + "      ,[LastModified]\n"
+                        + "      ,[CreatedAt])\n"
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")) {
+            preparedStatement.setLong(1, offer.getCandidateId());
+            preparedStatement.setLong(2, offer.getContractTypeId());
+            preparedStatement.setLong(3, offer.getPositionId());
+            preparedStatement.setLong(4, offer.getLevelId());
+            preparedStatement.setLong(5, offer.getAppover());
+            preparedStatement.setLong(6, offer.getDepartmentId());
+            preparedStatement.setLong(7, offer.getInterviewScheduleId());
+            preparedStatement.setLong(8, offer.getRecuiterOwner());
+            preparedStatement.setDate(9, Date.valueOf(offer.getContractFrom()));
+            preparedStatement.setDate(10, Date.valueOf(offer.getContractTo()));
+            preparedStatement.setDate(11, Date.valueOf(offer.getDueDate()));
+            preparedStatement.setDouble(12, offer.getBasicSalary());
+            preparedStatement.setString(13, offer.getNote());
+            preparedStatement.setLong(14, offer.getOfferStatusId());
+            preparedStatement.setLong(15, offer.getModifiedBy());
+            preparedStatement.setTimestamp(16, Timestamp.valueOf(offer.getModifiedAt()));
+            preparedStatement.setTimestamp(17, Timestamp.valueOf(offer.getCreatedAt()));
+            preparedStatement.executeUpdate();
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

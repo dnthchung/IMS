@@ -1,21 +1,18 @@
-<%-- 
-    Document : user-list 
-    Created on : Apr 6, 2024, 4:09:46 PM 
-    Author : chun 
---%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%-- Document : user-list Created on : Apr 6, 2024, 4:09:46 PM Author : chun --%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
+
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>User List</title>
         <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
         <!-- link to css -->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user-list.css">
-        <link rel="stylesheet" type="text/css"
-              href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     </head>
+
     <body>
         <!-- side bar -->
         <div class="d-flex flex-row">
@@ -23,7 +20,7 @@
             <!-- navigation bar + main content-->
             <div class="main-content">
                 <!-- navigation bar -->
-                <%@include file = "../../Component/nav-bar.jsp" %>
+                <%@include file="../../Component/nav-bar.jsp" %>
                 <!-- body -->
                 <div class="container-fluid mt-3">
                     <!-- content-card -->
@@ -37,10 +34,14 @@
                                             <div class="col-md-8">
                                                 <div class="col-md-3">
                                                     <!-- Search Area -->
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <input value ="${txtname}" name="txtname" type="text" class="form-control" placeholder="Search">
+                                                    <div class="input-group"
+                                                         style="padding: 0px !important;">
+                                                        <input id="txtname" value="${txtname}" name="txtname"
+                                                               type="text" class="form-control"
+                                                               placeholder="Search">
                                                         <div class="input-group-append">
-                                                            <button type="submit" class="input-group-text">
+                                                            <button type="submit"
+                                                                    class="input-group-text">
                                                                 <i data-lucide="search"></i>
                                                             </button>
                                                         </div>
@@ -48,19 +49,23 @@
                                                 </div>
                                                 <div class="col-md-10"></div>
                                                 <div class="col-md-3 mt-3">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select id="roleSelected" class="form-select" name="roleSelected">
+                                                    <div class="input-group"
+                                                         style="padding: 0px !important;">
+                                                        <select class="form-select" id="roleSelected" name="roleSelected">
                                                             <option selected>Role</option>
-                                                            <c:forEach items="${userRole}" var="role" >
-                                                                <option value="${role.userRoleId}">${role.roleName}</option>
-                                                            </c:forEach>
+                                                            <c:forEach items="${userRole}" var="role">
+                                                                <option value="${role.userRoleId}">
+                                                                    ${role.roleName}</option>
+                                                                </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-10"></div>
                                                 <div class="col-md-3 mt-3">
-                                                    <div class="input-group" style="padding: 0px !important; ; ">
-                                                        <button class="button-2" style="background-color: #1E96FC; color: #fff">Search</button>
+                                                    <div class="input-group"
+                                                         style="padding: 0px !important; ; ">
+                                                        <button class="button-2"
+                                                                style="background-color: #1E96FC; color: #fff">Search</button>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3"></div>
@@ -78,12 +83,15 @@
                             <div class="d-flex">
                                 <div class="me-auto p-2 "></div>
                                 <div class="p-2 mt-3">
-                                    <a href="user-create?flag=1" style="text-decoration: none;" class="button3">
+                                    <a href="user-create?flag=1" style="text-decoration: none;"
+                                       class="button3">
                                         <span class="button-text">Add New</span>
-                                        <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                       viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
-                                                                       stroke-linecap="round" stroke="currentColor" height="24" fill="none"
-                                                                       class="svg">
+                                        <span class="button-icon"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="24"
+                                                viewBox="0 0 24 24" stroke-width="2"
+                                                stroke-linejoin="round" stroke-linecap="round"
+                                                stroke="currentColor" height="24" fill="none"
+                                                class="svg">
                                             <line y2="19" y1="5" x2="12" x1="12"></line>
                                             <line y2="12" y1="12" x2="19" x1="5"></line>
                                             </svg>
@@ -91,13 +99,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <c:if test="${errorMessage != null}">
-                                <div class="d-flex justify-content-center">
-                                    <strong style="color: red">
-                                        ${errorMessage}
-                                    </strong>
-                                </div>
-                            </c:if>
+
                             <div class="card mt-3">
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -119,22 +121,26 @@
                                                         <td>${user.email}</td>
                                                         <td>${user.phoneNumber}</td>
                                                         <c:forEach items="${userRole}" var="role">
-                                                            <c:if test="${user.userRoleId == role.userRoleId}">
+                                                            <c:if
+                                                                test="${user.userRoleId == role.userRoleId}">
                                                                 <td>${role.roleName}</td>
                                                             </c:if>
                                                         </c:forEach>
                                                         <c:forEach items="${userStatus}" var="status">
-                                                            <c:if test="${user.userStatusId == status.userStatusId}">
+                                                            <c:if
+                                                                test="${user.userStatusId == status.userStatusId}">
                                                                 <td>${status.statusName}</td>
                                                             </c:if>
                                                         </c:forEach>
                                                         <td>
                                                             <a style="margin-right: 5px;text-decoration: none; color: black; "
-                                                               href="user-details?userId=${user.userId}" class="icon-button">
+                                                               href="user-details?userId=${user.userId}"
+                                                               class="icon-button">
                                                                 <i data-lucide="eye"></i>
                                                             </a>
                                                             <a style="margin-right: 5px;text-decoration: none; color: black;"
-                                                               href="user-edit?userId=${user.userId}&flag=1" class="icon-button">
+                                                               href="user-edit?userId=${user.userId}&flag=1"
+                                                               class="icon-button">
                                                                 <i data-lucide="file-pen-line"></i>
                                                             </a>
                                                         </td>
@@ -159,18 +165,18 @@
                                                             </li>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <li><a href="user-list?page=${page - 1}">&lt;</a></li>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                    <c:choose>
-                                                        <c:when test="${page == requestScope.num}">
+                                                            <li><a href="user-search?page=${page - 1}">&lt;</a></li>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                        <c:choose>
+                                                            <c:when test="${page == requestScope.num}">
                                                             <li class="disabled">
                                                                 <span>&gt;</span>
                                                             </li>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="user-list?page=${page + 1}">&gt;</a>
+                                                                <a href="user-search?page=${page + 1}">&gt;</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -221,6 +227,7 @@
 
                 // Check role is selected
                 if (userRoleId !== 'Role') {
+                    // If a role is selected, submit the form
                     document.getElementById("user-search").submit();
                 } else {
                     //no role is selected

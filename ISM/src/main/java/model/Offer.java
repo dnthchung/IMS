@@ -6,6 +6,7 @@ package model;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,10 +30,13 @@ public class Offer {
     private Long departmentId;
     private Long interviewScheduleId;
     private Long recuiterOwner;
-    private Date contractFrom;
-    private Date contractTo;
-    private Date dueDate;
+    private LocalDate contractFrom;
+    private LocalDate contractTo;
+    private LocalDate dueDate;
     private Double basicSalary;
     private String note;
     private Long offerStatusId;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
+    private Long modifiedBy;
 }

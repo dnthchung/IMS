@@ -4,6 +4,7 @@
  */
 package dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class OfferInformationDTO {
+
     private Long offerId;
     private String candidateName;
     private String email;
@@ -25,4 +27,34 @@ public class OfferInformationDTO {
     private String departmentName;
     private String note;
     private String statusName;
+    private String contractTypeName;
+    private String positionName;
+    private String levelName;
+    private String recruiter;
+    private String contractFrom;
+    private String contractTo;
+    private String dueDate;
+    private String basicSalary;
+    private String createdAt;
+    private String modifiedBy;
+    private String lastModified;
+
+    public String getFormattedSalary() {
+        String amount = this.basicSalary;
+        StringBuilder formattedAmount = new StringBuilder();
+        int endPoint = amount.indexOf(".");
+        if (endPoint < 0) {
+            endPoint = amount.length();
+        }
+        int count = 0;
+        for (int i = endPoint - 1; i >= 0; i--) {
+            formattedAmount.insert(0, amount.charAt(i));
+            count++;
+
+            if (count % 3 == 0 && i > 0) {
+                formattedAmount.insert(0, ",");
+            }
+        }
+        return formattedAmount.toString();
+    }
 }
