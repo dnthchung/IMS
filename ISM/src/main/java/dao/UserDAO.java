@@ -66,8 +66,6 @@ public class UserDAO {
         }
         return null;
     }
-
-    //search by role + FullName + Usename, return list users
     
     //add/create new user
     public boolean addUser(User newUser) {
@@ -187,8 +185,22 @@ public class UserDAO {
         }
         return null;
     }
-
     
+    //Update status for user
+    public boolean updateUserStatusById(long userId, int newStatusId) {
+        String sql = "UPDATE [User] SET UserStatusID = ? WHERE UserID = ?";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, newStatusId);
+            preparedStatement.setLong(2, userId);
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     //get list user by page
     public List<User> getListbyPage(List<User> list, int start, int end) {
         ArrayList<User> arr = new ArrayList<>();
@@ -197,7 +209,6 @@ public class UserDAO {
         }
         return arr;
     }
-    
     
     //II. User Role
     //get all role
@@ -265,27 +276,17 @@ public class UserDAO {
     }
     
     public static void main(String[] args) {
-        System.out.println("=== Run Main Here ===");
-        UserDAO udao = new UserDAO();
-
-        // Test searchUserByNameAndRole function
-        String fullName = "Chung"; // Sample full name
-        int userRoleId = 1; // Sample user role ID
-        ArrayList<User> userList = udao.searchUserByNameAndRole(fullName, userRoleId);
-
-        if (userList != null) {
-            if (userList.isEmpty()) {
-                System.out.println("No users found with the given name and role ID.");
-            } else {
-                System.out.println("Users found:");
-                for (User user : userList) {
-                    System.out.println(user);
-                }
-            }
+        UserDAO userDAO = new UserDAO();
+        long userId = 1; // ID của người dùng cần cập nhật
+        int newStatusId = 1; // Mã trạng thái mới
+        boolean success = userDAO.updateUserStatusById(userId, newStatusId);
+        if (success) {
+            System.out.println("User status updated successfully!");
         } else {
-            System.out.println("An error occurred while searching for users.");
+            System.out.println("Failed to update user status.");
         }
     }
+
 
    
 }

@@ -42,61 +42,27 @@
                                 </div>
                                 <div class="col-md-6">
                                     <!--manager-->
-<!--                                    <button class="button323" style="margin-right: 10px">
-                                        <span class="button-text">Approve</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
-                                            <path d="M20 6 9 17l-5-5"/>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                    <button class="button32" style="margin-right: 10px">
-                                        <span class="button-text">Reject</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                            <path d="M18 6 6 18"/>
-                                            <path d="m6 6 12 12"/>
-                                            </svg>
-                                        </span>
-                                    </button>-->
-<!--                                    <button class="button33blue" style="margin-right: 10px">
-                                        <span class="button-text">Mark as Sent to Candidate</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send">
-                                            <path d="m22 2-7 20-4-9-9-4Z"/>
-                                            <path d="M22 2 11 13"/>
-                                            </svg>
-                                        </span>
-                                    </button>-->
-                                    <button class="button33blue" style="margin-right: 10px; width: 180px !important">
-                                        <span class="button-text">Activate User</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
-                                            <path d="M20 6 9 17l-5-5"/>
-                                            </svg>
-                                        </span>
-                                    </button>
-<!--                                    <button class="button33orange" style="margin-right: 10px; width: 180px !important">
-                                        <span class="button-text">Declined Offer</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                            <path d="M18 6 6 18"/>
-                                            <path d="m6 6 12 12"/>
-                                            </svg>
-                                        </span>
-                                    </button>-->
-                                    <!--user-->
-<!--                                    <button class="button32" style="width: 170px !important">
-                                        <span class="button-text">Cancel Offer</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                 class="lucide lucide-ban">
-                                            <circle cx="12" cy="12" r="10" />
-                                            <path d="m4.9 4.9 14.2 14.2" />
-                                            </svg>
-                                        </span>
-                                    </button>-->
+                                    <c:if test="${user.userStatusId == 2}">
+                                        <button class="button33blue" style="margin-right: 10px; width: 180px !important" onclick="changeUserStatus(2)">
+                                            <span class="button-text">Activate User</span>
+                                            <span class="button-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
+                                                <path d="M20 6 9 17l-5-5"/>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${user.userStatusId == 1}">
+                                        <button class="button33orange" style="margin-right: 10px; width: 180px !important" onclick="changeUserStatus(1)">
+                                            <span class="button-text">De-active User</span>
+                                            <span class="button-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                <path d="M18 6 6 18"/>
+                                                <path d="m6 6 12 12"/>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </c:if>
                                 </div>
                             </div>
                             <form action="">
@@ -203,8 +169,7 @@
 
                                     <div class="d-flex justify-content-center mt-5">
                                         <a type="button" href="user-edit?userId=${user.userId}&flag=1" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
-                                        <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
-                                    </div>
+                                        <button type="button" id="cancelButton" class="button-2" style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -237,5 +202,67 @@
                 dropdownCssClass: 'select2--small'
             });
         </script>
+        <script>
+            document.getElementById('cancelButton').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You will lose unsaved changes!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '${pageContext.request.contextPath}/user-list'; // Chuyển hướng về trang 'user-list'
+                    }
+                });
+            });
+            
+            function changeUserStatus(flag) {
+                // Hiển thị Swal để xác nhận
+                var userId = ${user.userId};
+                
+                Swal.fire({
+                    title: flag === 1 ? 'De-activate User' : 'Activate User',
+                    text: flag === 1 ? 'Do you want to de-activate this user?' : 'Do you want to activate this user?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: flag === 1 ? 'Yes, de-activate it!' : 'Yes, activate it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Thực hiện request AJAX đến servlet
+                        var xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === XMLHttpRequest.DONE) {
+                                if (xhr.status === 200) {
+                                    // Xử lý phản hồi từ servlet nếu cần
+                                    var response = xhr.responseText;
+                                    // Hiển thị Swal success
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: flag === 1 ? 'User has been de-activated successfully' : 'User has been activated successfully',
+                                        icon: 'success'
+                                    }).then(() => {
+                                        // Refresh trang sau khi xử lý thành công
+                                        location.reload();
+                                    });
+                                } else {
+                                    // Xử lý lỗi nếu có
+                                    console.error('Request failed.');
+                                }
+                            }
+                        };
+
+                        // Gửi request GET đến servlet user-status-control với flag tương ứng
+                        xhr.open('GET', 'user-status-control?flag=' + flag + '&userId=' + userId, true);
+                        xhr.send();
+                    }
+                });
+            }
+        </script>
+
     </body>
 </html>

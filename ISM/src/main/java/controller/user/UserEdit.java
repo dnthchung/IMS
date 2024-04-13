@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import model.Department;
@@ -66,7 +67,13 @@ public class UserEdit extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
+        if (session == null || session.getAttribute("loggedInUser") == null) {
+            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
+            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
+            return; // Kết thúc xử lý
+        }
+        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
         int flag = Integer.parseInt(request.getParameter("flag"));
         if (flag == 1) {
             int userId = Integer.parseInt(request.getParameter("userId"));
@@ -113,6 +120,13 @@ public class UserEdit extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
+        if (session == null || session.getAttribute("loggedInUser") == null) {
+            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
+            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
+            return; // Kết thúc xử lý
+        }
+        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
         // Get user input from the form
         Long userId = Long.valueOf(request.getParameter("user-Id"));
         String fullName = request.getParameter("fullName");

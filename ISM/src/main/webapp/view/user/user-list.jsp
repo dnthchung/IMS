@@ -38,12 +38,10 @@
                                                 <div class="col-md-3">
                                                     <!-- Search Area -->
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input value ="${txtname}" name="txtname" type="text" class="form-control" placeholder="Search">
-                                                        <div class="input-group-append">
-                                                            <button type="submit" class="input-group-text">
-                                                                <i data-lucide="search"></i>
-                                                            </button>
-                                                        </div>
+                                                        <input value ="${txtname}" name="txtname" type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+                                                        <span class="input-group-text" id="basic-addon1">
+                                                            <i data-lucide="search"></i>
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-10"></div>

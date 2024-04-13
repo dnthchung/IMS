@@ -51,7 +51,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input id="fullName" name="fullName" value="${user.getFullName()}" type="text" class="form-control" placeholder="Type a name..." required/>
+                                                        <input id="fullName" name="fullName" value="${user.getFullName()}" type="text" class="form-control" placeholder="Type a name..." />
                                                         <input hidden id="user-Id" name="user-Id" value="${user.userId}"/>
                                                     </div>
                                                 </div>
@@ -63,7 +63,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input id="email" name="email" value="${user.getEmail()}" type="text" class="form-control" placeholder="Type an email..." required/>
+                                                        <input id="email" name="email" value="${user.getEmail()}" type="text" class="form-control" placeholder="Type an email..." />
                                                     </div>
                                                 </div>
                                             </div>
@@ -230,7 +230,7 @@
                                     <br><br>
                                     <div class="d-flex justify-content-center">
                                         <button class="button-2" type="submit" style="background-color: #ABDF75; color: #fff;">Submit</button>
-                                        <button class="button-2" style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
+                                        <button type="button" id="cancelButton" class="button-2" style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -287,63 +287,106 @@
         <!--sweet alert2-->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            document.querySelector('#user-edit').addEventListener('submit', function (e) {
-                e.preventDefault();
-                //1 check null -> check exist -> check format input
-                var userId = document.getElementById("user-Id").value;
-
-                var fullName = document.getElementById('fullName').value;
-                var email = document.getElementById('email').value;
-                var dob = document.getElementById('dob').value;
-                var address = document.getElementById('address').value;
-                var phone = document.getElementById('phone').value;
-                var gender = document.getElementById('gender').value;
-                var role = document.getElementById('role').value;
-                var department = document.getElementById('department').value;
-                var status = document.getElementById('status').value;
-                var note = document.getElementById('note').value;
-
-                if (fullName.trim() !== '' && email.trim() !== '' && dob.trim() !== '' && address.trim() !== '' && phone.trim() !== '' && gender.trim() !== '' && role.trim() !== '' && department.trim() !== '' && status.trim() !== '' ) {
-                    // AJAX request to check email existence
-                    var xhr = new XMLHttpRequest();
-                    xhr.onreadystatechange = function() {
-                        if (xhr.readyState === XMLHttpRequest.DONE) {
-                            if (xhr.status === 200) {
-                                var emailExists = xhr.responseText;
-                                if (emailExists === "true") {
-                                    Swal.fire({
-                                        title: 'Fail!',
-                                        text: 'Email already exists!',
-                                        icon: 'error'
-                                    });
-                                } else {
-                                    // If email does not exist, show success message and submit form
-                                    Swal.fire({
-                                        title: 'Success!',
-                                        text: 'Edit User Success',
-                                        icon: 'success',
-                                        button: "Close"
-                                    }).then(() => {
-                                        document.getElementById("user-edit").submit();
-                                    });
-                                }
-                            } else {
-                                // Handle error
-                                console.error('AJAX request failed.');
-                            }
-                        }
-                    };
-                    xhr.open('GET', 'user-edit?userId=' + userId + '&flag=2', true);
-                    xhr.send();
-                } else {
-                    // if any field is empty thì
-                    Swal.fire({
-                        title: 'Fail!',
-                        text: 'Please fill in complete information!!',
-                        icon: 'error'
-                    });
-                }
+            document.getElementById('cancelButton').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You will lose unsaved changes!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '${pageContext.request.contextPath}/user-list'; // Chuyển hướng về trang 'user-list'
+                    }
+                });
             });
+
+            
+          document.querySelector('#user-edit').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            var userId = document.getElementById("user-Id").value;
+            var fullName = document.getElementById('fullName').value;
+            var email = document.getElementById('email').value;
+            var dob = document.getElementById('dob').value;
+            var address = document.getElementById('address').value;
+            var phone = document.getElementById('phone').value;
+            var gender = document.getElementById('gender').value;
+            var role = document.getElementById('role').value;
+            var department = document.getElementById('department').value;
+            var status = document.getElementById('status').value;
+            var note = document.getElementById('note').value;
+
+            // Regular expression for full name (2 words or more)
+            var fullNameRegex = /^\S+\s+\S+/;
+
+            // Regular expression for email (contains @ and no whitespace)
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Check if full name contains 2 words or more
+            if (!fullNameRegex.test(fullName)) {
+                Swal.fire({
+                    title: 'Fail!',
+                    text: 'Full name must contain 2 words or more!',
+                    icon: 'error'
+                });
+                return; // Stop further processing
+            }
+
+            // Check if email contains @ and no whitespace
+            if (!emailRegex.test(email)) {
+                Swal.fire({
+                    title: 'Fail!',
+                    text: 'Please enter a valid email address!',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Check if all fields are filled
+            if (fullName.trim() !== '' && email.trim() !== '' && dob.trim() !== '' && address.trim() !== '' && phone.trim() !== '' && gender.trim() !== '' && role.trim() !== '' && department.trim() !== '' && status.trim() !== '') {
+                // AJAX request to check email existence
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            var emailExists = xhr.responseText;
+                            if (emailExists === "true") {
+                                Swal.fire({
+                                    title: 'Fail!',
+                                    text: 'Email already exists!',
+                                    icon: 'error'
+                                });
+                            } else {
+                                // If email does not exist, show success message and submit form
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Edit User Success',
+                                    icon: 'success',
+                                    button: 'Close'
+                                }).then(() => {
+                                    document.getElementById('user-edit').submit();
+                                });
+                            }
+                        } else {
+                            // Handle error
+                            console.error('AJAX request failed.');
+                        }
+                    }
+                };
+                xhr.open('GET', 'user-edit?userId=' + userId + '&flag=2', true);
+                xhr.send();
+            } else {
+                // if any field is empty
+                Swal.fire({
+                    title: 'Fail!',
+                    text: 'Please fill in complete information!!',
+                    icon: 'error'
+                });
+            }
+        });
         </script>
     </body>
 </html>

@@ -5,13 +5,6 @@
 package controller.user;
 
 import dao.UserDAO;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -76,6 +70,13 @@ public class UserCreate extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
+        if (session == null || session.getAttribute("loggedInUser") == null) {
+            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
+            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
+            return; // Kết thúc xử lý
+        }
+        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
         int flag = Integer.parseInt(request.getParameter("flag"));
         if (flag == 1) {
             System.out.println("flag: " + flag);
@@ -120,6 +121,13 @@ public class UserCreate extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
+        if (session == null || session.getAttribute("loggedInUser") == null) {
+            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
+            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
+            return; // Kết thúc xử lý
+        }
+        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
         // Get user input from the form
         String fullName = request.getParameter("fullNameSelected").trim();
         String email = request.getParameter("emailSelected").trim();
