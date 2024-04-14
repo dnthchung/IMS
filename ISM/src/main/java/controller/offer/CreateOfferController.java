@@ -20,7 +20,6 @@ import java.util.List;
 import model.Candidate;
 import model.ContractType;
 import model.Department;
-import model.InterviewSchedule;
 import model.Level;
 import model.Offer;
 import model.Position;
@@ -82,8 +81,6 @@ public class CreateOfferController extends HttpServlet {
                 request.setAttribute("activeManagers", activeManagers);
                 List<User> activeRecuiters = offerDAO.getAllActiveRecuiter();
                 request.setAttribute("activeRecuiters", activeRecuiters);
-                List<InterviewSchedule> interviewSchedules = offerDAO.getInterviewSchedule();
-                request.setAttribute("interviewSchedules", interviewSchedules);
                 getSystemOfferValues(request);
                 request.setAttribute("URL", "Offer");
                 request.getRequestDispatcher("view/offer/offer-create.jsp").forward(request, response);

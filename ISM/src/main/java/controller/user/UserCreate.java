@@ -68,18 +68,21 @@ public class UserCreate extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("loggedInUser") == null) {
-            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
-            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
-            return; // Kết thúc xử lý
+            response.sendRedirect("login");
+            return;
         }
-        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
+
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser.getUserRoleId() != 1) { 
+            response.sendRedirect("home"); 
+            return;
+        }
+
         int flag = Integer.parseInt(request.getParameter("flag"));
         if (flag == 1) {
-            System.out.println("flag: " + flag);
             UserDAO userDAO = new UserDAO();
             ArrayList<User> userList = userDAO.getAllUser();
             ArrayList<UserStatus> userStatus = userDAO.getAllUserStatus();
@@ -90,24 +93,18 @@ public class UserCreate extends HttpServlet {
             request.setAttribute("userStatus", userStatus);
             request.setAttribute("userRole", userRole);
             request.setAttribute("departmentList", departmentList);
-
             request.setAttribute("URL", "Create User");
-            request.getRequestDispatcher("view/user/user-create.jsp").forward(request, response);
-        }
-        else if(flag == 2){
-            System.out.println("flag: " + flag);
-            // Get email from the request parameter
-            String email = request.getParameter("email");
 
-            // Check email existence
+            request.getRequestDispatcher("view/user/user-create.jsp").forward(request, response);
+        } else if (flag == 2) {
+            // Handle checking email existence request
+            String email = request.getParameter("email");
             boolean emailExists = checkEmailExist(email);
 
-            // Send response
             try (PrintWriter out = response.getWriter()) {
                 out.print(emailExists);
             }
         }
-
     }
 
     /**
@@ -119,16 +116,19 @@ public class UserCreate extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("loggedInUser") == null) {
-            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
-            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
-            return; // Kết thúc xử lý
+            response.sendRedirect("login");
+            return;
         }
-        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
-        // Get user input from the form
+
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser.getUserRoleId() != 1) { 
+            response.sendRedirect("home"); 
+            return;
+        }
+        
         String fullName = request.getParameter("fullNameSelected").trim();
         String email = request.getParameter("emailSelected").trim();
         String phone = request.getParameter("phoneSelected").trim();
@@ -139,58 +139,37 @@ public class UserCreate extends HttpServlet {
         Long departmentId = Long.valueOf(request.getParameter("departmentSelected"));
         int userStatusId = Integer.parseInt(request.getParameter("statusSelected"));
         String note = request.getParameter("noteSelected").trim();
-        // Gen Use name from full name, check user exist = gen usename + check exist
+
+        // Gen usename
         String useName = checkUserExist(fullName);
-        //auto gen password 
+
+        // Gen password
         String password = generatePassword();
+        User newUser = User.builder()
+                .fullName(fullName)
+                .useName(useName)
+                .password(password)
+                .dob(dateOfBirth)
+                .phoneNumber(phone)
+                .userRoleId(userRoleId)
+                .userStatusId(userStatusId)
+                .email(email)
+                .address(address)
+                .gender(gender)
+                .departmentId(departmentId)
+                .note(note)
+                .build();
 
-        System.out.println("===== TEST ADD DATA =====");
-        System.out.println(useName);
-        System.out.println(fullName);
-        System.out.println(password);
-        System.out.println(dateOfBirth);
-        System.out.println(phone);
-        System.out.println(userRoleId);
-        System.out.println(userStatusId);
-        System.out.println(email);
-        System.out.println(address);
-        System.out.println(gender);
-        System.out.println(departmentId);
-        System.out.println(note);
-
-        //add to db & send mail if add done
+        // Add user 
         UserDAO userDAO = new UserDAO();
-        
-        //check email
         boolean check = checkEmailExist(email);
-        System.out.println("email exist ko? -> " + check);
         if (check) {
-            request.setAttribute("EMAIL", "Email had existed in system!");
+            request.setAttribute("EMAIL", "Email already exists in the system!");
             request.setAttribute("URL", "Create User");
             request.getRequestDispatcher("view/user/user-create.jsp").forward(request, response);
-        }else{
-            // Create new user object
-            User newUser = User.builder()
-                    .fullName(fullName)
-                    .useName(useName)
-                    .password(password)
-                    .dob(dateOfBirth)
-                    .phoneNumber(phone)
-                    .userRoleId(userRoleId)
-                    .userStatusId(userStatusId)
-                    .email(email)
-                    .address(address)
-                    .gender(gender)
-                    .departmentId(departmentId)
-                    .note(note)
-                    .build();
-
+        } else {
             boolean userAdded = userDAO.addUser(newUser);
             if (userAdded) {
-                // User added successfully
-                System.out.println("User added successfully");
-
-                // Prepare email content
                 String emailContent = "<h3>This email is from IMS system</h3>\n"
                         + "<p>Your account has been created. Please use the following credentials to login:</p>\n"
                         + "<ul>\n"
@@ -204,13 +183,14 @@ public class UserCreate extends HttpServlet {
                         + "<p>If anything wrong, please reach out to the recruiter <i>offer recruiter owner account</i>. We are so sorry for this inconvenience.</p>\n"
                         + "<p style=\"margin-bottom: 0;\">Thanks & Regards!</p>\n"
                         + "<strong><i>IMS Team.</i></strong>";
-                // Send email 
+
+                // Send email
                 EmailSender sender = new EmailSender();
                 sender.setTo(email);
                 sender.setSubject("no-reply-email-IMS-system <Account created>");
                 sender.setContent(emailContent);
                 sender.start();
-                System.out.println(emailContent);
+
                 response.sendRedirect("user-list");
             } else {
                 System.out.println("Failed to add user");

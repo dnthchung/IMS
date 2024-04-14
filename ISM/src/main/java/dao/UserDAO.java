@@ -153,12 +153,78 @@ public class UserDAO {
     }
     
     // Search user by name + userRoleId
-    public ArrayList<User> searchUserByNameAndRole(String fullName, int userRoleId) {
+    public ArrayList<User> searchUserByNameAndRole(String fullName, String userRoleId) {
         ArrayList<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM [User] WHERE [FullName] LIKE ? AND [UserRoleID] = ?";
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, "%" + fullName + "%"); 
-            preparedStatement.setInt(2, userRoleId);
+            preparedStatement.setString(2, userRoleId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                User user = User.builder()
+                        .userId(rs.getLong("UserID"))
+                        .fullName(rs.getString("FullName"))
+                        .useName(rs.getString("Usename"))
+                        .password(rs.getString("Password"))
+                        .dob(rs.getDate("DOB").toLocalDate())
+                        .phoneNumber(rs.getString("PhoneNumber"))
+                        .userRoleId(rs.getInt("UserRoleID"))
+                        .userStatusId(rs.getInt("UserStatusID"))
+                        .email(rs.getString("Email"))
+                        .address(rs.getString("Address"))
+                        .gender(rs.getInt("Gender"))
+                        .departmentId(rs.getLong("DepartmentID"))
+                        .note(rs.getString("Note"))
+                        .build();
+                userList.add(user);
+            }
+            return userList;
+        } catch (SQLException e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    // Search user by name + userRoleId
+    public ArrayList<User> searchUserByNameAndRole2(String fullName, String userRoleId) {
+        ArrayList<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM [User] WHERE [FullName] LIKE ? AND [UserRoleID] = ?";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, "%" + fullName + "%");
+            preparedStatement.setString(2, userRoleId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                User user = User.builder()
+                        .userId(rs.getLong("UserID"))
+                        .fullName(rs.getString("FullName"))
+                        .useName(rs.getString("Usename"))
+                        .password(rs.getString("Password"))
+                        .dob(rs.getDate("DOB").toLocalDate())
+                        .phoneNumber(rs.getString("PhoneNumber"))
+                        .userRoleId(rs.getInt("UserRoleID"))
+                        .userStatusId(rs.getInt("UserStatusID"))
+                        .email(rs.getString("Email"))
+                        .address(rs.getString("Address"))
+                        .gender(rs.getInt("Gender"))
+                        .departmentId(rs.getLong("DepartmentID"))
+                        .note(rs.getString("Note"))
+                        .build();
+                userList.add(user);
+            }
+            return userList;
+        } catch (SQLException e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public ArrayList<User> searchUserByName(String fullName) {
+        ArrayList<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM [User] WHERE [FullName] LIKE ? ";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, "%" + fullName + "%");
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 User user = User.builder()

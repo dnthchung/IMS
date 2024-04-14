@@ -377,7 +377,7 @@ public class CandidateDAO {
     public void updateCandidate(Candidate candidate) {
         String sql = "UPDATE Candidate SET FullName = ?, DOB = ?, PhoneNumber = ?,"
                 + " Email = ?, Address = ?, Gender = ?, CVAttachment = ?, PositionID = ?,"
-                + " Note = ?, YearOfExperience = ?, HighestLevel = ?, LastUpdateAt = ?"
+                + " Note = ?, YearOfExperience = ?, HighestLevel = ?, LastUpdateAt = ?, CandidateStatusID = ?"
                 + " WHERE CandidateID = ?";
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, candidate.getFullName());
@@ -392,7 +392,8 @@ public class CandidateDAO {
             preparedStatement.setInt(10, candidate.getYearOfExperience());
             preparedStatement.setLong(11, candidate.getHighestLevel());
             preparedStatement.setDate(12, Date.valueOf(LocalDate.now()));
-            preparedStatement.setLong(13, candidate.getCandidateId()); // CandidateID is used in WHERE clause
+            preparedStatement.setLong(13, candidate.getCandidateStatusId());
+            preparedStatement.setLong(14, candidate.getCandidateId()); // CandidateID is used in WHERE clause
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

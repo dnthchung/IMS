@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
@@ -55,53 +56,45 @@ public class UserStatusControl extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
-        if (session == null || session.getAttribute("loggedInUser") == null) {
-            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
-            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
-            return; // Kết thúc xử lý
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(); // Không tạo session mới nếu không tồn tại
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null && loggedInUser.getUserRoleId() == 1) {
+            // Nếu người dùng đã đăng nhập và là quản trị viên
+            int flag = Integer.parseInt(request.getParameter("flag"));
+            Long userId = Long.parseLong(request.getParameter("userId"));
+            UserDAO userDAO = new UserDAO();
+            switch (flag) {
+                case 1:
+                    // code block to active
+                    int newStatusId = 2;
+                    boolean success1 = userDAO.updateUserStatusById(userId, newStatusId);
+                    if (success1) {
+                        System.out.println("User status updated successfully!");
+                    } else {
+                        System.out.println("Active failed.");
+                    }
+                    break;
+                case 2:
+                    // code block to de-activate
+                    newStatusId = 1;
+                    boolean success2 = userDAO.updateUserStatusById(userId, newStatusId);
+                    if (success2) {
+                        System.out.println("User status updated successfully!");
+                    } else {
+                        System.out.println("De-activate failed.");
+                    }
+                    break;
+                default:
+                // code block
+            }
+        } else {
+            // Nếu không có người dùng đăng nhập hoặc không phải là quản trị viên, chuyển hướng về trang chính hoặc trang đăng nhập
+            response.sendRedirect("home"); // hoặc chuyển hướng đến trang đăng nhập tùy thuộc vào yêu cầu
+            return;
         }
-        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
-        int flag = Integer.parseInt(request.getParameter("flag"));
-        Long userId = Long.parseLong(request.getParameter("userId"));
-        
-        UserDAO userDAO = new UserDAO();
-        switch (flag) {
-            case 1:
-                // code block to active
-                System.out.println("=== ACTIVE ===");
-                System.out.println("flag: " + flag);
-                System.out.println("userId: " + userId);
-                int newStatusId = 2;
-                boolean success1 = userDAO.updateUserStatusById(userId, newStatusId);
-                if (success1) {
-                    System.out.println("User status updated successfully!");
-                } else {
-                    System.out.println("Active failed.");
-                }
-                
-                break;
-            case 2:
-                // code block to de-activce
-                System.out.println("=== DE-ACTIVE ===");
-                System.out.println("flag: " + flag);
-                System.out.println("userId: " + userId);
-                newStatusId = 1;
-                boolean success2 = userDAO.updateUserStatusById(userId, newStatusId);
-                if (success2) {
-                    System.out.println("User status updated successfully!");
-                } else {
-                    System.out.println("De-active failed.");
-                }
-                break;
-            default:
-            // code block
-        }
-        
-        
-    } 
+    }
+
 
     /** 
      * Handles the HTTP <code>POST</code> method.

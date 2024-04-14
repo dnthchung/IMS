@@ -35,7 +35,7 @@
                                                 <div class="col-md-3">
                                                     <!-- Search Area -->
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input value ="${txtname}" name="txtname" type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+                                                        <input value ="${txtname}" name="txtname" id="txtname" type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
                                                         <span class="input-group-text" id="basic-addon1">
                                                             <i data-lucide="search"></i>
                                                         </span>
@@ -46,7 +46,7 @@
                                                     <div class="input-group"
                                                          style="padding: 0px !important;">
                                                         <select class="form-select" id="roleSelected" name="roleSelected">
-                                                            <option selected>Role</option>
+                                                            <option selected value="all">Role</option>
                                                             <c:forEach items="${userRole}" var="role">
                                                                 <option value="${role.userRoleId}">
                                                                     ${role.roleName}</option>
@@ -216,24 +216,24 @@
         <script>
             document.querySelector('#user-search').addEventListener('submit', function (e) {
                 e.preventDefault();
-                //1 check null -> check exist -> check format input
+        
+                // Get the values of the inputs
+                var txtname = document.getElementById('txtname').value;
                 var userRoleId = document.getElementById('roleSelected').value;
-
-                // Check role is selected
-                if (userRoleId !== 'Role') {
-                    // If a role is selected, submit the form
-                    document.getElementById("user-search").submit();
-                } else {
-                    //no role is selected
+        
+                // Check if both inputs are empty
+                if (!txtname && userRoleId === 'all') {
+                    // If both inputs are empty, show an error message
                     Swal.fire({
-                        title: 'Fail!',
-                        text: 'Please select a role!!',
+                        title: 'Error!',
+                        text: 'Please enter a name or select a role to search.',
                         icon: 'error'
                     });
+                } else {
+                    // If at least one input is selected, submit the form
+                    document.getElementById("user-search").submit();
                 }
             });
         </script>
-
     </body>
-
 </html>

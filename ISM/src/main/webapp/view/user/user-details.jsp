@@ -27,8 +27,8 @@
                     <nav aria-label="breadcrumb" style="margin-left: 1em">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="user-list">User List</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                <a href="user-details?userId=${user.userId}">User Details</a>
+                            <li class="breadcrumb-item" aria-current="page">
+                                <a >User Details</a>
                             </li>
                         </ol>
                     </nav>

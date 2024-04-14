@@ -38,7 +38,6 @@
                         <div class="content">
                             <!-- class="content-1" -->
                             <div class="content-1">
-
                             </div>
                             <!-- class="content-2" -->
                             <div class="card-body">
@@ -49,12 +48,7 @@
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    Full name <span style="color: red;">* </span>
-                                                    <span>
-                                                        <!--<button type="button" class="btn">-->
-                                                        <i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ex: Le Anh"></i>
-                                                        <!--                                                        </button>-->
-                                                    </span>
+                                                    Full name <span style="color: red;">* </span>                                                  
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
@@ -129,7 +123,7 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select"  name="gender" required="" id="gender" onchange="checkAll()">
-                                                            <option value="" selected>Gender</option>
+                                                            <option value="" selected disabled>Female, Male or Other</option>
                                                             <option value="0">Female</option>
                                                             <option value="1">Male</option>
                                                             <option value="2">Other</option>
@@ -152,9 +146,9 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <!-- CV -->
-                                                        <input type="file" class="form-control" accept=".pdf,.docx" name="file" id="file">
+                                                        <input type="file" class="form-control" accept=".pdf,.docx" name="file" id="file" onchange="checkAll()">
                                                     </div>
-                                                    <small id="cvAlert" style="color: #FF6B6B">add candidate'cv</small>
+                                                    <small id="fileAlert" style="color: #FF6B6B">add candidate'cv</small>
                                                 </div>
                                             </div>
                                             <div class="col-md-1"></div>
@@ -179,13 +173,14 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" name="position" required="" id="position">
+                                                        <select class="form-select" name="position" required="" id="position" onchange="checkAll()">
+                                                            <option value="" selected="" disabled="">Position</option>
                                                             <c:forEach var="p" items="${position}">
                                                                 <option value="${p.positionId}">${p.positionName}</option>
                                                             </c:forEach>                                                           
                                                         </select>
                                                     </div>
-                                                    <small id="positonAlert" style="color: #FF6B6B">choose position</small>
+                                                    <small id="positionAlert" style="color: #FF6B6B">choose position</small>
                                                 </div>
                                             </div>
                                             <div class="col-md-1"></div>
@@ -195,7 +190,8 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" name="status" required="" id="status">
+                                                        <select class="form-select" name="status" required="" id="status" onchange="checkAll()">
+                                                            <option value="" selected="" disabled="">Status</option>
                                                             <c:forEach var="s" items="${status}">                                                           
                                                                 <option value="${s.candidateStatusId}">${s.statusName}</option>
                                                             </c:forEach>
@@ -231,8 +227,8 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="number" min="0" class="form-control"
-                                                               placeholder="type a number..." name="yoe" required="">
+                                                        <input type="number" min="1" class="form-control"
+                                                               placeholder="type a number..." name="yoe" required="" onchange="checkAll()" id="yoe">
                                                     </div>
                                                     <small id="yoeAlert" style="color: #FF6B6B">Fill yoe</small>
                                                 </div>
@@ -246,7 +242,8 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select"  name="recruiter" required="">
+                                                        <select class="form-select"  name="recruiter" required="" id="recruiter" onchange="checkAll()">
+                                                            <option value="" selected="" disabled="">Recruiter</option>
                                                             <c:forEach var="r" items="${recruiter}">                                                         
                                                                 <option value="${r.userId}">${r.useName}</option>
                                                             </c:forEach>
@@ -263,7 +260,8 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" name="level" required="" >
+                                                        <select class="form-select" name="level" required="" id="level" onchange="checkAll()">
+                                                            <option value="" selected="" disabled="">Highest Level</option>
                                                             <c:forEach var="l" items="${level}">                                                         
                                                                 <option value="${l.levelId}">${l.levelName}</option>
                                                             </c:forEach>
@@ -290,14 +288,13 @@
                                         <button class="button-2" type="reset"
                                                 style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Reset</button>
                                     </div>
-
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
+            <%@include file="../notification/notification.jsp" %>
         </div>
 
         <!-- jQuery -->
@@ -310,8 +307,8 @@
 
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>
-                                                                    //icon lucide
-                                                                    lucide.createIcons();
+                                                            //icon lucide
+                                                            lucide.createIcons();
         </script>
         <script>
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -338,74 +335,11 @@
                 document.getElementById("submitBtn").disabled = true;
             });
         </script>
+
         <script>
-            function checkAll() {
-                var requirement = true;
-                var submitBtn = document.getElementById("submitBtn");
-                var fullNameRegex = /^\S+\s+\S+/;
-                var fullName = document.getElementById("fullName").value.trim();
-                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                var email = document.getElementById("email").value.trim();
-                var address = document.getElementById("address").value.trim();
-                var dob = document.getElementById("dob").value.trim();
-                var phone = document.getElementById("phone").value.trim();
-                var phoneRegex = /^(?:\+84|0|84)([1-9]{1})([0-9]{8})$/;
-                var skill = document.getElementById("skill");
-                var selectedSkill = document.getElementById("skill").selectedOptions.length;
-                var gender = document.getElementById("gender").value;
-                if (fullNameRegex.test(fullName)) {
-                    document.getElementById("fullNameAlert").style.color = "green";
-                } else {
-                    requirement = false;
-                    document.getElementById("fullNameAlert").style.color = "#FF6B6B";
-                }
-                if (emailRegex.test(email)) {
-                    document.getElementById("emailAlert").style.color = "green";
-                } else {
-                    requirement = false;
-                    document.getElementById("emailAlert").style.color = "#FF6B6B";
-                }
-                if (address !== '') {
-                    document.getElementById("addressAlert").style.color = "green";
-                } else {
-                    requirement = false;
-                    document.getElementById("addressAlert").style.color = "#FF6B6B";
-                }
-                if (dob !== '') {
-                    document.getElementById("dobAlert").style.color = "green";
-                } else {
-                    requirement = false;
-                    document.getElementById("dobAlert").style.color = "#FF6B6B";
-                }
-                if (phoneRegex.test(phone)) {
-                    document.getElementById("phoneAlert").style.color = "green";
-                } else {
-                    requirement = false;
-                    document.getElementById("phoneAlert").style.color = "#FF6B6B";
-                }
-                if (selectedSkill > 0) {
-                    document.getElementById("skillAlert").style.color = "green";
-                    console.log("If selectedSkill.length: " + selectedSkill);
-                } else {
-                    requirement = false;
-                    document.getElementById("skillAlert").style.color = "red";
-                }
-                if (gender !== '') {
-                    document.getElementById("genderAlert").style.color = "green";                    
-                } else {
-                    requirement = false;
-                    document.getElementById("genderAlert").style.color = "#FF6B6B";    
-                }
-                if (requirement) {
-                    submitBtn.style.backgroundColor = "green";
-                    submitBtn.disabled = false;
-                } else {
-                    submitBtn.style.backgroundColor = "#9b9b9b";
-                    submitBtn.disabled = true;
-                }
-
-            }
-
+            var mess = '${sessionScope.mess}';
         </script>
+        <script src="${pageContext.request.contextPath}/JS/toast.js"></script>
+        <script src="${pageContext.request.contextPath}/JS/Candidate/check-validate.js"></script>
     </body>
 </html>

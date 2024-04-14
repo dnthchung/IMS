@@ -116,7 +116,7 @@ public class OfferDAO {
         }
         return null;
     }
-    
+
     public int countAllOffers() {
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
                 = connection.prepareStatement("SELECT COUNT(OfferID) FROM [Offer]")) {
@@ -519,11 +519,18 @@ public class OfferDAO {
     public List<Candidate> getOfferableCandidates() {
         List<Candidate> candidates = new ArrayList<>();
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
-                = connection.prepareStatement("SELECT c.* FROM Candidate c\n"
+                = connection.prepareStatement("SELECT c.* \n"
+                        + "FROM Candidate c\n"
                         + "INNER JOIN InterviewSchedule i ON c.CandidateID = i.CandidateID\n"
                         + "LEFT JOIN Offer o ON c.CandidateID = o.CandidateID\n"
                         + "WHERE i.Result = 'Passed'\n"
                         + "AND (o.CandidateID IS NULL OR o.OfferStatusID IN (3, 6, 7))\n"
+                        + "AND NOT EXISTS (\n"
+                        + "    SELECT 1\n"
+                        + "    FROM Offer o2\n"
+                        + "    WHERE o2.CandidateID = c.CandidateID\n"
+                        + "    AND o2.OfferStatusID IN (1, 2, 4, 5)\n"
+                        + ")\n"
                         + "AND c.CandidateStatusID = 1;")) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -794,6 +801,30 @@ public class OfferDAO {
             e.printStackTrace();
         }
         return offers;
+    }
+
+    public InterviewSchedule getInterviewScheduleByCandidateId(Long candidateId) {
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT * FROM InterviewSchedule WHERE CandidateID = ?")) {
+            preparedStatement.setLong(1, candidateId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return InterviewSchedule.builder()
+                        .interviewScheduleId(rs.getLong("InterviewScheduleID"))
+                        .scheduleTitle(rs.getString("ScheduleTitle"))
+                        .notes(rs.getString("Notes"))
+                        .build();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

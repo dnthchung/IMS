@@ -55,7 +55,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" name="candidateId" required="">
+                                                        <select class="form-select" id="candidateSelect" name="candidateId" required="">
                                                             <c:forEach var="candidate" items="${requestScope.offerableCandidate}">
                                                                 <option value="${candidate.candidateId}" 
                                                                         <c:if test="${candidate.candidateId == requestScope.updatingOffer.candidateId}">selected</c:if>
@@ -165,7 +165,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" name="interviewScheduleId" required="">
+                                                        <select class="form-select" id="interviewSelect" name="interviewScheduleId" required="">
                                                             <c:forEach var="interview" items="${requestScope.interviewSchedules}">
                                                                 <option value="${interview.interviewScheduleId}" 
                                                                         <c:if test="${interview.interviewScheduleId == requestScope.updatingOffer.interviewScheduleId}">selected</c:if>
@@ -299,40 +299,10 @@
         crossorigin="anonymous"></script>
 
         <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script>
             //icon lucide
             lucide.createIcons();
-        </script>
-        <script>
-            //skill multi choice
-            $('#small-select2-options-multiple-field-skills').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
-            });
-
-            //benefits multi choice
-            $('#small-select2-options-multiple-field-benefits').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
-            });
-
-            //levels multi choice
-            $('#small-select2-options-multiple-field-levels').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
-            });
         </script>
 
         <input type="hidden" id="start-date-input" value="${updatingOffer.getFormatedDate(updatingOffer.contractFrom)}">
@@ -362,5 +332,25 @@
             });
         </script>
 
+        <script>
+            $(document).ready(function () {
+                $('#candidateSelect').change(function () {
+                    var selectedOption = $(this).val();
+                    $.ajax({
+                        url: 'offer-api',
+                        type: 'GET',
+                        data: {candidateId: selectedOption},
+                        success: function (response) { 
+                            $('#interviewSelect').empty();
+                            var note = response.notes;
+                            var scheduleId = response.interviewScheduleId;
+                            var scheduleTitle = response.scheduleTitle;
+                            $('#interviewSelect').append('<option value="' + scheduleId + '" selected>' + scheduleTitle + '</option>');
+                            $("#interviewNotes").text(note);
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

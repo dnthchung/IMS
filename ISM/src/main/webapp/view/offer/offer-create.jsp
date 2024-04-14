@@ -54,7 +54,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" name="candidateId" required="">
+                                                        <select id="candidateSelect" class="form-select" name="candidateId" required="">
                                                             <option selected disabled>Select Candidate Name</option>
                                                             <c:forEach var="candidate" items="${requestScope.offerableCandidate}">
                                                                 <option value="${candidate.candidateId}">${candidate.fullName}</option>
@@ -158,11 +158,8 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" name="interviewScheduleId" required="">
-                                                            <option selected disabled>Select an interview schedule title</option>
-                                                            <c:forEach var="interview" items="${requestScope.interviewSchedules}">
-                                                                <option value="${interview.interviewScheduleId}">${interview.scheduleTitle}</option>
-                                                            </c:forEach>
+                                                        <select class="form-select" id="interviewSelect" name="interviewScheduleId" required="">
+                                                            <option disabled>Select an interview schedule title</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -228,7 +225,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <p id="interviewNotes">Candidate is fully-match with 5 years experiences in IT industry</p>
+                                                        <p id="interviewNotes">Select an interview to view note</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -286,40 +283,10 @@
         crossorigin="anonymous"></script>
 
         <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script>
             //icon lucide
             lucide.createIcons();
-        </script>
-        <script>
-            //skill multi choice
-            $('#small-select2-options-multiple-field-skills').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
-            });
-
-            //benefits multi choice
-            $('#small-select2-options-multiple-field-benefits').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
-            });
-
-            //levels multi choice
-            $('#small-select2-options-multiple-field-levels').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
-            });
         </script>
 
         <script>
@@ -344,19 +311,23 @@
         </script>
 
         <script>
-            function updateInterviewNotes() {
-                var interviewScheduleId = document.querySelector('select[name="interviewScheduleId"]').value;
-                var interviewNotes = "";
-            <c:forEach var="interview" items="${requestScope.interviewSchedules}">
-                <c:if test="${interview.interviewScheduleId == interviewScheduleId}">
-                interviewNotes = "${interview.notes}";
-                </c:if>
-            </c:forEach>
-                document.querySelector('p[id="interviewNotes"]').textContent = interviewNotes;
-            }
-            window.onload = updateInterviewNotes;
-            document.querySelector('select[name="interviewScheduleId"]').onchange = updateInterviewNotes;
+            $(document).ready(function () {
+                $('#candidateSelect').change(function () {
+                    var selectedOption = $(this).val();
+                    $.ajax({
+                        url: 'offer-api',
+                        type: 'GET',
+                        data: {candidateId: selectedOption},
+                        success: function (response) { 
+                            var note = response.notes;
+                            var scheduleId = response.interviewScheduleId;
+                            var scheduleTitle = response.scheduleTitle;
+                            $('#interviewSelect').append('<option value="' + scheduleId + '" selected>' + scheduleTitle + '</option>');
+                            $("#interviewNotes").text(note);
+                        }
+                    });
+                });
+            });
         </script>
-
     </body>
 </html>

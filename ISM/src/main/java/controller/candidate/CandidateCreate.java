@@ -13,11 +13,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import model.Candidate;
+import model.User;
 import org.apache.commons.io.FilenameUtils;
 import utils.CloudinaryService;
 import utils.DBFileUtils;
+import utils.expirationTimer;
 
 /**
  *
@@ -69,6 +72,12 @@ public class CandidateCreate extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 //        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User u = (User) session.getAttribute("loggedInUser");
+        if(u == null || u.getUserRoleId() == 2){
+            response.sendRedirect("candidate-list");
+            return;
+        }
         CandidateDAO dao = new CandidateDAO();
         request.setAttribute("position", dao.getAllPositon());
         request.setAttribute("recruiter", dao.getAllRecruiter());
@@ -97,7 +106,7 @@ public class CandidateCreate extends HttpServlet {
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
         String gender = request.getParameter("gender");
-        String note = request.getParameter("note");        
+        String note = request.getParameter("note") == null ? "" : request.getParameter("note");        
         String positionId = request.getParameter("position");
         String statusId = request.getParameter("status");
         String[] skill = request.getParameterValues("skill");
@@ -112,7 +121,7 @@ public class CandidateCreate extends HttpServlet {
         CloudinaryService cl = new CloudinaryService();
         cl.uploadImage(fullPath, FilenameUtils.removeExtension(cvFile), "CV");
         String cvLink = cl.getImageUrl("CV", cvFile);
-        System.out.println(cvLink);
+//        System.out.println(cvLink);
                 Candidate can = Candidate.builder()
                 .fullName(fullName)
                 .address(address)
@@ -130,7 +139,12 @@ public class CandidateCreate extends HttpServlet {
                 .createBy(8L)
                 .build(); 
         dao.addCandidate(can, skill);
-        doGet(request, response);
+        HttpSession session = request.getSession();
+        session.setAttribute("mess", "Add candidate successfully");
+        System.out.println(session.getAttribute("mess"));
+        expirationTimer.timerOTP(20, request, "mess");
+        response.sendRedirect("candidate-create");
+//        doGet(request, response);
     }
 
     /**

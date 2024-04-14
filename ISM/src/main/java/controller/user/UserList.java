@@ -63,48 +63,44 @@ public class UserList extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
-        if (session == null || session.getAttribute("loggedInUser") == null) {
-            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
-            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
-            return; // Kết thúc xử lý
-        }
-        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
-        UserDAO userDAO = new UserDAO();
-        ArrayList<User> userList = userDAO.getAllUser();
-        ArrayList<UserStatus> userStatus = userDAO.getAllUserStatus();
-        ArrayList<UserRole> userRole = userDAO.getAllUserRole();
-        ArrayList<Department> departmentList = userDAO.getAllDeparmentForUser();
-
-        int page, numberpage = 5;
-        int size = userList.size();
-        int num = (size % 5 == 0 ? (size / 5) : ((size / 5)) + 1);
-        String xpage = request.getParameter("page");
-        
-        if (xpage == null) {
-            page = 1;
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(); // Không tạo session mới nếu không tồn tại
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null && loggedInUser.getUserRoleId() == 1) {
+            // Nếu người dùng đã đăng nhập và là quản trị viên
+            UserDAO userDAO = new UserDAO();
+            ArrayList<User> userList = userDAO.getAllUser();
+            ArrayList<UserStatus> userStatus = userDAO.getAllUserStatus();
+            ArrayList<UserRole> userRole = userDAO.getAllUserRole();
+            ArrayList<Department> departmentList = userDAO.getAllDeparmentForUser();
+            int page, numberpage = 5;
+            int size = userList.size();
+            int num = (size % 5 == 0 ? (size / 5) : ((size / 5)) + 1);
+            String xpage = request.getParameter("page");
+            if (xpage == null) {
+                page = 1;
+            } else {
+                page = Integer.parseInt(xpage);
+            }
+            int start, end;
+            start = (page - 1) * numberpage;
+            end = Math.min(page * numberpage, size);
+            List<User> listU = userDAO.getListbyPage(userList, start, end);
+            request.setAttribute("listU", listU);
+            request.setAttribute("page", page);
+            request.setAttribute("num", num);
+            request.setAttribute("userStatus", userStatus);
+            request.setAttribute("userRole", userRole);
+            request.setAttribute("departmentList", departmentList);
+            request.setAttribute("URL", "User Management");
+            request.getRequestDispatcher("view/user/user-list.jsp").forward(request, response);
         } else {
-            page = Integer.parseInt(xpage);
+            // Nếu không có người dùng đăng nhập hoặc không phải là quản trị viên, chuyển hướng về trang chính hoặc trang đăng nhập
+            response.sendRedirect("home"); // hoặc chuyển hướng đến trang đăng nhập tùy thuộc vào yêu cầu
+            return;
         }
-        
-        int start, end;
-        start = (page - 1) * numberpage;
-        end = Math.min(page * numberpage, size);
-        
-        List<User> listU = userDAO.getListbyPage(userList, start, end);
-        
-        request.setAttribute("listU", listU);
-        request.setAttribute("page", page);
-        request.setAttribute("num", num);
-        request.setAttribute("userStatus", userStatus);
-        request.setAttribute("userRole", userRole);
-        request.setAttribute("departmentList", departmentList);
-        request.setAttribute("URL", "User Management");
-        request.getRequestDispatcher("view/user/user-list.jsp").forward(request, response);
     }
+
 
     /**
      * Handles the HTTP <code>POST</code> method.

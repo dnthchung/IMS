@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import model.Candidate;
+import model.User;
 import org.apache.commons.io.FilenameUtils;
 import utils.CloudinaryService;
 import utils.DBFileUtils;
@@ -71,6 +72,12 @@ public class CandidateEdit extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 //        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User u = (User) session.getAttribute("loggedInUser");
+        if(u == null || u.getUserRoleId() == 2){
+            response.sendRedirect("candidate-list");
+            return;
+        }
         String id = request.getParameter("id");
         if (id == null) {
             response.sendRedirect("candidate-list");
@@ -148,7 +155,7 @@ public class CandidateEdit extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("mess", "Update successfully");
         System.out.println(session.getAttribute("mess"));
-        expirationTimer.timerOTP(10, request, "mess");
+        expirationTimer.timerOTP(20, request, "mess");
         response.sendRedirect("candidate-edit?id="+candidateId);
     }
 

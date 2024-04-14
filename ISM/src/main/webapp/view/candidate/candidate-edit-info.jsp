@@ -56,8 +56,9 @@
                                                         <div class="input-group" style="padding: 0px !important;">
                                                             <!-- full name -->
                                                             <input type="text" class="form-control"
-                                                                   placeholder="type a name" required value="${c.fullName}" name="fullName">
+                                                                   placeholder="type a name" required value="${c.fullName}" name="fullName" onkeyup="checkAll()" id="fullName">
                                                         </div>
+                                                        <small id="fullNameAlert" style="color: green">Fill full name</small>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-1"></div>
@@ -69,8 +70,9 @@
                                                         <div class="input-group" style="padding: 0px !important;">
                                                             <!-- gmail -->
                                                             <input type="text" class="form-control"
-                                                                   placeholder="type an email..." required name="email" value="${c.email}">
+                                                                   placeholder="type an email..." required name="email" value="${c.email}" id="email" onkeyup="checkAll()">
                                                         </div>
+                                                        <small id="emailAlert" style="color: green">Fill an email. Ex:vietanhdeptrai@example.com</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -82,8 +84,9 @@
                                                     </div>
                                                     <div class="col-md-8">
                                                         <div class="input-group" style="padding: 0px !important;">
-                                                            <input type="date" class="form-control" value="${c.dob}" name="dob" required="">
+                                                            <input type="date" class="form-control" value="${c.dob}" name="dob" required="" id="dob" onchange="checkAll()">
                                                         </div>
+                                                        <small id="dobAlert" style="color: green">Fill date of birth before current day</small>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-1"></div>
@@ -94,8 +97,9 @@
                                                     <div class="col-md-8">
                                                         <div class="input-group" style="padding: 0px !important;">
                                                             <input type="text" class="form-control"
-                                                                   placeholder="type an address..." required="" name="address" value="${c.address}">
+                                                                   placeholder="type an address..." required="" name="address" value="${c.address}" id="address" onkeyup="checkAll()">
                                                         </div>
+                                                        <small id="addressAlert" style="color: green">Fill address</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -108,8 +112,9 @@
                                                     <div class="col-md-8">
                                                         <div class="input-group" style="padding: 0px !important;">
                                                             <input type="text" class="form-control"
-                                                                   placeholder="type a number..." required="" value="${c.phoneNumber}" name="phone">
+                                                                   placeholder="type a number..." required="" value="${c.phoneNumber}" name="phone" id="phone" onkeyup="checkAll()">
                                                         </div>
+                                                        <small id="phoneAlert" style="color: green">Fill phone number</small>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-1"></div>
@@ -126,6 +131,7 @@
                                                                 <option value="2" ${c.gender == 2 ? 'selected' : ''}>Other</option>
                                                             </select>
                                                         </div>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,6 +152,7 @@
                                                             <input type="file" class="form-control" name="file" id="fileInput" accept=".pdf,.docx">
                                                             <button type="button" onclick="clearFile()" class="btn btn-outline-danger">Clear File</button>
                                                         </div>
+                                                        
                                                         <p>Current CV: <a href="${c.cvAttachment}" target="_blank">${c.fullName}.pdf</a></p>
                                                     </div>
                                                 </div>
@@ -204,7 +211,7 @@
                                                         <div class="input-group" style="padding: 0px !important;">
                                                             <select class="form-select"
                                                                     data-placeholder="Choose skills ..."
-                                                                    id="small-select2-options-multiple-field" multiple name="skill" required="">
+                                                                    id="skill" multiple name="skill" required="" onchange="checkAll()">
                                                                 <c:forEach var="l" items="${listSkill}">
                                                                     <c:set var="check" value="false"></c:set>
                                                                     <c:forEach var="skillSelected" items="${c.skill}">
@@ -215,7 +222,9 @@
                                                                     <option value="${l.skillId}" ${check == true ? 'selected' : ''}>${l.skillName}</option>
                                                                 </c:forEach>
                                                             </select>
+                                                            
                                                         </div>
+                                                        <small id="skillAlert" style="color: green">Choose skill</small>
                                                     </div>
                                                     <!--<div id="selectedSkills"></div>-->
                                                 </div>
@@ -226,9 +235,10 @@
                                                     </div>
                                                     <div class="col-md-8">
                                                         <div class="input-group" style="padding: 0px !important;">
-                                                            <input type="number" min="0" class="form-control"
-                                                                   placeholder="type a number..." name="yoe" value="${c.yearOfExperience}" required="">
+                                                            <input type="number" min="1" class="form-control"
+                                                                   placeholder="type a number..." name="yoe" value="${c.yearOfExperience}" required="" onchange="checkAll()" id="yoe">
                                                         </div>
+                                                        <small id="yoeAlert" style="color: green">Fill yoe</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -278,7 +288,7 @@
                                         <br><br>
                                         <div class="d-flex justify-content-center">
                                             <button class="button-2" type="submit"
-                                                    style="background-color: #ABDF75; color: #fff;">Submit</button>
+                                                    style="background-color: green; color: #fff;" id="submitBtn">Submit</button>
                                             <button class="button-2" type="reset"
                                                     style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
                                         </div>
@@ -321,7 +331,7 @@
         </script>
         <script>
             //skill multi choice
-            $('#small-select2-options-multiple-field').select2({
+            $('#skill').select2({
                 theme: "bootstrap-5",
                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
                 placeholder: $(this).data('placeholder'),
@@ -340,5 +350,6 @@
             var mess = '${sessionScope.mess}';
         </script>
         <script src="${pageContext.request.contextPath}/JS/toast.js"></script>
+        <script src="${pageContext.request.contextPath}/JS/Candidate/check-validate-edit.js"></script>
     </body>
 </html>

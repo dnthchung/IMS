@@ -60,37 +60,33 @@ public class UserDetail extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Không tạo session mới nếu không tồn tại
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("loggedInUser") == null) {
-            // Nếu session không tồn tại hoặc không có thông tin người dùng đăng nhập, chuyển hướng đến trang đăng nhập
-            response.sendRedirect("login"); // Điều hướng đến trang đăng nhập của bạn
-            return; // Kết thúc xử lý
+            response.sendRedirect("login");
+            return;
         }
-        // Tiếp tục xử lý yêu cầu nếu người dùng đã đăng nhập
+
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser.getUserRoleId() != 1) { 
+            response.sendRedirect("home"); 
+            return;
+        }
+
         int userId = Integer.parseInt(request.getParameter("userId"));
-        System.out.println("user id: " + userId);
-        
         UserDAO userDAO = new UserDAO();
         User user = userDAO.getUserDetails(userId);
         ArrayList<UserStatus> userStatus = userDAO.getAllUserStatus();
         ArrayList<UserRole> userRole = userDAO.getAllUserRole();
         ArrayList<Department> departmentList = userDAO.getAllDeparmentForUser();
-        
-        System.out.println("===Run Main Here===");
-        for (Department hi : departmentList) {
-            System.out.println(hi);
-        }
 
         request.setAttribute("departmentList", departmentList);
         request.setAttribute("user", user);
         request.setAttribute("userStatus", userStatus);
         request.setAttribute("userRole", userRole);
         request.setAttribute("URL", "User Details");
-        
         request.getRequestDispatcher("view/user/user-details.jsp").forward(request, response);
-    } 
+    }
 
     /** 
      * Handles the HTTP <code>POST</code> method.

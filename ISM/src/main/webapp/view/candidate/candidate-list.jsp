@@ -68,17 +68,19 @@
                             <div class="container row">
                                 <div class="col-md-10"></div>
                                 <div class="col-md-2">
-                                    <a href="candidate-create" style="text-decoration: none;" class="button3">
-                                        <span class="button-text">Add New</span>
-                                        <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                       viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
-                                                                       stroke-linecap="round" stroke="currentColor" height="24" fill="none"
-                                                                       class="svg">
-                                            <line y2="19" y1="5" x2="12" x1="12"></line>
-                                            <line y2="12" y1="12" x2="19" x1="5"></line>
-                                            </svg>
-                                        </span>
-                                    </a>
+                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 2}">
+                                        <a href="candidate-create" style="text-decoration: none;" class="button3">
+                                            <span class="button-text">Add New</span>
+                                            <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                           viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
+                                                                           stroke-linecap="round" stroke="currentColor" height="24" fill="none"
+                                                                           class="svg">
+                                                <line y2="19" y1="5" x2="12" x1="12"></line>
+                                                <line y2="12" y1="12" x2="19" x1="5"></line>
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </c:if>
                                 </div>
                             </div>
                             <div class="card mt-3">                                
@@ -98,55 +100,74 @@
                                             </thead>
                                             <tbody>
                                                 <!--  table data rows  -->
-                                                <c:forEach var="lc" items="${listCandidate}">
-                                                    <tr>
-                                                        <td>${lc.fullName}</td>
-                                                        <td>${lc.email}</td>
-                                                        <td>${lc.phoneNumber}</td>
-                                                        <td>${lc.position.positionName}</td>
-                                                        <td>${lc.recruiter.useName}</td>
-                                                        <td>${lc.candidateStatus.statusName}</td>
-                                                        <td>
-                                                            <a style="margin-right: 5px;text-decoration: none; color: black; "
-                                                               href="candidate-info?id=${lc.candidateId}" class="icon-button">
-                                                                <i data-lucide="eye"></i>
-                                                            </a>
-                                                            <a style="margin-right: 5px;text-decoration: none; color: black;"
-                                                               href="candidate-edit?id=${lc.candidateId}" class="icon-button">
-                                                                <i data-lucide="file-pen-line"></i>
-                                                            </a>
-                                                            <a style="text-decoration: none; color: black;" href="candidate-delete"
-                                                               class="icon-button">
-                                                                <i data-lucide="trash-2"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
+                                                <c:choose>
+                                                    <c:when test="${listCandidate.isEmpty()}">
+                                                        <tr>
+                                                            <td colspan="7" style="text-align: center"><h1>Not Found</h1></td>
+                                                        </tr>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:forEach var="lc" items="${listCandidate}">
+                                                            <tr>
+                                                                <td>${lc.fullName}</td>
+                                                                <td>${lc.email}</td>
+                                                                <td>${lc.phoneNumber}</td>
+                                                                <td>${lc.position.positionName}</td>
+                                                                <td>${lc.recruiter.useName}</td>
+                                                                <td>${lc.candidateStatus.statusName}</td>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${sessionScope.loggedInUser.userRoleId == 2}">
+                                                                            <a style="margin-right: 5px;text-decoration: none; color: black; "
+                                                                               href="candidate-info?id=${lc.candidateId}" class="icon-button">
+                                                                                <i data-lucide="eye"></i>
+                                                                            </a>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <a style="margin-right: 5px;text-decoration: none; color: black; "
+                                                                               href="candidate-info?id=${lc.candidateId}" class="icon-button">
+                                                                                <i data-lucide="eye"></i>
+                                                                            </a>
+                                                                            <a style="margin-right: 5px;text-decoration: none; color: black;"
+                                                                               href="candidate-edit?id=${lc.candidateId}" class="icon-button">
+                                                                                <i data-lucide="file-pen-line"></i>
+                                                                            </a>                     
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </c:otherwise>
+                                                </c:choose>
+
+
                                             </tbody>
                                         </table>
-                                        <div class="container row">
-                                            <div class="col-md-10">
-                                                <!-- Your content -->
+                                        <c:if test="${!listCandidate.isEmpty()}">
+                                            <div class="container row">
+                                                <div class="col-md-10">
+                                                    <!-- Your content -->
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <!-- Pagination -->
+                                                    <ul id="pagination">
+                                                        <li>
+                                                            <span>
+                                                                Page:
+                                                            </span>
+                                                            <span>
+                                                                <span>${p}</span>
+                                                                /
+                                                                <span>${totalPage}</span>
+                                                            </span>
+
+                                                        </li>
+                                                        <li><a href="${pageContext.request.contextPath}/candidate-list?search=${search}&status=${status}&p=${p-1}" ${p == 1 ? 'hidden' : ''}>&lt;</a></li>
+                                                        <li><a href="${pageContext.request.contextPath}/candidate-list?search=${search}&status=${status}&p=${p+1}" ${p == totalPage ? 'hidden' : ''}>&gt;</a></li>
+                                                    </ul>
+                                                </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <!-- Pagination -->
-                                                <ul id="pagination">
-                                                    <li>
-                                                        <span>
-                                                            Page:
-                                                        </span>
-                                                        <span>
-                                                            <span>${p}</span>
-                                                            /
-                                                            <span>${totalPage}</span>
-                                                        </span>
-                                                        
-                                                    </li>
-                                                    <li><a href="${pageContext.request.contextPath}/candidate-list?search=${search}&status=${status}&p=${p-1}" ${p == 1 ? 'hidden' : ''}>&lt;</a></li>
-                                                    <li><a href="${pageContext.request.contextPath}/candidate-list?search=${search}&status=${status}&p=${p+1}" ${p == totalPage ? 'hidden' : ''}>&gt;</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>

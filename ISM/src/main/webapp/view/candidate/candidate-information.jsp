@@ -40,20 +40,22 @@
                             <div class="row">
                                 <div class="col-md-8"></div>
                                 <div class="col-md-3">
-                                    <a class="button31 link-offset-2 link-underline link-underline-opacity-0" role="button" href="candidate-update?id=${c.candidateId}">
-                                        <span class="button-text">Ban</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                 class="lucide lucide-ban">
-                                            <circle cx="12" cy="12" r="10" />
-                                            <path d="m4.9 4.9 14.2 14.2" />
-                                            </svg>
-                                            <line y2="19" y1="5" x2="12" x1="12"></line>
-                                            <line y2="12" y1="12" x2="19" x1="5"></line>
-                                            </svg>
-                                        </span>
-                                    </a>                                
+                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 2 && c.candidateStatus.candidateStatusId != 2}">
+                                        <a class="button31 link-offset-2 link-underline link-underline-opacity-0" role="button" href="candidate-update?id=${c.candidateId}">
+                                            <span class="button-text">Ban</span>
+                                            <span class="button-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                     class="lucide lucide-ban">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <path d="m4.9 4.9 14.2 14.2" />
+                                                </svg>
+                                                <line y2="19" y1="5" x2="12" x1="12"></line>
+                                                <line y2="12" y1="12" x2="19" x1="5"></line>
+                                                </svg>
+                                            </span>
+                                        </a>  
+                                    </c:if>
                                 </div>
                                 <div class="col-md-1"></div>
                             </div>
@@ -191,8 +193,10 @@
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-center">
-                                    <a class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em" href="candidate-edit?id=${c.candidateId}">Edit</a>
-<!--                                    <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>-->
+                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 2}">
+                                        <a class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em" href="candidate-edit?id=${c.candidateId}">Edit</a>
+                                        <!--                                    <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>-->
+                                    </c:if>
                                 </div>
                             </div>
 
@@ -200,6 +204,7 @@
                     </div>
                 </div>
             </div>
+            <%@include file="../notification/notification.jsp" %>
         </div>
 
         <!-- jQuery -->
@@ -226,5 +231,9 @@
                 dropdownCssClass: 'select2--small'
             });
         </script>
+        <script>
+            var mess = '${sessionScope.mess}';
+        </script>
+        <script src="${pageContext.request.contextPath}/JS/toast.js"></script>
     </body>
 </html>

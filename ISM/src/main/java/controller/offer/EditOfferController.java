@@ -5,7 +5,6 @@
 package controller.offer;
 
 import dao.OfferDAO;
-import dto.OfferInformationDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import model.Candidate;
 import model.ContractType;
@@ -91,7 +91,7 @@ public class EditOfferController extends HttpServlet {
                         request.setAttribute("activeManagers", activeManagers);
                         List<User> activeRecuiters = offerDAO.getAllActiveRecuiter();
                         request.setAttribute("activeRecuiters", activeRecuiters);
-                        List<InterviewSchedule> interviewSchedules = offerDAO.getInterviewSchedule();
+                        List<InterviewSchedule> interviewSchedules = new ArrayList<>();
                         interviewSchedules.add(offerDAO.getInterviewScheduleInfByOfferId(offerId));
                         request.setAttribute("interviewSchedules", interviewSchedules);
                         getSystemOfferValues(request);

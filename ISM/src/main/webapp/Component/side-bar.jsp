@@ -25,7 +25,7 @@
             <hr>
             <ul class="nav nav-pills flex-column mb-auto mt-5">
                 <li class="nav-item">
-                    <a href="#" class="nav-link " aria-current="page">
+                    <a href="home" class="nav-link " aria-current="page">
                         <div class="icon-wrap">
                             <i data-lucide="home"></i>
                         </div>
@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="candidate-list.jsp" class="nav-link">
+                    <a href="candidate-list" class="nav-link">
                         <div class="icon-wrap">
                             <i data-lucide="users"></i>
                         </div>
@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="job-list.jsp" class="nav-link">
+                    <a href="job-list" class="nav-link">
                         <div class="icon-wrap">
                             <i data-lucide="briefcase-business"></i>
                         </div>

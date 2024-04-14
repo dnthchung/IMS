@@ -12,6 +12,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
@@ -59,6 +61,12 @@ public class CandidateList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 //        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User u = (User) session.getAttribute("loggedInUser");
+        if(u == null ){
+            response.sendRedirect("login");
+            return;
+        }
         String search = request.getParameter("search") == null ? "" : request.getParameter("search");
         String status = request.getParameter("status") == null ? "" : request.getParameter("status");
         String p = request.getParameter("p") == null ? "1" : request.getParameter("p");

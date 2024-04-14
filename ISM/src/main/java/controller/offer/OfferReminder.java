@@ -31,8 +31,8 @@ public class OfferReminder implements ServletContextListener {
 
         // Tính thời gian cần đợi cho đến 8 giờ sáng hôm sau
         Calendar scheduledTime = Calendar.getInstance();
-        scheduledTime.set(Calendar.HOUR_OF_DAY, 20);
-        scheduledTime.set(Calendar.MINUTE, 10);
+        scheduledTime.set(Calendar.HOUR_OF_DAY, 8);
+        scheduledTime.set(Calendar.MINUTE, 0);
         scheduledTime.set(Calendar.SECOND, 0);
         scheduledTime.set(Calendar.MILLISECOND, 0);
         if (scheduledTime.before(currentTime) || scheduledTime.equals(currentTime)) {
