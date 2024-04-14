@@ -15,8 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.Department;
-import model.Offer;
 import model.User;
 
 /**
@@ -68,16 +66,22 @@ public class OfferListController extends HttpServlet {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser != null) {
             if (loggedInUser.getUserRoleId() != 3) {
-                OfferDAO offerDAO = new OfferDAO();  
-                request.setAttribute("offers", offerDAO.getAllOfferInformations());
+                OfferDAO offerDAO = new OfferDAO();
+                List<OfferInformationDTO> offers = offerDAO.getAllOfferInformations();
+                request.setAttribute("offers", offers);
                 request.setAttribute("offerStatuses", offerDAO.getAllOfferStatuses());
                 request.setAttribute("departments", offerDAO.getAllDepartments());
+                request.setAttribute("URL", "Offer");
+                request.setAttribute("currentPage", 1);
+                request.setAttribute("nextPage", 2);
+                request.setAttribute("totalPage", getTotalPage(offerDAO));
                 request.getRequestDispatcher("view/offer/offer-list.jsp").forward(request, response);
             } else {
-                response.sendRedirect("login");
+                response.sendRedirect("home");
             }
         } else {
-            response.sendRedirect("login");
+            String path = request.getServletPath();
+            response.sendRedirect("login?continueUrl=" + path.substring(1));
         }
     }
 
@@ -95,21 +99,64 @@ public class OfferListController extends HttpServlet {
         String searchValue = request.getParameter("searchValue");
         String dept = request.getParameter("dept");
         String status = request.getParameter("status");
+        int pageNum = 1;
+        try {
+            pageNum = Integer.parseInt(request.getParameter("currentPage"));
+            if (request.getParameter("btnPage").equals("prev")) {
+                pageNum--;
+            } else {
+                pageNum++;
+            }
+        } catch (Exception e) {
+        }
         if (searchValue.isEmpty() && dept.equals("Department") && status.equals("Status")) {
             doGet(request, response);
         } else {
             OfferDAO offerDAO = new OfferDAO();
-            List<OfferInformationDTO> offers = offerDAO.searchOffers(searchValue, dept, status);
+            System.out.println("Dept: " + dept);
+            System.out.println("Status: " + status);
+            List<OfferInformationDTO> offers = offerDAO.searchOffers(searchValue, dept, status, pageNum);
             if (offers.isEmpty()) {
                 request.setAttribute("isEmptySearch", true);
             } else {
                 request.setAttribute("isEmptySearch", false);
-                request.setAttribute("offers", offerDAO.searchOffers(searchValue, dept, status));
+                request.setAttribute("offers", offers);
             }
+
+            
+            if (!dept.equals("Department")) {
+                request.setAttribute("deptSelected", dept);
+            }
+
+            
+            if (!status.equals("Status")) {
+                request.setAttribute("statusSelected", status);
+            }
+            request.setAttribute("searchedValue", searchValue);
             request.setAttribute("offerStatuses", offerDAO.getAllOfferStatuses());
             request.setAttribute("departments", offerDAO.getAllDepartments());
+            request.setAttribute("currentPage", pageNum);
+            request.setAttribute("totalPage", getTotalPage(offerDAO));
+            request.setAttribute("URL", "Offer");
             request.getRequestDispatcher("view/offer/offer-list.jsp").forward(request, response);
         }
+    }
+
+    private int getTotalPage(OfferDAO offerDAO) {
+        int numRows = offerDAO.countAllOffers();
+        int totalPage = numRows / 2;
+        if (numRows % 2 != 0) {
+            totalPage++;
+        }
+        return totalPage;
+    }
+
+    private int getTotalPageWithSearch(List<OfferInformationDTO> offers) {
+        int totalPage = offers.size() / 2;
+        if (offers.size() % 2 != 0) {
+            totalPage++;
+        }
+        return totalPage;
     }
 
     /**

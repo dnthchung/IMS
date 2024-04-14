@@ -5,6 +5,7 @@
 package controller.offer;
 
 import dao.OfferDAO;
+import dto.OfferInformationDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -30,8 +31,8 @@ import model.User;
  *
  * @author tranh
  */
-@WebServlet(name = "CreateOfferServlet", urlPatterns = {"/create-offer"})
-public class CreateOfferController extends HttpServlet {
+@WebServlet(name = "EditOfferController", urlPatterns = {"/edit-offer"})
+public class EditOfferController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -50,10 +51,10 @@ public class CreateOfferController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CreateOfferServlet</title>");
+            out.println("<title>Servlet EditOfferController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CreateOfferServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet EditOfferController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -75,23 +76,36 @@ public class CreateOfferController extends HttpServlet {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser != null) {
             if (loggedInUser.getUserRoleId() != 3) {
-                OfferDAO offerDAO = new OfferDAO();
-                List<Candidate> offerableCandidate = offerDAO.getOfferableCandidates();
-                request.setAttribute("offerableCandidate", offerableCandidate);
-                List<User> activeManagers = offerDAO.getAllActiveManager();
-                request.setAttribute("activeManagers", activeManagers);
-                List<User> activeRecuiters = offerDAO.getAllActiveRecuiter();
-                request.setAttribute("activeRecuiters", activeRecuiters);
-                List<InterviewSchedule> interviewSchedules = offerDAO.getInterviewSchedule();
-                request.setAttribute("interviewSchedules", interviewSchedules);
-                getSystemOfferValues(request);
-                request.setAttribute("URL", "Offer");
-                request.getRequestDispatcher("view/offer/offer-create.jsp").forward(request, response);
+                try {
+                    OfferDAO offerDAO = new OfferDAO();
+                    Long offerId = Long.parseLong(request.getParameter("offerId"));
+                    Offer updatingOffer = offerDAO.getOfferByOfferId(offerId);
+                    if (updatingOffer == null || updatingOffer.getOfferStatusId() != 1) {
+                        response.sendRedirect("offer-list");
+                    } else {
+                        request.setAttribute("updatingOffer", updatingOffer);
+                        List<Candidate> offerableCandidate = offerDAO.getOfferableCandidates();
+                        offerableCandidate.add(offerDAO.getCandidateByOfferId(offerId));
+                        request.setAttribute("offerableCandidate", offerableCandidate);
+                        List<User> activeManagers = offerDAO.getAllActiveManager();
+                        request.setAttribute("activeManagers", activeManagers);
+                        List<User> activeRecuiters = offerDAO.getAllActiveRecuiter();
+                        request.setAttribute("activeRecuiters", activeRecuiters);
+                        List<InterviewSchedule> interviewSchedules = offerDAO.getInterviewSchedule();
+                        interviewSchedules.add(offerDAO.getInterviewScheduleInfByOfferId(offerId));
+                        request.setAttribute("interviewSchedules", interviewSchedules);
+                        getSystemOfferValues(request);
+                        request.setAttribute("URL", "Offer");
+                        request.getRequestDispatcher("view/offer/offer-edit.jsp").forward(request, response);
+                    }
+                } catch (Exception e) {
+                    response.sendRedirect("offer-list");
+                }
             } else {
                 response.sendRedirect("home");
             }
         } else {
-            String path = request.getServletPath();
+            String path = request.getServletPath() + "?" + request.getQueryString();
             response.sendRedirect("login?continueUrl=" + path.substring(1));
         }
     }
@@ -99,32 +113,31 @@ public class CreateOfferController extends HttpServlet {
     private void getSystemOfferValues(HttpServletRequest request) {
         HttpSession session = request.getSession();
         OfferDAO offerDAO = new OfferDAO();
-        
+
         List<ContractType> contractTypes = (List<ContractType>) session.getAttribute("offerableCandidate");
         if (contractTypes == null) {
             contractTypes = offerDAO.getAllContractTypes();
             session.setAttribute("contractTypes", contractTypes);
         }
-        
+
         List<Position> positions = (List<Position>) session.getAttribute("positions");
         if (positions == null) {
             positions = offerDAO.getAllPositions();
             session.setAttribute("positions", positions);
         }
-        
+
         List<Level> levels = (List<Level>) session.getAttribute("levels");
         if (levels == null) {
             levels = offerDAO.getAllLevels();
             session.setAttribute("levels", levels);
         }
-        
+
         List<Department> departments = (List<Department>) session.getAttribute("departments");
         if (departments == null) {
             departments = offerDAO.getAllDepartments();
             session.setAttribute("departments", departments);
         }
     }
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -138,6 +151,7 @@ public class CreateOfferController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            Long offerId = Long.parseLong(request.getParameter("offerId"));
             Long candidateID = Long.parseLong(request.getParameter("candidateId"));
             Long contractTypeID = Long.parseLong(request.getParameter("contractTypeID"));
             Long positionID = Long.parseLong(request.getParameter("positionId"));
@@ -155,7 +169,10 @@ public class CreateOfferController extends HttpServlet {
             HttpSession session = request.getSession();
             User loggedInUser = (User) session.getAttribute("loggedInUser");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            OfferDAO offerDAO = new OfferDAO();
+            Offer updatingOffer = offerDAO.getOfferByOfferId(offerId);
             Offer offer = Offer.builder()
+                    .offerId(updatingOffer.getOfferId())
                     .candidateId(candidateID)
                     .contractTypeId(contractTypeID)
                     .positionId(positionID)
@@ -169,13 +186,11 @@ public class CreateOfferController extends HttpServlet {
                     .dueDate(LocalDate.parse(dueDate, formatter))
                     .basicSalary(salary)
                     .note(note)
-                    .offerStatusId(1L)
-                    .createdAt(LocalDateTime.now())
+                    .offerStatusId(updatingOffer.getOfferStatusId())
                     .modifiedBy(loggedInUser.getUserId())
                     .modifiedAt(LocalDateTime.now())
                     .build();
-            OfferDAO offerDAO = new OfferDAO();
-            offerDAO.saveOffer(offer);
+            offerDAO.updateOffer(offer);
             response.sendRedirect("offer-list");
         } catch (NumberFormatException e) {
             doGet(request, response);

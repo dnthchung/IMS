@@ -214,13 +214,12 @@
                     confirmButtonText: 'Yes!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '${pageContext.request.contextPath}/user-list'; // Chuyển hướng về trang 'user-list'
+                        window.location.href = '${pageContext.request.contextPath}/user-list'; 
                     }
                 });
             });
             
             function changeUserStatus(flag) {
-                // Hiển thị Swal để xác nhận
                 var userId = ${user.userId};
                 
                 Swal.fire({
@@ -233,30 +232,24 @@
                     confirmButtonText: flag === 1 ? 'Yes, de-activate it!' : 'Yes, activate it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Thực hiện request AJAX đến servlet
                         var xhr = new XMLHttpRequest();
                         xhr.onreadystatechange = function () {
                             if (xhr.readyState === XMLHttpRequest.DONE) {
                                 if (xhr.status === 200) {
-                                    // Xử lý phản hồi từ servlet nếu cần
                                     var response = xhr.responseText;
-                                    // Hiển thị Swal success
                                     Swal.fire({
                                         title: 'Success!',
                                         text: flag === 1 ? 'User has been de-activated successfully' : 'User has been activated successfully',
                                         icon: 'success'
                                     }).then(() => {
-                                        // Refresh trang sau khi xử lý thành công
                                         location.reload();
                                     });
                                 } else {
-                                    // Xử lý lỗi nếu có
                                     console.error('Request failed.');
                                 }
                             }
                         };
 
-                        // Gửi request GET đến servlet user-status-control với flag tương ứng
                         xhr.open('GET', 'user-status-control?flag=' + flag + '&userId=' + userId, true);
                         xhr.send();
                     }

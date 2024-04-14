@@ -72,7 +72,7 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="contractTypeID" required="">
                                                             <option selected disabled>Select a type of contract</option>
-                                                            <c:forEach var="contractType" items="${requestScope.contractTypes}">
+                                                            <c:forEach var="contractType" items="${sessionScope.contractTypes}">
                                                                 <option value="${contractType.getContractTypeID()}">${contractType.getTypeName()}</option>
                                                             </c:forEach>
                                                         </select>
@@ -90,7 +90,7 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="positionId" required="">
                                                             <option selected disabled>Select a Position</option>
-                                                            <c:forEach var="position" items="${requestScope.positions}">
+                                                            <c:forEach var="position" items="${sessionScope.positions}">
                                                                 <option value="${position.positionId}">${position.positionName}</option>
                                                             </c:forEach>
                                                         </select>
@@ -106,7 +106,7 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="levelId" required="">
                                                             <option selected disabled>Select a Level</option>
-                                                            <c:forEach var="level" items="${requestScope.levels}">
+                                                            <c:forEach var="level" items="${sessionScope.levels}">
                                                                 <option value="${level.levelId}">${level.levelName}</option>
                                                             </c:forEach>
                                                         </select>
@@ -140,7 +140,7 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="departmentId" required="">
                                                             <option selected disabled>Select an Department</option>
-                                                            <c:forEach var="dept" items="${requestScope.departments}">
+                                                            <c:forEach var="dept" items="${sessionScope.departments}">
                                                                 <option value="${dept.departmentId}">${dept.departmentName}</option>
                                                             </c:forEach>
                                                         </select>
@@ -182,7 +182,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId != 2}">
+                                                <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId == 2}">
                                                     <div class="col-md-12">
                                                         <div style="margin-top: 15px; margin-left: 175px">
                                                             <a href="#" style="color: #000">Assigned to me</a>

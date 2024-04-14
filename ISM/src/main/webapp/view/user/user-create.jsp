@@ -327,7 +327,7 @@
             });
 
             document.querySelector('#user-create').addEventListener('submit', function (e) {
-                e.preventDefault(); // Prevent form submission
+                e.preventDefault();
 
                 var fullName = document.getElementById('fullName').value;
                 var email = document.getElementById('email').value;
@@ -345,17 +345,28 @@
 
                 // Regular expression for email (contains @ and no whitespace)
                 var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                // Regular expression for phone number (starts with 0 and contains 10 digits)
+                var phoneRegex = /^0\d{9}$/;
 
                 // Check if full name contains 2 words or more
                 if (!fullNameRegex.test(fullName)) {
-                    Swal.fire({
+                    Swal.fire({ 
                         title: 'Fail!',
                         text: 'Full name must contain 2 words or more!',
                         icon: 'error'
                     });
                     return;
                 }
-
+                // Check if phone number starts with 0 and contains 10 digits
+                if (!phoneRegex.test(phone)) {
+                    Swal.fire({
+                        title: 'Fail!',
+                        text: 'Please enter a valid phone number starting with 0 and containing 10 digits!',
+                        icon: 'error'
+                    });
+                    return;
+                }
                 // Check if email contains @ and no whitespace
                 if (!emailRegex.test(email)) {
                     Swal.fire({
@@ -366,9 +377,7 @@
                     return;
                 }
 
-                // Check if all fields are filled
                 if (fullName.trim() !== '' && email.trim() !== '' && dob.trim() !== '' && address.trim() !== '' && phone.trim() !== '' && gender.trim() !== '' && role.trim() !== '' && department.trim() !== '' && status.trim() !== '') {
-                    // AJAX request to check email existence
                     var xhr = new XMLHttpRequest();
                     xhr.onreadystatechange = function () {
                         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -381,7 +390,6 @@
                                         icon: 'error'
                                     });
                                 } else {
-                                    // If email does not exist, show success message and submit form
                                     Swal.fire({
                                         title: 'Success!',
                                         text: 'Create User Success',
@@ -392,7 +400,6 @@
                                     });
                                 }
                             } else {
-                                // Handle error
                                 console.error('AJAX request failed.');
                             }
                         }

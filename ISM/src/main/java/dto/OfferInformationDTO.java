@@ -4,7 +4,8 @@
  */
 package dto;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class OfferInformationDTO {
     private String candidateName;
     private String email;
     private String approverName;
+    private String approverUsename;
     private String departmentName;
     private String note;
     private String statusName;
@@ -38,6 +40,16 @@ public class OfferInformationDTO {
     private String createdAt;
     private String modifiedBy;
     private String lastModified;
+
+    public String getCalculatedLastModified() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dateFromString = LocalDate.parse(this.lastModified, formatter);
+        if (dateFromString.isEqual(LocalDate.now())) {
+            return "today";
+        } else {
+            return this.lastModified;
+        }
+    }
 
     public String getFormattedSalary() {
         String amount = this.basicSalary;

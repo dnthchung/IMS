@@ -4,9 +4,9 @@
  */
 package model;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,4 +39,14 @@ public class Offer {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long modifiedBy;
+    
+    public String getFormatedSalary() {
+        String val = String.format("%.0f", basicSalary);
+        return val.replace(".", "");
+    }
+    
+    public String getFormatedDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return date.format(formatter);
+    }
 }

@@ -13,22 +13,24 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import model.Candidate;
 import org.apache.commons.io.FilenameUtils;
 import utils.CloudinaryService;
 import utils.DBFileUtils;
+import utils.expirationTimer;
 
 /**
  *
  * @author Vanhle
  */
-@WebServlet(name = "CandidateCreate", urlPatterns = {"/candidate-create"})
+@WebServlet(name = "CandidateEdit", urlPatterns = {"/candidate-edit"})
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024 * 20,
         maxRequestSize = 1024 * 1024 * 5 * 10)
-public class CandidateCreate extends HttpServlet {
+public class CandidateEdit extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,10 +49,10 @@ public class CandidateCreate extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CandidateCreate</title>");
+            out.println("<title>Servlet CandidateEdit</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CandidateCreate at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CandidateEdit at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -69,14 +71,19 @@ public class CandidateCreate extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 //        processRequest(request, response);
+        String id = request.getParameter("id");
+        if (id == null) {
+            response.sendRedirect("candidate-list");
+            return;
+        }
         CandidateDAO dao = new CandidateDAO();
-        request.setAttribute("position", dao.getAllPositon());
-        request.setAttribute("recruiter", dao.getAllRecruiter());
+        request.setAttribute("c", dao.getCandidateDetail(id));
+        request.setAttribute("listPosition", dao.getAllPositon());
         request.setAttribute("status", dao.getAllStatus());
-        request.setAttribute("skill", dao.getAllSkill());
-        request.setAttribute("level", dao.getAllLevel());
-        request.getRequestDispatcher("view/candidate/candidate-create.jsp").forward(request, response);
-//            request.getRequestDispatcher("view/candidate/candidate-list.jsp").forward(request, response);
+        request.setAttribute("listSkill", dao.getAllSkill());
+        request.setAttribute("listLevel", dao.getAllLevel());
+        request.setAttribute("listRecruiter", dao.getAllRecruiter());
+        request.getRequestDispatcher("view/candidate/candidate-edit-info.jsp").forward(request, response);
     }
 
     /**
@@ -97,23 +104,30 @@ public class CandidateCreate extends HttpServlet {
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
         String gender = request.getParameter("gender");
-        String note = request.getParameter("note");        
+        String note = request.getParameter("note") == null ? "" : request.getParameter("note");
         String positionId = request.getParameter("position");
         String statusId = request.getParameter("status");
         String[] skill = request.getParameterValues("skill");
         String yoe = request.getParameter("yoe");
         String recruiterId = request.getParameter("recruiter");
         String levelId = request.getParameter("level");
-        //upload file
+        String oldFile = request.getParameter("oldFile");
+        String candidateId = request.getParameter("candidateId");
+        //file
         String uploadDir = "CV/";
         String cvFile = DBFileUtils.uploadFile(uploadDir, request);
-        System.out.println(cvFile);
-        String fullPath = request.getServletContext().getRealPath("") + uploadDir + cvFile;
-        CloudinaryService cl = new CloudinaryService();
-        cl.uploadImage(fullPath, FilenameUtils.removeExtension(cvFile), "CV");
-        String cvLink = cl.getImageUrl("CV", cvFile);
-        System.out.println(cvLink);
-                Candidate can = Candidate.builder()
+        String newCV = "";
+        if (cvFile != null) {
+            String fullPath = request.getServletContext().getRealPath("") + uploadDir + cvFile;
+            CloudinaryService cl = new CloudinaryService();
+            cl.uploadImage(fullPath, FilenameUtils.removeExtension(cvFile), "CV");
+            cl.deleteImage(oldFile);
+            newCV = cl.getImageUrl("CV", cvFile);
+        } else {
+            newCV = oldFile;
+        }
+        Candidate can = Candidate.builder()
+                .candidateId(Long.parseLong(candidateId))
                 .fullName(fullName)
                 .address(address)
                 .email(email)
@@ -126,11 +140,16 @@ public class CandidateCreate extends HttpServlet {
                 .yearOfExperience(Integer.parseInt(yoe))
                 .recruiterId(Long.parseLong(recruiterId))
                 .highestLevel(Long.parseLong(levelId))
-                .cvAttachment(cvLink)
-                .createBy(8L)
-                .build(); 
-        dao.addCandidate(can, skill);
-        doGet(request, response);
+                .cvAttachment(newCV)
+                //                .createBy(8L)
+                .build();
+        dao.updateCandidate(can, skill);
+        request.setAttribute("candidateId", candidateId);
+        HttpSession session = request.getSession();
+        session.setAttribute("mess", "Update successfully");
+        System.out.println(session.getAttribute("mess"));
+        expirationTimer.timerOTP(10, request, "mess");
+        response.sendRedirect("candidate-edit?id="+candidateId);
     }
 
     /**

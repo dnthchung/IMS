@@ -16,4 +16,7 @@
             30
         </session-timeout>
     </session-config>
+    <listener>
+        <listener-class>controller.offer.OfferReminder</listener-class>
+    </listener>
 </web-app>

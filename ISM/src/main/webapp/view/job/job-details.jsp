@@ -3,6 +3,7 @@
     Created on : Apr 7, 2024, 1:21:22 AM
     Author     : chun
 --%>
+
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -17,16 +18,18 @@
     <body>
         <!-- side bar -->
         <div class="d-flex flex-row">
+
             <%@include file="../../Component/side-bar.jsp" %>
             <!-- navigation bar + main content-->
             <div class="main-content">
                 <!-- navigation bar -->
                 <%@include file="../../Component/nav-bar.jsp" %>
-                <!-- body -->
+                <!-- body -->            
                 <div class="container-fluid mt-3">
+
                     <nav aria-label="breadcrumb" style="margin-left: 1em">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Job List</a></li>
+                            <li class="breadcrumb-item"><a href="job-list">Job List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
                                 <a href="#">Job Details</a>
                             </li>
@@ -48,39 +51,52 @@
                                                 <thead>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td class="part-title">Job title</td>
-                                                        <td>Business Analyst</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="part-title">Start Date</td>
-                                                        <td>20/06/2003</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="part-title">Salary Range</td>
-                                                        <td class="">
-                                                            <div class="d-flex justify-content-between">
-                                                                <p>From</p>
-                                                                <p>
-                                                                    <strong>5.000.000</strong>
-                                                                    <span> VND</span>
-                                                                </p>
-                                                                <p>To</p>
-                                                                <p>
-                                                                    <strong>5.000.000</strong>
-                                                                    <span>VND</span>
-                                                                </p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="part-title">Working address</td>
-                                                        <td>FPT Tower</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="part-title">Status</td>
-                                                        <td>Draft</td>
-                                                    </tr>
+                                                    <c:forEach var="jd" items="${job}" varStatus="loop">
+                                                        <c:if test="${loop.index == 0 || jd.jobTitle != job[loop.index - 1].jobTitle}">
+                                                            <tr>
+                                                                <td class="part-title">Job title</td>
+                                                                <td>${jd.jobTitle}</td>  
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="part-title">Start Date</td>
+                                                                <td>${jd.startDate}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="part-title">Salary Range</td>
+                                                                <td class="">
+                                                                    <div class="d-flex justify-content-between">
+                                                                        <p>From</p>
+                                                                        <p>
+                                                                            <strong>${jd.salaryFrom}</strong>
+                                                                            <span> VND</span>
+                                                                        </p>
+                                                                        <p>To</p>
+                                                                        <p>
+                                                                            <strong>${jd.salaryTo}</strong>
+                                                                            <span>VND</span>
+                                                                        </p>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="part-title">Working address</td>
+                                                                <td>${jd.workAddress}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="part-title">Status</td>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${jd.status eq true}">
+                                                                            Open
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            Closed
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                            </tr>
+                                                        </c:if>
+                                                    </c:forEach>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -92,53 +108,72 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="part-title">Skills</td>
-                                                        <td>
-                                                            <div class="d-flex flex-wrap-limit justify-content-between">
-                                                                <span class="badge text-bg-success">Java</span>
-                                                                <span class="badge text-bg-success">Kotlin</span>
-                                                                <span class="badge text-bg-success">HTML</span>
-                                                                <span class="badge text-bg-success">${pageContext.request.contextPath}/CSS</span>
-                                                            </div>
-                                                        </td>
+                                                        <c:forEach var="jd" items="${job}">
+
+                                                            <td>
+                                                                <div class="d-flex flex-wrap-limit justify-content-between">
+                                                                    <span class="badge text-bg-success">${jd.skill.skillName}</span>
+
+                                                                </div>
+                                                            </td>
+                                                        </c:forEach>
                                                     </tr>
+
+
                                                     <tr>
                                                         <td class="part-title">End Date</td>
-                                                        <td>
-                                                            23/04/2022
-                                                        </td>
+                                                        <c:set var="previousEndDate" value="" />
+                                                        <c:forEach var="jd" items="${job}">
+                                                            <c:if test="${jd.endDate != previousEndDate}">
+                                                                <c:set var="previousEndDate" value="${jd.endDate}" />
+                                                                <td>${jd.endDate}</td>
+                                                            </c:if>
+                                                        </c:forEach>
                                                     </tr>
+
+
                                                     <tr>
                                                         <td class="part-title">Benefits</td>
-                                                        <td>
-                                                            <div class="d-flex flex-wrap-limit justify-content-between">
-                                                                <span class="badge text-bg-success">Travel</span>
-                                                                <span class="badge text-bg-success">25 leave-off</span>
-                                                                <span class="badge text-bg-success">Lunch</span>
-                                                                <span class="badge text-bg-success">YEP</span>
-                                                            </div>
-                                                        </td>
+                                                        <c:forEach var="jd" items="${job}">
+                                                            <td>
+                                                                <div class="d-flex flex-wrap-limit justify-content-between">
+                                                                    <span class="badge text-bg-success">${jd.benefit.benefitName}</span>
+
+                                                                </div>
+                                                            </td>
+                                                        </c:forEach>
                                                     </tr>
                                                     <tr>
+
                                                         <td class="part-title">Level</td>
-                                                        <td>
-                                                            <div
-                                                                class="d-flex flex-wrap-limit justify-content-between">
-                                                                <span class="badge text-bg-success">Junior</span>
-                                                                <span class="badge text-bg-success">Fresher</span>
-                                                            </div>
-                                                        </td>
+                                                        <c:forEach var="jd" items="${job}">
+                                                            <td>
+                                                                <div
+                                                                    class="d-flex flex-wrap-limit justify-content-between">
+                                                                    <span class="badge text-bg-success">${jd.level.levelName}</span>
+
+                                                                </div>
+                                                            </td>
+                                                        </c:forEach>
                                                     </tr>
+
                                                     <tr>
                                                         <td class="part-title">Description</td>
-                                                        <td>
-                                                            <p>N/A</p>
-                                                        </td>
-                                                    </tr>
+                                                        <c:set var="previousDescription" value="" />
+                                                        <c:forEach var="jd" items="${job}">
+                                                            <c:if test="${jd.description ne previousDescription}">
+                                                                <c:set var="previousDescription" value="${jd.description}" />
+                                                                <td>
+                                                                    <p>${jd.description}</p>
+                                                                </td>
+                                                            </c:if>
+                                                        </c:forEach>
+                                                    </tr>   
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
- 
+
                                     <div class="d-flex justify-content-center mt-5">
                                         <a type="button" href="job-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
                                         <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>

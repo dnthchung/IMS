@@ -108,7 +108,7 @@
                                                         <td>${lc.candidateStatus.statusName}</td>
                                                         <td>
                                                             <a style="margin-right: 5px;text-decoration: none; color: black; "
-                                                               href="candidate-detail?id=${lc.candidateId}" class="icon-button">
+                                                               href="candidate-info?id=${lc.candidateId}" class="icon-button">
                                                                 <i data-lucide="eye"></i>
                                                             </a>
                                                             <a style="margin-right: 5px;text-decoration: none; color: black;"

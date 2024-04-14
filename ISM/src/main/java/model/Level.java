@@ -3,19 +3,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+import java.time.LocalDate;
+
 
 import lombok.*;
 
+
+
 /**
  *
- * @author Vanhle
+ * @author chun
  */
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 public class Level {
     private Long levelId;
     private String levelName;
+
+   
+    
+   
+
+ 
     
 }

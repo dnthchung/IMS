@@ -325,6 +325,7 @@ public class CandidateDAO {
                 Level l = getLevelById(rs.getString("HighestLevel"));
                 User u = getUserDetails(rs.getInt("CreateBy"));
                 User recruiter = getUserDetails(rs.getInt("Recruiter"));
+                
                 CandidateDTO c = CandidateDTO.builder()
                         .candidateId(rs.getLong("CandidateID"))
                         .fullName(rs.getString("FullName"))
@@ -341,6 +342,7 @@ public class CandidateDAO {
                         .createBy(u)
                         .lastUpdateAt(rs.getDate("LastUpdateAt").toLocalDate())
                         .skill(listSkill)
+                        .dob(LocalDate.parse(rs.getString("DOB")))
                         .recruiter(recruiter).build();
                 return c;
             }

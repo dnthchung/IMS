@@ -37,7 +37,7 @@
                                                 <div class="col-md-3">
                                                     <!-- Search Area -->
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" name="searchValue" placeholder="Search">
+                                                        <input type="text" class="form-control" value="${requestScope.searchedValue}" name="searchValue" placeholder="Search">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">
                                                                 <i data-lucide="search"></i>
@@ -48,9 +48,12 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="dept">
-                                                            <option selected>Department</option>
+                                                            <option <c:if test="${deptSelected.isEmpty() || deptSelected == ''}">selected
+                                                                                                           </c:if>>Department</option>
                                                             <c:forEach var="dept" items="${requestScope.departments}">
-                                                                <option value="${dept.departmentId}">${dept.departmentName}</option>
+                                                                <option value="${dept.departmentId}" 
+                                                                        <c:if test="${deptSelected == dept.departmentId && !deptSelected.isEmpty()}">selected
+                                                                        </c:if>>${dept.departmentName}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
@@ -58,9 +61,13 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="status">
-                                                            <option selected>Status</option>
+                                                            <option <c:if test="${statusSelected.isEmpty() || statusSelected == ''}">selected
+                                                                                                             </c:if>>Status</option>
                                                             <c:forEach var="offerStatus" items="${requestScope.offerStatuses}">
-                                                                <option value="${offerStatus.offerStatusId}">${offerStatus.statusName}</option>
+                                                                <option value="${offerStatus.offerStatusId}" 
+                                                                        <c:if test="${statusSelected == offerStatus.offerStatusId && !statusSelected.isEmpty()}">selected
+                                                                        </c:if>
+                                                                        >${offerStatus.statusName}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
@@ -145,10 +152,13 @@
                                                                href="offer-details?offerId=${offer.offerId}" class="icon-button">
                                                                 <i data-lucide="eye"></i>
                                                             </a>
-                                                            <a style="margin-right: 5px;text-decoration: none; color: black;"
-                                                               href="#" class="icon-button">
-                                                                <i data-lucide="file-pen-line"></i>
-                                                            </a>
+                                                            <c:if test="${sessionScope.loggedInUser != null && offer.statusName == 'Waiting for Approval'}">
+                                                                <a style="margin-right: 5px;text-decoration: none; color: black;"
+                                                                   href="edit-offer?offerId=${offer.offerId}" class="icon-button">
+                                                                    <i data-lucide="file-pen-line"></i>
+                                                                </a>
+                                                            </c:if>
+
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -159,21 +169,22 @@
                                                 <!-- Your content -->
                                             </div>
                                             <div class="col-md-2">
-                                                <!-- Pagination -->
-                                                <ul id="pagination">
-                                                    <li>
-                                                        <span>
-                                                            <span>06</span>
-                                                            /
-                                                            <span>60</span>
-                                                        </span>
-                                                        <span>
-                                                            rows
-                                                        </span>
-                                                    </li>
-                                                    <li><a class="" href="#">&lt;</a></li>
-                                                    <li><a href="#">&gt;</a></li>
-                                                </ul>
+                                                <form action="offer-list" method="POST">
+                                                    <input type="hidden" value="${requestScope.searchedValue}" name="searchValue">
+                                                    <input type="hidden" value="${requestScope.deptSelected}" name="dept">
+                                                    <input type="hidden" value="${requestScope.statusSelected}" name="status">
+                                                    <input type="hidden" value="${requestScope.currentPage}" name="currentPage">
+                                                    <!-- Pagination -->
+                                                    <ul id="pagination">
+                                                        <li>
+                                                            <span>
+                                                                <span>Page ${requestScope.currentPage}</span> / <span>${requestScope.totalPage}</span>
+                                                            </span>
+                                                        </li>
+                                                        <li><button <c:if test="${requestScope.currentPage == 1}">disabled=""</c:if> style="border: 0px" type="submit" value="prev" name="btnPage" />&lt;</button></li>
+                                                        <li><button <c:if test="${requestScope.totalPage == requestScope.currentPage}">disabled=""</c:if> style="border: 0px" type="submit" value="next" name="btnPage"/>&gt;</button></li>
+                                                    </ul>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>

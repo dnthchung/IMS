@@ -34,75 +34,155 @@
                         </ol>
                     </nav>
                     <div class="d-flex justify-content-end" style="margin-right: 1em">
-                        <p><i>Created on <strong>${offerInf.createdAt}</strong> , last updated by <strong>${offerInf.modifiedBy}</strong> ${offerInf.lastModified}</i></p>
+                        <p><i>Created on <strong>${offerInf.createdAt}</strong> , last updated by <strong>${offerInf.modifiedBy}</strong> ${offerInf.getCalculatedLastModified()}</i></p>
                     </div>
                     <!-- content-card -->
                     <div class="card my-card">
                         <div class="content">
-                            <!-- class="content-1" -->
-                            <!-- class="content-2" -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                 </div>
                                 <div class="col-md-6">
-                                    <!--manager-->
-                                    <!--                                    <button class="button323" style="margin-right: 10px">
-                                                                            <span class="button-text">Approve</span>
-                                                                            <span class="button-icon">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
-                                                                                <path d="M20 6 9 17l-5-5"/>
-                                                                                </svg>
-                                                                            </span>
-                                                                        </button>
-                                                                        <button class="button32" style="margin-right: 10px">
-                                                                            <span class="button-text">Reject</span>
-                                                                            <span class="button-icon">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                                                                <path d="M18 6 6 18"/>
-                                                                                <path d="m6 6 12 12"/>
-                                                                                </svg>
-                                                                            </span>
-                                                                        </button>-->
-                                    <!--                                    <button class="button33blue" style="margin-right: 10px">
-                                                                            <span class="button-text">Mark as Sent to Candidate</span>
-                                                                            <span class="button-icon">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send">
-                                                                                <path d="m22 2-7 20-4-9-9-4Z"/>
-                                                                                <path d="M22 2 11 13"/>
-                                                                                </svg>
-                                                                            </span>
-                                                                        </button>-->
-                                    <button class="button33blue" style="margin-right: 10px; width: 180px !important">
-                                        <span class="button-text">Accepted Offer</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
-                                            <path d="M20 6 9 17l-5-5"/>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                    <button class="button33orange" style="margin-right: 10px; width: 180px !important">
-                                        <span class="button-text">Declined Offer</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                            <path d="M18 6 6 18"/>
-                                            <path d="m6 6 12 12"/>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                    <!--user-->
-                                    <button class="button32" style="width: 170px !important">
-                                        <span class="button-text">Cancel Offer</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                 class="lucide lucide-ban">
-                                            <circle cx="12" cy="12" r="10" />
-                                            <path d="m4.9 4.9 14.2 14.2" />
-                                            </svg>
-                                        </span>
-                                    </button>
+                                    <!-- Manager approve this offer can access btn -->
+                                    <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Waiting for Approval' && offerInf.approverUsename == sessionScope.loggedInUser.useName && sessionScope.loggedInUser.userRoleId == 4}">
+                                        <form action="offer-action" method="POST">
+                                            <input type="hidden" name="offerId" value="${offerInf.offerId}">
+                                            <button type="submit" class="button323" style="margin-right: 10px" name="btnAction" value="Approve">
+                                                <span class="button-text">Approve</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
+                                                    <path d="M20 6 9 17l-5-5"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <button type="submit" class="button32" style="margin-right: 10px" name="btnAction" value="Reject">
+                                                <span class="button-text">Reject</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                    <path d="M18 6 6 18"/>
+                                                    <path d="m6 6 12 12"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName != 'Declined Offer' &&  offerInf.statusName != 'Cancelled'}">
+                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel">
+                                                    <span class="button-text">Cancel Offer</span>
+                                                    <span class="button-icon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                             stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                             class="lucide lucide-ban">
+                                                        <circle cx="12" cy="12" r="10" />
+                                                        <path d="m4.9 4.9 14.2 14.2" />
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </c:if>
+                                        </form>
+                                    </c:if>
+
+                                    <!-- Admin can access btn -->
+                                    <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Waiting for Approval' && sessionScope.loggedInUser.userRoleId == 1}">
+                                        <form action="offer-action" method="POST">
+                                            <input type="hidden" name="offerId" value="${offerInf.offerId}">
+                                            <button type="submit" class="button323" style="margin-right: 10px" name="btnAction" value="Approve">
+                                                <span class="button-text">Approve</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
+                                                    <path d="M20 6 9 17l-5-5"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <button type="submit" class="button32" style="margin-right: 10px" name="btnAction" value="Reject">
+                                                <span class="button-text">Reject</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                    <path d="M18 6 6 18"/>
+                                                    <path d="m6 6 12 12"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName != 'Declined Offer' &&  offerInf.statusName != 'Cancelled'}">
+                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel">
+                                                    <span class="button-text">Cancel Offer</span>
+                                                    <span class="button-icon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                             stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                             class="lucide lucide-ban">
+                                                        <circle cx="12" cy="12" r="10" />
+                                                        <path d="m4.9 4.9 14.2 14.2" />
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </c:if>
+                                        </form>
+                                    </c:if>
+
+                                    <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Approved'}">
+                                        <form action="offer-action" method="POST">
+                                            <input type="hidden" name="offerId" value="${offerInf.offerId}">
+                                            <button class="button33blue" style="margin-right: 10px" name="btnAction" value="Mark">
+                                                <span class="button-text">Mark as Sent to Candidate</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send">
+                                                    <path d="m22 2-7 20-4-9-9-4Z"/>
+                                                    <path d="M22 2 11 13"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName != 'Declined Offer' &&  offerInf.statusName != 'Cancelled'}">
+                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel">
+                                                    <span class="button-text">Cancel Offer</span>
+                                                    <span class="button-icon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                             stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                             class="lucide lucide-ban">
+                                                        <circle cx="12" cy="12" r="10" />
+                                                        <path d="m4.9 4.9 14.2 14.2" />
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </c:if>
+                                        </form>
+                                    </c:if>
+
+                                    <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Waiting for Response'}">
+                                        <form action="offer-action" method="POST">
+                                            <input type="hidden" name="offerId" value="${offerInf.offerId}">
+                                            <button class="button33blue" style="margin-right: 10px; width: 180px !important" name="btnAction" value="Accept">
+                                                <span class="button-text">Accepted Offer</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
+                                                    <path d="M20 6 9 17l-5-5"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <button class="button33orange" style="margin-right: 10px; width: 180px !important" name="btnAction" value="Decline">
+                                                <span class="button-text">Declined Offer</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                    <path d="M18 6 6 18"/>
+                                                    <path d="m6 6 12 12"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName != 'Declined Offer' &&  offerInf.statusName != 'Cancelled'}">
+                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel">
+                                                    <span class="button-text">Cancel Offer</span>
+                                                    <span class="button-icon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                             stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                             class="lucide lucide-ban">
+                                                        <circle cx="12" cy="12" r="10" />
+                                                        <path d="m4.9 4.9 14.2 14.2" />
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </c:if>
+                                        </form>
+                                    </c:if>       
                                 </div>
                             </div>
+
                             <form action="">
                                 <div class="card-body">
                                     <div class="row">
@@ -217,7 +297,7 @@
 
                                     <div class="d-flex justify-content-center mt-5">
                                         <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId != 3 && offerInf.statusName == 'Waiting for Approval'}">
-                                            <a type="button" href="offer-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
+                                            <a type="button" href="edit-offer?offerId=${offerInf.offerId}" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
                                         </c:if>
                                         <a class="button-2" style="background-color: #EFA9AE; color: #fff" href="offer-list">Cancel</a>
                                     </div>

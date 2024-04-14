@@ -64,6 +64,7 @@
                                 </div>
                             </div>
                             <div class="center">
+                                <input type="hidden" name="continueUrl" value="${requestScope.continueUrl}">
                                 <button type="submit" class="btn btn-secondary">Login</button>
                             </div>
                         </form>

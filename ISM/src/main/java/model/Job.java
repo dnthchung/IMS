@@ -5,6 +5,8 @@
 package model;
 import java.time.LocalDate;
 
+
+
 import lombok.*;
 
 @Builder
@@ -20,5 +22,12 @@ public class Job  {
     private double salaryTo;
     private String workAddress;
     private String description;
+    private Boolean status;
+    private Benefit benefit;
+    
+    private Skill skill;
+    private Level level;
+
+  
     
 }

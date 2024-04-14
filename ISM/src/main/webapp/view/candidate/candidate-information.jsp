@@ -4,6 +4,7 @@
     Author     : chun
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -26,9 +27,9 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb" style="margin-left: 1em">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Candidate List</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                <a href="#">Candidate Information</a>
+                            <li class="breadcrumb-item"><a href="candidate-list">Candidate List</a></li>
+                            <li class="breadcrumb-item" aria-current="page">
+                                <a>Candidate Information</a>
                             </li>
                         </ol>
                     </nav>
@@ -39,8 +40,8 @@
                             <div class="row">
                                 <div class="col-md-8"></div>
                                 <div class="col-md-3">
-                                    <button class="button31">
-                                        <span class="button-text">Ban </span>
+                                    <a class="button31 link-offset-2 link-underline link-underline-opacity-0" role="button" href="candidate-update?id=${c.candidateId}">
+                                        <span class="button-text">Ban</span>
                                         <span class="button-icon">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                                  stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -52,139 +53,149 @@
                                             <line y2="12" y1="12" x2="19" x1="5"></line>
                                             </svg>
                                         </span>
-                                    </button>                                
+                                    </a>                                
                                 </div>
                                 <div class="col-md-1"></div>
                             </div>
                             <!-- class="content-2" -->
-                            <form action="">
-                                <div class="card-body">
-                                    <!-- =========I. Personal information ========================================================== -->
-                                    <h5 style="font-weight: bold;" class="mb-3">I. Personal information</h5>
-                                    <div class="row">
-                                        <div class="col-md-3">
+
+                            <div class="card-body">
+                                <!-- =========I. Personal information ========================================================== -->
+                                <h5 style="font-weight: bold;" class="mb-3">I. Personal information</h5>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="part-title">Full name</td>
+                                                    <td>${c.fullName}</td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td class="part-title">D.O.B</td>
+                                                    <td>${c.dob}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="part-title">Phone number</td>
+                                                    <td>${c.phoneNumber}</td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-4">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="part-title">Email</td>
+                                                    <td>${c.email}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="part-title">Address</td>
+                                                    <td>${c.address}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="part-title">Gender</td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${c.gender == 1}">
+                                                                Male
+                                                            </c:when>
+                                                            <c:when test="2">
+                                                                Female
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                Other
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- =========II. Professional information ========================================================== -->
+                                <h5 style="font-weight: bold;" class="mb-3 mt-3">II. Professional information
+                                </h5>
+                                <div class="part2 mt-3">
+                                    <!-- row1 -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-5">
+                                            <!-- <table class="table table-borderless"> -->
                                             <table class="table table-striped">
                                                 <thead>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td class="part-title">Full name</td>
-                                                        <td>Doan Thanh Chung</td>
+                                                        <td class="part-title">CV attachment</td>
+                                                        <td><a href="${c.cvAttachment}" target="_blank">${c.fullName}.pdf</a></td>
 
                                                     </tr>
                                                     <tr>
-                                                        <td class="part-title">D.O.B</td>
-                                                        <td>20/06/2003</td>
+                                                        <td class="part-title">Position</td>
+                                                        <td>${c.position.positionName}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="part-title">Phone number</td>
-                                                        <td>0123456789</td>
+                                                        <td class="part-title">Skills</td>
+                                                        <td>
+                                                            <div
+                                                                class="d-flex flex-wrap-limit justify-content-evenly">
+                                                                <c:forEach var="sk" items="${c.skill}">                                                                   
+                                                                    <span class="badge text-bg-success">${sk.skillName}</span>
+                                                                </c:forEach>
 
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="part-title">Recruiter</td>
+                                                        <td>
+                                                            <p>${c.recruiter.fullName}<span> (${c.recruiter.useName})</span></p>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="col-md-3"></div>
+                                        <div class="col-md-1"></div>
                                         <div class="col-md-4">
                                             <table class="table table-striped">
                                                 <thead>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td class="part-title">Gmail</td>
-                                                        <td>chungdthe176077@fpt.edu.vn</td>
+                                                        <td class="part-title">Status</td>
+                                                        <td>${c.candidateStatus.statusName}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="part-title">Address</td>
-                                                        <td>No.25, Quang Trung Street, Hoan Kiem District, Hanoi
-                                                        </td>
+                                                        <td class="part-title">Year of Experience</td>
+                                                        <td>${c.yearOfExperience}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="part-title">Gender</td>
-                                                        <td>Male</td>
+                                                        <td class="part-title">Highest level</td>
+                                                        <td>${c.highestLevel.levelName}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="part-title">Note</td>
+                                                        <td>${c.note}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-                                    <!-- =========II. Professional information ========================================================== -->
-                                    <h5 style="font-weight: bold;" class="mb-3 mt-3">II. Professional information
-                                    </h5>
-                                    <div class="part2 mt-3">
-                                        <!-- row1 -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-5">
-                                                <!-- <table class="table table-borderless"> -->
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td class="part-title">CV attachment</td>
-                                                            <td><a href="#" download>link file here.pdf</a></td>
-
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="part-title">Position</td>
-                                                            <td>Business Analyst</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="part-title">Skills</td>
-                                                            <td>
-                                                                <div
-                                                                    class="d-flex flex-wrap-limit justify-content-evenly">
-                                                                    <span class="badge text-bg-success">Java</span>
-                                                                    <span
-                                                                        class="badge text-bg-success">Kotlin</span>
-                                                                    <span class="badge text-bg-success">HTML</span>
-                                                                    <span class="badge text-bg-success">CSS</span>
-
-                                                                </div>
-
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="part-title">Recruiter</td>
-                                                            <td>
-                                                                <p>Lai Mai Anh<span> (AnhLM1)</span></p>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-4">
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td class="part-title">Status</td>
-                                                            <td>Open</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="part-title">Year of Experience</td>
-                                                            <td>5</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="part-title">Highest level</td>
-                                                            <td>Backend's Degree</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="part-title">Note</td>
-                                                            <td>N/A</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-center">
-                                        <button class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</button>
-                                        <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
-                                    </div>
                                 </div>
-                            </form>
+                                <div class="d-flex justify-content-center">
+                                    <a class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em" href="candidate-edit?id=${c.candidateId}">Edit</a>
+<!--                                    <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>-->
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

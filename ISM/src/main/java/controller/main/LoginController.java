@@ -66,6 +66,7 @@ public class LoginController extends HttpServlet {
         if (loggedInUser != null) {
             response.sendRedirect("home");
         } else {
+            request.setAttribute("continueUrl", request.getParameter("continueUrl"));
             request.getRequestDispatcher("view/main/login.jsp").forward(request, response);
         }
     }
@@ -84,11 +85,23 @@ public class LoginController extends HttpServlet {
         AuthenticationDAO authenticationDAO = new AuthenticationDAO();
         User user = authenticationDAO.login(request.getParameter("username"), request.getParameter("password"));
         if (user != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("loggedInUser", user);
-            UserDAO userDAO = new UserDAO();
-            session.setAttribute("userRoles", userDAO.getAllUserRole());
-            response.sendRedirect("home");
+            if (user.getUserStatusId() == 2) {
+                request.setAttribute("isLoginError", "Your account has been banned!");
+                request.getRequestDispatcher("view/main/login.jsp").forward(request, response);
+            } else {
+                HttpSession session = request.getSession();
+                session.setAttribute("loggedInUser", user);
+                UserDAO userDAO = new UserDAO();
+                session.setAttribute("userRoles", userDAO.getAllUserRole());
+
+                String continueUrl = request.getParameter("continueUrl");
+                if (!continueUrl.equals("")) {
+                    System.out.println("Get from: " + continueUrl);
+                    response.sendRedirect(continueUrl);
+                } else {
+                    response.sendRedirect("home");
+                }
+            }
         } else {
             request.setAttribute("isLoginError", "Invalid username/password. Please try again");
             request.getRequestDispatcher("view/main/login.jsp").forward(request, response);

@@ -5,7 +5,6 @@
 package controller.offer;
 
 import dao.OfferDAO;
-import dto.OfferInformationDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,16 +13,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import model.InterviewSchedule;
+import model.Offer;
 import model.User;
 
 /**
  *
  * @author tranh
  */
-@WebServlet(name = "OfferDetailsController", urlPatterns = {"/offer-details"})
-public class OfferDetailsController extends HttpServlet {
+@WebServlet(name = "OfferActionController", urlPatterns = {"/offer-action"})
+public class OfferActionController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +40,10 @@ public class OfferDetailsController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OfferDetailsController</title>");
+            out.println("<title>Servlet OfferActionController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OfferDetailsController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet OfferActionController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,36 +61,7 @@ public class OfferDetailsController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        if (loggedInUser != null) {
-            if (loggedInUser.getUserRoleId() != 3) {
-                try {
-                    Long offerId = Long.parseLong(request.getParameter("offerId"));
-                    OfferDAO offerDAO = new OfferDAO();
-                    OfferInformationDTO offerInformation = offerDAO.getOfferDetailsById(offerId);
-                    if (offerInformation == null) {
-                        response.sendRedirect("offer-list");
-                    } else {
-                        request.setAttribute("offerInf", offerInformation);
-                        InterviewSchedule interviewSchedule = offerDAO.getInterviewScheduleInfByOfferId(offerId);
-                        request.setAttribute("interviewSchedule", interviewSchedule);
-                        String interviewers = offerDAO.getInterviewersByScheduleId(interviewSchedule.getInterviewScheduleId());
-                        request.setAttribute("interviewers", interviewers);
-                        request.setAttribute("URL", "Offer");
-                        request.getRequestDispatcher("view/offer/offer-details.jsp").forward(request, response);
-                    }
-                } catch (NumberFormatException e) {
-                    response.sendRedirect("offer-list");
-                }
-            } else {
-                response.sendRedirect("home");
-            }
-        } else {
-            String path = request.getServletPath() + "?" + request.getQueryString();
-            response.sendRedirect("login?continueUrl=" + path.substring(1));
-        }
-
+        response.sendRedirect("home");
     }
 
     /**
@@ -106,7 +75,41 @@ public class OfferDetailsController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        OfferDAO offerDAO = new OfferDAO();
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        String btnAction = request.getParameter("btnAction");
+        Offer updatingOffer = offerDAO.getOfferByOfferId(Long.parseLong(request.getParameter("offerId")));
+        switch (btnAction) {
+            case "Approve":
+                offerDAO.updateNewOfferStatus(request.getParameter("offerId"), 2, loggedInUser.getUserId());
+                offerDAO.updateCandidateStatus(updatingOffer.getCandidateId(), 3);
+                break;
+            case "Reject":
+                offerDAO.updateNewOfferStatus(request.getParameter("offerId"), 3, loggedInUser.getUserId());
+                offerDAO.updateCandidateStatus(updatingOffer.getCandidateId(), 4);
+                break;
+            case "Cancel":
+                offerDAO.updateNewOfferStatus(request.getParameter("offerId"), 7, loggedInUser.getUserId());
+                offerDAO.updateCandidateStatus(updatingOffer.getCandidateId(), 8);
+                break;
+            case "Mark":
+                offerDAO.updateNewOfferStatus(request.getParameter("offerId"), 4, loggedInUser.getUserId());
+                offerDAO.updateCandidateStatus(updatingOffer.getCandidateId(), 5);
+                break;
+            case "Accept":
+                offerDAO.updateNewOfferStatus(request.getParameter("offerId"), 5, loggedInUser.getUserId());
+                offerDAO.updateCandidateStatus(updatingOffer.getCandidateId(), 6);
+                break;
+            case "Decline":
+                offerDAO.updateNewOfferStatus(request.getParameter("offerId"), 6, loggedInUser.getUserId());
+                offerDAO.updateCandidateStatus(updatingOffer.getCandidateId(), 7);
+                break;
+            default:
+                response.sendRedirect("offer-list");
+        }
+        response.sendRedirect("offer-details?offerId=" + request.getParameter("offerId"));
     }
 
     /**

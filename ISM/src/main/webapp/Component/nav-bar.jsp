@@ -59,7 +59,7 @@
                     <c:if test="${sessionScope.loggedInUser == null}">
                         <div class="d-flex" style="gap: 25px;">
                             <div class="button-2">
-                                <a href="login.jsp" style="text-decoration: none; color: #000;">Login</a>
+                                <a href="login" style="text-decoration: none; color: #000;">Login</a>
                             </div>
                         </div>
                     </c:if>
