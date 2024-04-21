@@ -298,14 +298,14 @@
                     confirmButtonText: 'Yes, cancel it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '${pageContext.request.contextPath}/user-list'; // Chuyển hướng về trang 'user-list'
+                        window.location.href = '${pageContext.request.contextPath}/user-details?userId=${user.userId}';
                     }
                 });
             });
 
             
           document.querySelector('#user-edit').addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevent form submission
+            e.preventDefault(); 
 
             var userId = document.getElementById("user-Id").value;
             var fullName = document.getElementById('fullName').value;

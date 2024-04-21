@@ -165,7 +165,7 @@ public class UserEdit extends HttpServlet {
                     sender.setContent(emailContent);
                     sender.start();
                     System.out.println(emailContent);
-                    response.sendRedirect("user-list");
+                    response.sendRedirect("user-details?userId="+userId);
                 } else {
                     System.out.println("Failed to update user");
                 }

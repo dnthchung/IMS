@@ -79,7 +79,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">D.O.B</td>
-                                                        <td>${user.dob}</td>
+                                                        <td id="dob1">${user.dob}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Phone Number</td>
@@ -203,6 +203,18 @@
             });
         </script>
         <script>
+            //dob type solve
+            var dobElement = document.getElementById("dob1");
+            var dob = dobElement.innerText;
+
+            var parts = dob.split('-');
+            var year = parseInt(parts[0]);
+            var month = parseInt(parts[1]);
+            var day = parseInt(parts[2]);
+
+            var formattedDOB = day.toString().padStart(2, '0') + '-' + month.toString().padStart(2, '0') + '-' + year;
+            dobElement.innerText = formattedDOB;
+
             document.getElementById('cancelButton').addEventListener('click', function() {
                 Swal.fire({
                     title: 'Are you sure?',

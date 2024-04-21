@@ -17,9 +17,10 @@ public class DBContext {
     public static Connection makeConnection() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String username = "sqlserver";
-            String password = "12345678";
-            String url = "jdbc:sqlserver://34.143.186.49;databaseName=InterviewSystem;encrypt=true;trustServerCertificate=true";//3. Open Connection
+            String username = "sa1";
+            String password = "123";
+            String url = "jdbc:sqlserver://DESKTOP-7MF95U3:1433;databaseName=InterviewSystem;encrypt=true;trustServerCertificate=true";//3. Open Connection
+//            jdbc:sqlserver://DESKTOP-7MF95U3:1433;databaseName=InterviewSystem;encrypt=true;trustServerCertificate=true
             return DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException | SQLException exception) {
             exception.printStackTrace();
