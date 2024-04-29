@@ -481,4 +481,9 @@ li {
     border: 1px solid #ff9aa2;
 }
 
-
+.mwrong-msg {
+    font-style: italic;
+    font-weight: bold;
+    font-size: smaller;
+    color: #F4796B;
+}

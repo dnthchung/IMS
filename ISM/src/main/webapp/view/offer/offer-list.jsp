@@ -14,6 +14,9 @@
         <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
         <!-- link to css -->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/offer-list.css">
+        <!--Flatpickr-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     </head>
     <body>
         <!-- side bar -->
@@ -49,7 +52,7 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="dept">
                                                             <option <c:if test="${deptSelected.isEmpty() || deptSelected == ''}">selected
-                                                                                                           </c:if>>Department</option>
+                                                                                                                                 </c:if>>Department</option>
                                                             <c:forEach var="dept" items="${requestScope.departments}">
                                                                 <option value="${dept.departmentId}" 
                                                                         <c:if test="${deptSelected == dept.departmentId && !deptSelected.isEmpty()}">selected
@@ -62,7 +65,7 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="status">
                                                             <option <c:if test="${statusSelected.isEmpty() || statusSelected == ''}">selected
-                                                                                                             </c:if>>Status</option>
+                                                                                                                                     </c:if>>Status</option>
                                                             <c:forEach var="offerStatus" items="${requestScope.offerStatuses}">
                                                                 <option value="${offerStatus.offerStatusId}" 
                                                                         <c:if test="${statusSelected == offerStatus.offerStatusId && !statusSelected.isEmpty()}">selected
@@ -73,8 +76,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <div class="input-group" style="padding: 0px !important; ; ">
-                                                        <button type="submit" class="button-2 btn btn-secondary" style="max-height: 38px">Search</button>
+                                                    <div class="input-group" style="padding: 0px !important; max-height: 38px ">
+                                                        <button type="submit" class="button3 btn btn-secondary">Search</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -103,7 +106,7 @@
                                     </a>
                                 </div>
                                 <div class="p-2 mt-3"> 
-                                    <button class="button31">
+                                    <button class="button31" data-toggle="modal" id="openExportModalBtn" data-target="#exportOfferModal">
                                         <span class="button-text">Export</span>
                                         <span class="button-icon">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-to-line">
@@ -183,8 +186,9 @@
                                                         </li>
                                                         <li><button <c:if test="${requestScope.currentPage == 1}">disabled=""</c:if> style="border: 0px" type="submit" value="prev" name="btnPage" />&lt;</button></li>
                                                         <li><button <c:if test="${requestScope.totalPage == requestScope.currentPage}">disabled=""</c:if> style="border: 0px" type="submit" value="next" name="btnPage"/>&gt;</button></li>
-                                                    </ul>
-                                                </form>
+                                                        </ul>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -194,30 +198,179 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- jQuery -->
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+            <div class="modal fade" id="exportOfferModal" tabindex="-1" role="dialog" aria-labelledby="exportOfferModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content rounded-0" style="background-color: #F1F6FA">
+                        <form action="export-offer" method="POST" id="exportOfferForm">
+                            <div class="modal-body">
+                                <h3 class="modal-title text-center" id="exampleModalLabel">Export offer</h3>
+                                <div class="row mt-5">
+                                    <div class="col-md-12 d-flex justify-content-center">
+                                        <div>
+                                            <div class="d-flex">
+                                                <span style="margin-right: 10px;margin-top: 5px;">From </span>
+                                                <div class="cs-form col-md-5" style="margin-right: 10px">
+                                                    <input type="date" id="inp-start-date" name="fromDate" class="form-control" required="" placeholder="DD/MM/YYYY"/>
+                                                </div>
+                                                <span style="margin-right: 10px;margin-top: 5px;">To </span>
+                                                <div class="cs-form col-md-5">
+                                                    <input type="date" id="inp-end-date" name="toDate" class="form-control" required="" placeholder="DD/MM/YYYY" />
+                                                </div>
+                                            </div>
+                                            <div class="mt-2 text-center">
+                                                <p class="mwrong-msg" id="invalidDate"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-12 d-flex justify-content-center">
+                                        <button style="margin-right: 50px; border-radius: 0px" type="button" id="submitBtn" class="btn btn-secondary">Submit</button>
+                                        <button style="border-radius: 0px" type="button" id="closeModalBtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+            <!-- Start of Toast Container -->
+            <div class="toast-container position-absolute end-0 p-3" style="z-index: 11; bottom: 79.3%">
+                <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header" style="background-color: #ccdb9e">
+                        <strong class="me-auto">IMS Notification</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" style="background-color: #f6f9ed">
+                        <span id="toastMessageContent"></span>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Toast Container -->
 
-        <script src="https://unpkg.com/lucide@latest"></script>
+
+
+            <!-- jQuery -->
+            <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+            <script src="https://unpkg.com/lucide@latest"></script>
+            <script>
+                //icon lucide
+                lucide.createIcons();
+            </script>
+            <script>
+                //skill multi choice
+                $('#small-select2-options-multiple-field').select2({
+                    theme: "bootstrap-5",
+                    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                    placeholder: $(this).data('placeholder'),
+                    closeOnSelect: true,
+                    selectionCssClass: 'select2--small',
+                    dropdownCssClass: 'select2--small'
+                });
+            </script>
+
+            <script>
+                flatpickr("#inp-start-date", {
+                    dateFormat: "d/m/Y"
+                });
+
+            </script>
+
+            <script>
+                flatpickr("#inp-end-date", {
+                    dateFormat: "d/m/Y"
+                });
+
+            </script>
+
+
+            <!-- Script to trigger the toast -->
+            <input type="hidden" id="toastMessage" value="${requestScope.toastMsg}" />
         <script>
-            //icon lucide
-            lucide.createIcons();
+            document.addEventListener("DOMContentLoaded", function () {
+                let toastMessageInput = document.getElementById("toastMessage");
+                let toastMessageContent = document.getElementById("toastMessageContent");
+
+                // Kiểm tra xem input hidden có nội dung không
+                if (toastMessageInput && toastMessageInput.value) {
+                    // Hiển thị nội dung của toast
+                    toastMessageContent.innerText = toastMessageInput.value;
+
+                    // Hiển thị toast
+                    var myToast = new bootstrap.Toast(document.getElementById('myToast'));
+                    myToast.show();
+                }
+            });
         </script>
+
         <script>
-            //skill multi choice
-            $('#small-select2-options-multiple-field').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: true,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
+            // Function to check date validity
+            function checkDateValidity() {
+
+                var paragraph = document.getElementById("invalidDate");
+                if (paragraph) {
+                    paragraph.innerHTML = "";
+                }
+
+                var startDateStr = document.getElementById('inp-start-date').value;
+                var endDateStr = document.getElementById('inp-end-date').value;
+
+                // Convert string dates to Date objects
+                var startDateArr = startDateStr.split('/');
+                var endDateArr = endDateStr.split('/');
+                var startDate = new Date(startDateArr[2], startDateArr[1] - 1, startDateArr[0]); // Year, Month (0-indexed), Day
+                var endDate = new Date(endDateArr[2], endDateArr[1] - 1, endDateArr[0]);
+
+                if (startDate < endDate) {
+                    // Dates are valid, enable submit button
+                    document.getElementById('submitBtn').disabled = false;
+                } else {
+                    document.getElementById('submitBtn').disabled = true;
+                    paragraph.innerHTML = "From Date needs to be earlier than To date";
+                }
+            }
+
+            // Attach change event listeners to input fields
+            document.getElementById('inp-start-date').addEventListener('change', checkDateValidity);
+            document.getElementById('inp-end-date').addEventListener('change', checkDateValidity);
+
+            document.getElementById('submitBtn').disabled = true;
+        </script>
+
+
+        <script>
+            document.getElementById('submitBtn').addEventListener('click', function () {
+
+                var paragraph = document.getElementById("invalidDate");
+                if (paragraph) {
+                    paragraph.innerHTML = "";
+                }
+
+                var startDateStr = document.getElementById('inp-start-date').value;
+                var endDateStr = document.getElementById('inp-end-date').value;
+
+                // Convert string dates to Date objects
+                var startDateArr = startDateStr.split('/');
+                var endDateArr = endDateStr.split('/');
+                var startDate = new Date(startDateArr[2], startDateArr[1] - 1, startDateArr[0]);
+                var endDate = new Date(endDateArr[2], endDateArr[1] - 1, endDateArr[0]);
+
+                if (startDate < endDate) {
+                    document.getElementById('exportOfferForm').submit();
+                    var button = document.getElementById("closeModalBtn");
+                    button.click();
+                } else {
+                    paragraph.innerHTML = "From Date needs to be earlier than To date";
+                }
             });
         </script>
     </body>

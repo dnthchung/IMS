@@ -45,7 +45,7 @@
                         <div class="form-group row">
                             <label for="inp-email" class="col-sm-2 col-form-label">Email:</label>
                             <div class="col-sm-10">
-                                <input type="email" name="email" class="form-control" id="inp-email" value="${enteredEmail}" required="">
+                                <input type="email" name="email" class="form-control" id="inp-email" value="${enteredEmail}">
                                 <div>
                                     <c:if test="${requestScope.notExistEmailError != null}">
                                         <p class="mwrong-email">${requestScope.notExistEmailError}</p>
@@ -53,13 +53,17 @@
                                 </div>
                                 <div>
                                     <c:if test="${requestScope.sendLinkSuccess != null}">
-                                        <p>${requestScope.sendLinkSuccess}</p>
+                                        <p class="msend-success mt-2">${requestScope.sendLinkSuccess}</p>
                                     </c:if>
                                 </div>
+                                <p id="emptyEmail" class="mwrong-email" hidden>Email cannot be empty!</p>
+                                <p id="invalidEmail" class="mwrong-email" hidden>Entered email is invalid!</p>
                             </div>
                         </div>
                         <div class="d-flex justify-content-evenly mt-3">
-                            <button class="button-2">Send</button>
+                            <c:if test="${requestScope.sendLinkSuccess == null}">
+                                <button type="submit" class="button-2">Send</button>
+                            </c:if>
                             <a class="button-2" style="background-color: #EFA9AE; color: #fff" href="login">Cancel</a>
                         </div>
                     </div>
@@ -70,5 +74,47 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form[action="forgot-password"]');
+                const emailInp = document.getElementById('inp-email');
+                const submitBtn = document.querySelector('button[type="submit"]');
+
+                emailInp.addEventListener('input', handleInputChange);
+
+                var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                function handleInputChange() {
+                    const emailValue = emailInp.value.trim();
+                    if (emailValue === '') {
+                        submitBtn.disabled = true;
+                        document.getElementById('emptyEmail').removeAttribute('hidden');
+                    } else if (!regex.test(emailValue)) {
+                        submitBtn.disabled = true;
+                        document.getElementById('invalidEmail').removeAttribute('hidden');
+                    } else {
+                        submitBtn.disabled = false;
+                        document.getElementById('emptyEmail').setAttribute('hidden', true);
+                        document.getElementById('invalidEmail').setAttribute('hidden', true);
+                    }
+
+                }
+
+                form.addEventListener('submit', function (event) {
+                    if (emailInp.value.trim() === '') {
+                        event.preventDefault();
+                        document.getElementById('emptyEmail').removeAttribute('hidden');
+                        submitBtn.disabled = true;
+                    } else if (!regex.test(emailValue)) {
+                        event.preventDefault();
+                        submitBtn.disabled = true;
+                        document.getElementById('invalidEmail').removeAttribute('hidden');
+                    } else {
+                        document.getElementById('emptyEmail').setAttribute('hidden', true);
+                        document.getElementById('invalidEmail').setAttribute('hidden', true);
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

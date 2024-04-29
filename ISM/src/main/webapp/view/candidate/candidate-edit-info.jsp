@@ -42,7 +42,7 @@
                             <!-- class="content-2" -->
                             <div class="card mt-3">
                                 <div class="card-body">
-                                    <form action="candidate-edit" method="POST" enctype="multipart/form-data">
+                                    <form action="candidate-edit" method="POST" enctype="multipart/form-data" id="editForm">
                                         <input type="hidden" name="candidateId" value="${c.candidateId}">
                                         <h5 style="font-weight: bold;">I. Personal information</h5>
                                         <div class="part1 mt-3">
@@ -131,7 +131,7 @@
                                                                 <option value="2" ${c.gender == 2 ? 'selected' : ''}>Other</option>
                                                             </select>
                                                         </div>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -152,7 +152,7 @@
                                                             <input type="file" class="form-control" name="file" id="fileInput" accept=".pdf,.docx">
                                                             <button type="button" onclick="clearFile()" class="btn btn-outline-danger">Clear File</button>
                                                         </div>
-                                                        
+
                                                         <p>Current CV: <a href="${c.cvAttachment}" target="_blank">${c.fullName}.pdf</a></p>
                                                     </div>
                                                 </div>
@@ -193,9 +193,7 @@
                                                     <div class="col-md-8">
                                                         <div class="input-group" style="padding: 0px !important;">
                                                             <select class="form-select" name="status" required="">
-                                                                <c:forEach var="s" items="${status}">
-                                                                    <option value="${s.candidateStatusId}" ${s.candidateStatusId == c.candidateStatus.candidateStatusId ? 'selected' : ''}>${s.statusName}</option>
-                                                                </c:forEach>
+                                                                <option value="${c.candidateStatus.candidateStatusId}">${c.candidateStatus.statusName}</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -222,7 +220,7 @@
                                                                     <option value="${l.skillId}" ${check == true ? 'selected' : ''}>${l.skillName}</option>
                                                                 </c:forEach>
                                                             </select>
-                                                            
+
                                                         </div>
                                                         <small id="skillAlert" style="color: green">Choose skill</small>
                                                     </div>
@@ -278,19 +276,21 @@
                                             <div class="row mt-2">
                                                 <div class="col-md-2"></div>
                                                 <div class="col-md-2">
-                                                    <button
-                                                        style="border: none; background-color: #ffffff; text-decoration: underline;">
-                                                        Assign me
-                                                    </button>
+                                                    <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId == 2}">
+                                                        <button
+                                                            style="border: none; background-color: #ffffff; text-decoration: underline;" id="assignMeBtn" type="button">
+                                                            Assign me
+                                                        </button>
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>
                                         <br><br>
                                         <div class="d-flex justify-content-center">
-                                            <button class="button-2" type="submit"
-                                                    style="background-color: green; color: #fff;" id="submitBtn">Submit</button>
-                                            <button class="button-2" type="reset"
-                                                    style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
+                                            <button class="button-2" type="button"
+                                                    style="background-color: green; color: #fff;" id="submitBtn" onclick="submitForm()">Submit</button>
+                                            <a href="candidate-list" class="button-2" 
+                                               style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</a>
                                         </div>
                                     </form>
                                 </div>
@@ -315,7 +315,26 @@
                         </div>-->
             <%@include file="../notification/notification.jsp" %>
         </div>
+        <div class="modal fade" id="popUp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm edit candidate</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
+                    <div class="modal-body">
+                        Are you sure to submit edit candidate
+                        <!--<input type="hidden" value="" name="candidateId" id="candidateId">-->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="editForm">Confirm</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
         <!-- jQuery -->
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -326,8 +345,8 @@
 
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>
-                                                                //icon lucide
-                                                                lucide.createIcons();
+                                                                       //icon lucide
+                                                                       lucide.createIcons();
         </script>
         <script>
             //skill multi choice
@@ -347,9 +366,31 @@
             }
         </script>
         <script>
-            var mess = '${sessionScope.mess}';
+            var mess = '${sessionScope.messEdit}';
         </script>
         <script src="${pageContext.request.contextPath}/JS/toast.js"></script>
         <script src="${pageContext.request.contextPath}/JS/Candidate/check-validate-edit.js"></script>
+        <script>
+            document.getElementById("assignMeBtn").addEventListener("click", function (event) {
+                console.log("OK");
+                event.preventDefault();
+                var hiddenValue = ${sessionScope.loggedInUser.userId};
+                var selectElement = document.querySelector('select[name="recruiter"]');
+                var options = selectElement.options;
+                for (var i = 0; i < options.length; i++) {
+                    console.log("OK2");
+                    if (options[i].value == hiddenValue) {
+                        options[i].selected = true;
+                        break;
+                    }
+                }
+                checkAll();
+            });
+        </script>
+        <script>
+            function submitForm() {
+                $("#popUp").modal("show");
+            }
+        </script>
     </body>
 </html>

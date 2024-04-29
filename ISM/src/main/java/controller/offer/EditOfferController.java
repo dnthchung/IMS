@@ -1,23 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.offer;
 
+import dao.AuthenticationDAO;
 import dao.OfferDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import model.Candidate;
 import model.ContractType;
 import model.Department;
@@ -34,48 +35,16 @@ import model.User;
 @WebServlet(name = "EditOfferController", urlPatterns = {"/edit-offer"})
 public class EditOfferController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet EditOfferController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet EditOfferController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser != null) {
-            if (loggedInUser.getUserRoleId() != 3) {
+            AuthenticationDAO authenticationDAO = new AuthenticationDAO();
+            loggedInUser = authenticationDAO.getUserByID(loggedInUser.getUserId());
+            session.setAttribute("loggedInUser", loggedInUser);
+            if (loggedInUser.getUserRoleId() != 3 && loggedInUser.getUserStatusId() != 2) {
                 try {
                     OfferDAO offerDAO = new OfferDAO();
                     Long offerId = Long.parseLong(request.getParameter("offerId"));
@@ -85,20 +54,33 @@ public class EditOfferController extends HttpServlet {
                     } else {
                         request.setAttribute("updatingOffer", updatingOffer);
                         List<Candidate> offerableCandidate = offerDAO.getOfferableCandidates();
-                        offerableCandidate.add(offerDAO.getCandidateByOfferId(offerId));
+                        Candidate edittingCandidate = offerDAO.getCandidateByOfferId(offerId);
+                        offerableCandidate.add(edittingCandidate);
                         request.setAttribute("offerableCandidate", offerableCandidate);
                         List<User> activeManagers = offerDAO.getAllActiveManager();
                         request.setAttribute("activeManagers", activeManagers);
                         List<User> activeRecuiters = offerDAO.getAllActiveRecuiter();
                         request.setAttribute("activeRecuiters", activeRecuiters);
                         List<InterviewSchedule> interviewSchedules = new ArrayList<>();
-                        interviewSchedules.add(offerDAO.getInterviewScheduleInfByOfferId(offerId));
+                        InterviewSchedule thisInterviewSchedule = offerDAO.getInterviewScheduleInfByOfferId(offerId);
+                        if (thisInterviewSchedule.getNotes() == null) {
+                            thisInterviewSchedule.setNotes("N/A");
+                        }
+                        interviewSchedules.add(thisInterviewSchedule);
                         request.setAttribute("interviewSchedules", interviewSchedules);
                         getSystemOfferValues(request);
                         request.setAttribute("URL", "Offer");
+                        session.setAttribute("edittingCandidateId", edittingCandidate.getCandidateId());
+
+                        String isInvalidData = request.getParameter("isInvalidData");
+                        if (isInvalidData != null) {
+                            request.setAttribute("isInvalidData", "Invalid data! Please check again.");
+                        }
+
                         request.getRequestDispatcher("view/offer/offer-edit.jsp").forward(request, response);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     response.sendRedirect("offer-list");
                 }
             } else {
@@ -139,72 +121,287 @@ public class EditOfferController extends HttpServlet {
         }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            Long offerId = Long.parseLong(request.getParameter("offerId"));
-            Long candidateID = Long.parseLong(request.getParameter("candidateId"));
-            Long contractTypeID = Long.parseLong(request.getParameter("contractTypeID"));
-            Long positionID = Long.parseLong(request.getParameter("positionId"));
-            Long levelID = Long.parseLong(request.getParameter("levelId"));
-            Long approverID = Long.parseLong(request.getParameter("approverId"));
-            Long departmentID = Long.parseLong(request.getParameter("departmentId"));
-            Long interviewID = Long.parseLong(request.getParameter("interviewScheduleId"));
-            Long recruiterID = Long.parseLong(request.getParameter("recruiterId"));
-            String contractFrom = request.getParameter("startDate");
-            String contractTo = request.getParameter("endDate");
-            String dueDate = request.getParameter("dueDate");
-            Double salary = Double.parseDouble(request.getParameter("salary"));
-            String note = request.getParameter("note");
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null) {
+            AuthenticationDAO authenticationDAO = new AuthenticationDAO();
+            loggedInUser = authenticationDAO.getUserByID(loggedInUser.getUserId());
+            session.setAttribute("loggedInUser", loggedInUser);
+            if (loggedInUser.getUserRoleId() != 3 && loggedInUser.getUserStatusId() != 2) {
+                try {
+                    Long offerId = getLongValue(request.getParameter("offerId"), "offerIdErr", "Invalid offer id", request);
 
-            HttpSession session = request.getSession();
-            User loggedInUser = (User) session.getAttribute("loggedInUser");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            OfferDAO offerDAO = new OfferDAO();
-            Offer updatingOffer = offerDAO.getOfferByOfferId(offerId);
-            Offer offer = Offer.builder()
-                    .offerId(updatingOffer.getOfferId())
-                    .candidateId(candidateID)
-                    .contractTypeId(contractTypeID)
-                    .positionId(positionID)
-                    .levelId(levelID)
-                    .appover(approverID)
-                    .departmentId(departmentID)
-                    .interviewScheduleId(interviewID)
-                    .recuiterOwner(recruiterID)
-                    .contractFrom(LocalDate.parse(contractFrom, formatter))
-                    .contractTo(LocalDate.parse(contractTo, formatter))
-                    .dueDate(LocalDate.parse(dueDate, formatter))
-                    .basicSalary(salary)
-                    .note(note)
-                    .offerStatusId(updatingOffer.getOfferStatusId())
-                    .modifiedBy(loggedInUser.getUserId())
-                    .modifiedAt(LocalDateTime.now())
-                    .build();
-            offerDAO.updateOffer(offer);
-            response.sendRedirect("offer-list");
-        } catch (NumberFormatException e) {
-            doGet(request, response);
+                    boolean isContinueSave = true;
+                    OfferDAO offerDAO = new OfferDAO();
+                    // Validate candidate
+                    Long candidateID = getLongValue(request.getParameter("candidateId"), "candidateErr", "Invalid candidate", request);
+                    List<Candidate> offerableCandidate = offerDAO.getOfferableCandidates();
+                    boolean isValidCandidate = false;
+                    for (Candidate candidate : offerableCandidate) {
+                        System.out.println(candidate);
+                        if (Objects.equals(candidate.getCandidateId(), candidateID)) {
+                            isValidCandidate = true;
+                            break;
+                        }
+                    }
+                    Long edittingCandidateId = (Long) session.getAttribute("edittingCandidateId");
+                    if (edittingCandidateId != null) {
+                        if (edittingCandidateId.equals(candidateID)) {
+                            isValidCandidate = true;
+                        }
+                    } else {
+                        response.sendRedirect("edit-offer?offerId=" + offerId);
+                        return;
+                    }
+
+                    if (!isValidCandidate) {
+                        request.setAttribute("candidateErr", "Cannot create offer for this candidate!");
+                        System.out.println("Err candidate");
+                        isContinueSave = false;
+                    }
+
+                    Long contractTypeID = getLongValue(request.getParameter("contractTypeID"), "contractTypeErr", "Invalid contract type", request);
+                    List<ContractType> contractTypes = offerDAO.getAllContractTypes();
+                    boolean isValidContractType = false;
+                    for (ContractType contractType : contractTypes) {
+                        if (Objects.equals(contractType.getContractTypeID(), contractTypeID)) {
+                            isValidContractType = true;
+                            break;
+                        }
+                    }
+                    if (!isValidContractType) {
+                        request.setAttribute("contractErr", "Invalid contract type!");
+                        System.out.println("Err contract");
+                        isContinueSave = false;
+                    }
+
+                    Long positionID = getLongValue(request.getParameter("positionId"), "positionErr", "Invalid position", request);
+                    List<Position> positions = offerDAO.getAllPositions();
+                    boolean isValidPosition = false;
+                    for (Position position : positions) {
+                        if (Objects.equals(position.getPositionId(), positionID)) {
+                            isValidPosition = true;
+                            break;
+                        }
+                    }
+                    if (!isValidPosition) {
+                        request.setAttribute("positionErr", "Invalid position!");
+                        System.out.println("Err position");
+                        isContinueSave = false;
+                    }
+
+                    Long levelID = getLongValue(request.getParameter("levelId"), "levelErr", "Invalid level", request);
+                    List<Level> levels = offerDAO.getAllLevels();
+                    boolean isValidLevel = false;
+                    for (Level level : levels) {
+                        if (Objects.equals(level.getLevelId(), levelID)) {
+                            isValidLevel = true;
+                            break;
+                        }
+                    }
+                    if (!isValidLevel) {
+                        request.setAttribute("levelErr", "Invalid level!");
+                        System.out.println("Err level");
+                        isContinueSave = false;
+                    }
+
+                    Long approverID = getLongValue(request.getParameter("approverId"), "approverErr", "Invalid approver", request);
+                    List<User> approvers = offerDAO.getAllActiveManager();
+                    boolean isValidApprover = false;
+                    for (User approver : approvers) {
+                        if (Objects.equals(approver.getUserId(), approverID)) {
+                            isValidApprover = true;
+                            break;
+                        }
+                    }
+                    if (!isValidApprover) {
+                        request.setAttribute("approverErr", "Invalid approver!");
+                        System.out.println("Err manager");
+                        isContinueSave = false;
+                    }
+
+                    Long departmentID = getLongValue(request.getParameter("departmentId"), "departmentErr", "Invalid department", request);
+                    List<Department> departments = offerDAO.getAllDepartments();
+                    boolean isValidDepartment = false;
+                    for (Department department : departments) {
+                        if (Objects.equals(department.getDepartmentId(), departmentID)) {
+                            isValidDepartment = true;
+                            break;
+                        }
+                    }
+                    if (!isValidDepartment) {
+                        request.setAttribute("departmentErr", "Invalid department!");
+                        System.out.println("Err department");
+                        isContinueSave = false;
+                    }
+
+                    Long interviewID = getLongValue(request.getParameter("interviewScheduleId"), "interviewErr", "Invalid interview schedule", request);
+                    if (isValidCandidate) {
+                        List<InterviewSchedule> interviews = offerDAO.getInterviewSchedulesByCandidateId(candidateID);
+                        boolean isValidInterview = false;
+                        for (InterviewSchedule interview : interviews) {
+                            if (Objects.equals(interview.getInterviewScheduleId(), interviewID)) {
+                                isValidInterview = true;
+                                break;
+                            }
+                        }
+                        if (!isValidInterview) {
+                            request.setAttribute("interviewErr", "Invalid interview schedule!");
+                            System.out.println("Err interview");
+                            isContinueSave = false;
+                        }
+                    }
+
+                    Long recruiterID = getLongValue(request.getParameter("recruiterId"), "recruiterErr", "Invalid recruiter", request);
+                    List<User> activeRecuiters = offerDAO.getAllActiveRecuiter();
+                    boolean isValidInterview = false;
+                    for (User activeRecuiter : activeRecuiters) {
+                        if (Objects.equals(activeRecuiter.getUserId(), recruiterID)) {
+                            isValidInterview = true;
+                            break;
+                        }
+                    }
+                    if (!isValidInterview) {
+                        request.setAttribute("recruiterErr", "Invalid recruiter!");
+                        System.out.println("err recruiter");
+                        isContinueSave = false;
+                    }
+
+                    Date contractFrom = getDateValue(request.getParameter("startDate"), "contractDateErr", "Invalid date format!", request);
+                    Date contractTo = getDateValue(request.getParameter("endDate"), "contractDateErr", "Invalid date format!", request);
+                    if (!checkSevenDays(contractFrom)) {
+                        request.setAttribute("contractDateErr", "Invalid start date!");
+                        System.out.println("Err 7 contract from");
+                        isContinueSave = false;
+                    }
+                    if (!checkRangeMonths(contractFrom, contractTo, request.getParameter("contractTypeID"))) {
+                        System.out.println("Err month range");
+                        request.setAttribute("contractDateErr", "Invalid to date!");
+                        isContinueSave = false;
+                    }
+
+                    Date dueDate = getDateValue(request.getParameter("dueDate"), "dueDateErr", "Invalid date format!", request);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(new Date());
+                    calendar.add(Calendar.DAY_OF_MONTH, -1);
+                    Date yesterday = calendar.getTime();
+                    if (!dueDate.before(contractFrom) || dueDate.before(yesterday)) {
+                        System.out.println("Err due date");
+                        request.setAttribute("dueDateErr", "Invalid offer due date!");
+                        isContinueSave = false;
+                    }
+
+                    String salaryStr = request.getParameter("salary").replaceAll("\\D", "");
+                    Double salary = Double.valueOf(salaryStr);
+                    if (salary < 1000000) {
+                        request.setAttribute("salaryErr", "Min: 1.000.000 VND!");
+                        System.out.println("Err salary");
+                        isContinueSave = false;
+                    }
+
+                    String note = request.getParameter("note");
+
+                    if (!isContinueSave) {
+                        response.sendRedirect("edit-offer?offerId=" + offerId + "&isInvalidData=true");
+                        return;
+                    }
+
+                    if (isContinueSave) {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        Offer updatingOffer = offerDAO.getOfferByOfferId(offerId);
+                        Offer offer = Offer.builder()
+                                .offerId(updatingOffer.getOfferId())
+                                .candidateId(candidateID)
+                                .contractTypeId(contractTypeID)
+                                .positionId(positionID)
+                                .levelId(levelID)
+                                .appover(approverID)
+                                .departmentId(departmentID)
+                                .interviewScheduleId(interviewID)
+                                .recuiterOwner(recruiterID)
+                                .contractFrom(LocalDate.parse(request.getParameter("startDate"), formatter))
+                                .contractTo(LocalDate.parse(request.getParameter("endDate"), formatter))
+                                .dueDate(LocalDate.parse(request.getParameter("dueDate"), formatter))
+                                .basicSalary(salary)
+                                .note(note)
+                                .offerStatusId(updatingOffer.getOfferStatusId())
+                                .modifiedBy(loggedInUser.getUserId())
+                                .modifiedAt(LocalDateTime.now())
+                                .build();
+                        offerDAO.updateOffer(offer);
+                        response.sendRedirect("offer-list?isEditOfferSuccess=true");
+                    }
+
+                } catch (NumberFormatException e) {
+                    doGet(request, response);
+                }
+            } else {
+                response.sendRedirect("home");
+            }
+        } else {
+            String path = request.getServletPath();
+            response.sendRedirect("login?continueUrl=" + path.substring(1));
         }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    private Long getLongValue(String str, String errField, String errMsg, HttpServletRequest request) {
+        try {
+            return Long.valueOf(str);
+        } catch (NumberFormatException e) {
+            request.setAttribute(errField, errMsg);
+            System.out.println("Err parse: " + errField);
+            e.printStackTrace();
+        }
+        return 0L;
+    }
+
+    private Date getDateValue(String str, String errField, String errMsg, HttpServletRequest request) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.parse(str);
+        } catch (ParseException e) {
+            request.setAttribute(errField, errMsg);
+            System.out.println("Err parse: " + errField);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean checkSevenDays(Date fromDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        Date sevenDaysAgo = cal.getTime();
+        return fromDate.after(sevenDaysAgo);
+    }
+
+    public boolean checkRangeMonths(Date fromDate, Date toDate, String contractTypeId) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fromDate);
+        int addMonths = 2;
+        switch (contractTypeId) {
+            case "1":
+                addMonths = 2;
+                break;
+            case "2":
+                addMonths = 3;
+                break;
+            case "3":
+                addMonths = 12;
+                break;
+            case "4":
+                addMonths = 36;
+                break;
+            default:
+                addMonths = 2;
+        }
+        cal.add(Calendar.MONTH, addMonths);
+        Date monthsLater = cal.getTime();
+        System.out.println(monthsLater);
+        System.out.println(toDate);
+        return !monthsLater.after(toDate);
+    }
 
 }

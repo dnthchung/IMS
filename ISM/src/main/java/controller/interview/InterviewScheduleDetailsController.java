@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.job;
+package controller.interview;
 
-import dao.JobDAO;
+import dao.InterviewDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,15 +12,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import model.Job;
 
 /**
  *
- * @author acer
+ * @author Tuan
  */
-@WebServlet(name = "JobDetailController", urlPatterns = {"/job-details"})
-public class JobDetailController extends HttpServlet {
+@WebServlet(name = "InterviewScheduleDetailsController", urlPatterns = {"/interview-details"})
+public class InterviewScheduleDetailsController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +37,10 @@ public class JobDetailController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet JobDetailController</title>");
+            out.println("<title>Servlet InterviewScheduleDetailsController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet JobDetailController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet InterviewScheduleDetailsController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,13 +58,11 @@ public class JobDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String jobId = request.getParameter("id"); 
-        JobDAO dao = new JobDAO();
-        ArrayList<Job> jd = dao.getAllJobsWithDetails(jobId); 
-        request.setAttribute("job", jd);
-         
-        
-        request.getRequestDispatcher("view/job/job-details.jsp").forward(request, response);
+        String interviewScheduleId = request.getParameter("id");
+
+        request.setAttribute("URL", "Interview Details");
+        request.setAttribute("InterviewScheduleById", InterviewDAO.getInterviewSheduleById(interviewScheduleId));
+        request.getRequestDispatcher("view/interview/interview-details.jsp").forward(request, response);
     }
 
     /**

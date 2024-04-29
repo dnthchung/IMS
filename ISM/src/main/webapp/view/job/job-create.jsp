@@ -1,10 +1,10 @@
 <%-- 
-    Document   : job-create
-    Created on : Apr 7, 2024, 12:33:21 AM
+    Document   : interview-create
+    Created on : Apr 7, 2024, 2:23:21 PM
     Author     : chun
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,8 +12,7 @@
         <title>Create Job</title>
         <link rel="icon" type="image/x-icon" href="Image/Logo/ims-logo.png">
         <!-- link to css -->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/job-create.css">
-
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/interview-create.css">
     </head>
     <body>
         <!-- side bar -->
@@ -27,9 +26,11 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb" style="margin-left: 1em">
-                            <li class="breadcrumb-item"><a href="#">Job List</a></li>
+                            <li class="breadcrumb-item">
+                                <a href="#">Interview Schedule List</a>
+                            </li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a  href="candidate-create.jsp">Create Job</a>
+                                <a  href="#">New Interview Schedule</a>
                             </li>
                         </ol>
                     </nav>
@@ -42,53 +43,35 @@
                             </div>
                             <!-- class="content-2" -->
                             <div class="card-body">
-                                <form action="">
+                                <form action="interview-create" method="post">
                                     <div class="part1 mt-3">
                                         <!-- row1 -->
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Job title <span style="color: red;">*</span>
+                                                <div class="col-md-4 part-title">
+                                                    Schedule title<span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <!-- full name -->
-                                                        <input type="text" class="form-control"
-                                                               placeholder="Type a title..." required>
+                                                        <input type="text" class="form-control" name="scheduleTitle" placeholder="Type a title..." required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    Skills<span style="color: red;">*</span>
+                                                    Job<span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select"
-                                                                data-placeholder="Choose skills ..."
-                                                                id="small-select2-options-multiple-field-skills" multiple>
-                                                            <option>Java</option>
-                                                            <option>JavaScript</option>
-                                                            <option>Python</option>
-                                                            <option>C++</option>
-                                                            <option>HTML</option>
-                                                            <option>${pageContext.request.contextPath}/CSS</option>
-                                                            <option>PHP</option>
-                                                            <option>Ruby</option>
-                                                            <option>Swift</option>
-                                                            <option>Kotlin</option>
-                                                            <option>SQL</option>
-                                                            <option>Go</option>
-                                                            <option>C#</option>
-                                                            <option>Perl</option>
-                                                            <option>Objective-C</option>
-                                                            <option>Assembly</option>
-                                                            <option>TypeScript</option>
-                                                            <option>Rust</option>
-                                                            <option>Shell</option>
-                                                            <option>Scala</option>
-                                                        </select>
+                                                        <select class="form-select" name="jobName"
+                                                                data-placeholder="Select a job ...">
+                                                            <option selected disabled>Select a job...</option>
+                                                            <c:forEach var="i" items="${job}">
+                                                                <option value="${i.jobId}">${i.jobTitle}</option>
+
+                                                            </c:forEach>
+                                                        </select> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -96,23 +79,34 @@
                                         <!-- row2 -->
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Start Date<span style="color: red;">*</span>
+                                                <div class="col-md-4 part-title">
+                                                    Candidate name<span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="date" class="form-control">
+                                                        <select class="form-select" name="candidate-name" placeholder="Select candidate ...">
+                                                            <option selected disabled>Select candidate...</option>
+                                                            <c:forEach var="candidate" items="${candidateList}">
+                                                                <option value="${candidate.candidateId}">${candidate.fullName}</option>
+                                                            </c:forEach>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    End Date<span style="color: red;">*</span>
+                                                    Interviewer<span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="date" class="form-control">
+                                                        <select class="form-select" name="interviewName"
+                                                                data-placeholder="Choose benefits ..."
+                                                                id="small-select2-options-multiple-field-interviews" multiple>
+                                                            <c:forEach var="h" items="${interviewer}">
+                                                                <option value="${h.userId}">${h.username}</option>
+                                                            </c:forEach>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -120,46 +114,33 @@
                                         <!-- row3 -->
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Salary Range
+                                                <div class="col-md-4 part-title">
+                                                    Schedule Time<span style="color: red;">*</span>
                                                 </div>
-                                                <div class="col-md-8 row">
-                                                    <div class="col-md-2">
-                                                        <div class="d-flex align-items-center" style="font-size: 14px; margin-top: 10px;">
-                                                            <span>From</span>
-                                                        </div>
+                                                <div class="col-md-8">
+                                                    <div class="input-group"  style="padding: 0px !important;">
+                                                        <input name="dateSchedule" type="date" class="form-control">
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <div class="input-group" style="padding: 0px !important;">
-                                                            <input type="text" class="form-control">
-                                                        </div>
+                                                </div>
+                                                <div class="col-md-12 d-flex mt-3">
+                                                    <span style="margin-right: 10px;margin-left: 182px;margin-top: 5px;">From </span>
+                                                    <div class="cs-form col-md-3" style="margin-right: 10px">
+                                                        <input name="timeStart" type="time" class="form-control" />
                                                     </div>
-                                                    <div class="col-md-1">
-                                                        <div class="d-flex align-items-center" style="font-size: 14px; margin-top: 10px;">
-                                                            <span>to</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group" style="padding: 0px !important;">
-                                                            <input type="text" class="form-control">
-                                                        </div>
+                                                    <span style="margin-right: 10px;margin-top: 5px;">To </span>
+                                                    <div class="cs-form col-md-3">
+                                                        <input name="timeEnd" type="time" class="form-control" />
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    Benefits<span style="color: red;">*</span>
+                                                    Location
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select"
-                                                                data-placeholder="Choose benefits ..."
-                                                                id="small-select2-options-multiple-field-benefits" multiple>
-                                                            <option>Lunch</option>
-                                                            <option>25 days off</option>
-                                                            <option>Team building</option>
-                                                        </select>
+                                                        <input type="text" name="location" class="form-control" placeholder="Type a location...">
                                                     </div>
                                                 </div>
                                             </div>
@@ -169,30 +150,41 @@
                                         <!-- row1 -->
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Working address
+                                                <div class="col-md-4 part-title">
+                                                    Notes
                                                 </div>
                                                 <div class="col-md-8">
-                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <!-- CV -->
-                                                        <input type="text" class="form-control" placeholder="Type an address...">
+                                                    <div class="form-floating" style="padding: 0px !important;">
+                                                        <textarea style="height: 200px" class="form-control" placeholder="Type description" name="notes" id="floatingTextarea"></textarea>
+                                                        <label for="floatingTextarea">Type schedule note ...</label>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
                                                 <div class="col-md-3 part-title">
-                                                    Level<span style="color: red;">*</span>
+                                                    Recruiter owner<span style="color: red;">*</span>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select"
-                                                                data-placeholder="Choose levels ..."
-                                                                id="small-select2-options-multiple-field-levels" multiple>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                        <select class="form-select" name="interviewName"
+                                                                data-placeholder="Choose benefits ..."
+                                                                >
+                                                            <c:forEach var="r" items="${recruiter}">
+                                                                <option value="${r.userId}">${r.username}</option>
+
+                                                            </c:forEach>
                                                         </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 row">
+                                                    <div class="col-md-3 part-title">
+                                                        Meeting ID
+                                                    </div>
+                                                    <div class="col-md-8" >
+                                                        <div class="input-group" style="margin-left: 5px;padding: 0px !important;">
+                                                            <input type="text" class="form-control" name="meetingID" placeholder="">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -204,32 +196,16 @@
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
-                                                <div class="col-md-3 part-title">
-                                                    Description
-                                                </div>
-                                                <div class="col-md-8">
-<!--                                                    <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select">
-                                                            <option selected disabled>Select a status</option>
-                                                            <option value="1">Active</option>
-                                                            <option value="2">Inactive</option>
-                                                        </select>
-                                                    </div>-->
-                                                    <div class="form-floating" style="padding: 0px !important;">
-                                                        <textarea style="height: 200px" class="form-control" placeholder="Type description" id="floatingTextarea"></textarea>
-                                                        <label for="floatingTextarea">Comments</label>
-                                                    </div>
-                                                </div>
+
                                             </div>
                                         </div>
                                         <!-- row3 -->
                                         <div class="row mb-3">
                                             <div class="col-md-5 row">
-                                                
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
-                                                
+
                                             </div>
                                         </div>
                                         <!-- row4 -->
@@ -239,16 +215,16 @@
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
-                                                
+
                                             </div>
                                         </div>
                                     </div>
                                     <br><br>
                                     <div class="d-flex justify-content-center">
-                                        <button class="button-2"
+                                        <button class="button-2" 
                                                 style="background-color: #ABDF75; color: #fff;">Submit</button>
-                                        <button class="button-2"
-                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
+                                               <a href="interview-list" class="button-2"
+                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;" target="target">Cancel</a>
                                     </div>
                                 </form>
                             </div>
@@ -272,28 +248,8 @@
             lucide.createIcons();
         </script>
         <script>
-            //skill multi choice
-            $('#small-select2-options-multiple-field-skills').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
-            });
-            
-            //benefits multi choice
-            $('#small-select2-options-multiple-field-benefits').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
-            });
-            
-            //levels multi choice
-            $('#small-select2-options-multiple-field-levels').select2({
+            //interviews multi choice
+            $('#small-select2-options-multiple-field-interviews').select2({
                 theme: "bootstrap-5",
                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
                 placeholder: $(this).data('placeholder'),

@@ -32,6 +32,7 @@
                         <span> Home</span>
                     </a>
                 </li>
+                <c:if test="${sessionScope.loggedInUser != null}">
                 <li>
                     <a href="candidate-list" class="nav-link">
                         <div class="icon-wrap">
@@ -40,6 +41,8 @@
                         <span>Candidate</span>
                     </a>
                 </li>
+                </c:if>
+                <c:if test="${sessionScope.loggedInUser != null}">
                 <li>
                     <a href="job-list" class="nav-link">
                         <div class="icon-wrap">
@@ -48,14 +51,17 @@
                         <span>Job</span>
                     </a>
                 </li>
+                </c:if>
+                <c:if test="${sessionScope.loggedInUser != null}">
                 <li>
-                    <a href="#" class="nav-link">
+                    <a href="interview-list" class="nav-link">
                         <div class="icon-wrap">
                             <i data-lucide="message-circle-code"></i>
                         </div>
                         <span>Interview</span>
                     </a>
                 </li>
+                </c:if>
                 <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId != 3}">
                     <li>
                         <a href="offer-list" class="nav-link">
@@ -66,14 +72,16 @@
                         </a>
                     </li>
                 </c:if>
-                <li>
-                    <a href="user-list" class="nav-link">
-                        <div class="icon-wrap">
-                            <i data-lucide="user-plus"></i>
-                        </div>
-                        <span>User</span>
-                    </a>
-                </li>
+                <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId == 1}">
+                    <li>
+                        <a href="user-list" class="nav-link">
+                            <div class="icon-wrap">
+                                <i data-lucide="user-plus"></i>
+                            </div>
+                            <span>User</span>
+                        </a>
+                    </li>
+                </c:if>
             </ul>
             <hr>
         </div>

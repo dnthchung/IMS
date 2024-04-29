@@ -40,8 +40,8 @@
                             <div class="row">
                                 <div class="col-md-8"></div>
                                 <div class="col-md-3">
-                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 2 && c.candidateStatus.candidateStatusId != 2}">
-                                        <a class="button31 link-offset-2 link-underline link-underline-opacity-0" role="button" href="candidate-update?id=${c.candidateId}">
+                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 3 && c.candidateStatus.candidateStatusId != 2}">
+                                        <a class="button31 link-offset-2 link-underline link-underline-opacity-0" role="button" data-bs-toggle="modal" data-bs-target="#popUp">
                                             <span class="button-text">Ban</span>
                                             <span class="button-icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -193,7 +193,7 @@
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-center">
-                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 2}">
+                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 3}">
                                         <a class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em" href="candidate-edit?id=${c.candidateId}">Edit</a>
                                         <!--                                    <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>-->
                                     </c:if>
@@ -205,6 +205,26 @@
                 </div>
             </div>
             <%@include file="../notification/notification.jsp" %>
+            <div class="modal fade" id="popUp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm ban candidate</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        
+                            <div class="modal-body">
+                                Are you sure want to ban this candidate
+                                <!--<input type="hidden" value="" name="candidateId" id="candidateId">-->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="confirmDelete()">Confirm</button>
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- jQuery -->
@@ -232,8 +252,16 @@
             });
         </script>
         <script>
-            var mess = '${sessionScope.mess}';
+
+            var mess = '${sessionScope.messUpdate}';
+
         </script>
         <script src="${pageContext.request.contextPath}/JS/toast.js"></script>
+        <script>
+            function confirmDelete(){
+                var id = '${c.candidateId}';
+                window.location.href = "candidate-update?id=" + id;
+            }
+        </script>
     </body>
 </html>

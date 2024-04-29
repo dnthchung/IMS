@@ -73,32 +73,38 @@
                             <div class="d-flex">
                                 <div class="me-auto p-2 "></div>
                                 <div class="p-2 mt-3">
-                                    <a href="job-create.jsp" style="text-decoration: none;" type="button" class="button3">
-                                        <span class="button-text">Add New</span>                                       
-                                        <span class="button-icon">                                           
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                 viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
-                                                 stroke-linecap="round" stroke="currentColor" height="24" fill="none"
-                                                 class="svg">
-                                            <line y2="19" y1="5" x2="12" x1="12"></line>
-                                            <line y2="12" y1="12" x2="19" x1="5"></line>
-                                            </svg>                                            
-                                        </span>
-                                    </a>
+                                    <c:if test="${isAdmin || isRecuiter || isManager}">
+                                        <a href="job-create" style="text-decoration: none;" type="button" class="button3">
+                                            <span class="button-text">Add New</span>                                       
+                                            <span class="button-icon">                                           
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                     viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
+                                                     stroke-linecap="round" stroke="currentColor" height="24" fill="none"
+                                                     class="svg">
+                                                <line y2="19" y1="5" x2="12" x1="12"></line>
+                                                <line y2="12" y1="12" x2="19" x1="5"></line>
+                                                </svg>                                            
+                                            </span>
+                                        </a>
+                                    </c:if>
                                 </div>
                                 <div class="p-2 mt-3">
-                                    <button class="button31">
-                                        <span class="button-text">Import</span>
-                                        <span class="button-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                 class="lucide lucide-arrow-down-to-line">
-                                            <path d="M12 17V3"/>
-                                            <path d="m6 11 6 6 6-6"/>
-                                            <path d="M19 21H5"/>
-                                            </svg>
-                                        </span>
-                                    </button>
+                                    <c:if test="${isAdmin || isRecuiter || isManager}">
+                                        <form action="job-import" method="post">
+                                            <button class="button31" type="submit">
+                                                <span class="button-text">Import</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                         stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="lucide lucide-arrow-down-to-line">
+                                                    <path d="M12 17V3"/>
+                                                    <path d="m6 11 6 6 6-6"/>
+                                                    <path d="M19 21H5"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                        </form>
+                                    </c:if>
                                 </div>
                             </div>
 
@@ -108,14 +114,13 @@
                                         <table class="table text-center table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col"> <strong>ID</strong> </th>
+
                                                     <th scope="col"> <strong>Job Title</strong> </th>
+                                                    <th scope="col"><strong>Required Skills</strong></th>
                                                     <th scope="col"> <strong>Start date</strong> </th>
                                                     <th scope="col"> <strong>End date</strong> </th>
-                                                    <th scope="col"> <strong>Salary From</strong> </th>
-                                                    <th scope="col"> <strong>Salary To</strong> </th>
-                                                    <th scope="col"> <strong>Working Address</strong> </th>
-                                                    <th scope="col"> <strong>Description</strong> </th>
+
+                                                    <th scope="col"> <strong>Level</strong> </th>
                                                     <th scope="col"> <strong>Status</strong> </th>
                                                     <th scope="col"> <strong>Action</strong> </th>
                                                 </tr>
@@ -123,16 +128,12 @@
                                             <tbody>
                                                 <!--  table data rows  -->
                                                 <c:forEach var="j" items="${job}">
-                                                  
                                                     <tr>
-                                                        <td>${j.jobId}</td>
                                                         <td>${j.jobTitle}</td>
-                                                        <td>${j.startDate}</td>
-                                                        <td>${j.endDate}</td>
-                                                        <td>${j.salaryFrom}</td>
-                                                        <td>${j.salaryTo}</td>
-                                                        <td>${j.workAddress}</td>
-                                                        <td>${j.description}</td>
+                                                        <td>${j.skill[0].skillName}</td>
+                                                        <td>${j.getFormatedDate(j.startDate)}</td>
+                                                        <td>${j.getFormatedDate(j.endDate)}</td>
+                                                        <td>${j.level[0].levelName}</td>
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${j.status eq true}">
@@ -145,17 +146,21 @@
                                                         </td>
                                                         <td>
                                                             <a style="margin-right: 5px;text-decoration: none; color: black; "
-                                                               href="#" class="icon-button">
+                                                               href="job-details?id=${j.jobId}" class="icon-button">
                                                                 <i data-lucide="eye"></i>
                                                             </a>
-                                                            <a style="margin-right: 5px;text-decoration: none; color: black;"
-                                                               href="job-details?id=${j.jobId}" class="icon-button">
-                                                                <i data-lucide="file-pen-line"></i>
-                                                            </a>
-                                                            <a style="text-decoration: none; color: black;" href="#"
-                                                               class="icon-button">
-                                                                <i data-lucide="trash-2"></i>
-                                                            </a>
+                                                            <c:if test="${isAdmin || isRecuiter || isManager}">
+                                                                <a style="margin-right: 5px;text-decoration: none; color: black;"
+                                                                   href="job-edit?id=${j.jobId}" class="icon-button">
+                                                                    <i data-lucide="file-pen-line"></i>
+                                                                </a>
+                                                            </c:if>
+                                                            <c:if test="${isAdmin || isRecuiter || isManager}">
+                                                                <a style="text-decoration: none; color: black;" 
+                                                                   href="job-delete?id=${j.jobId}" class="icon-button">
+                                                                    <i data-lucide="trash-2"></i>
+                                                                </a>
+                                                            </c:if>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -168,20 +173,12 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <!-- Pagination -->
-                                                <ul id="pagination">
-                                                    <li>
-                                                        <span>
-                                                            <span>06</span>
-                                                            /
-                                                            <span>60</span>
-                                                        </span>
-                                                        <span>
-                                                            rows
-                                                        </span>
-                                                    </li>
-                                                    <li><a class="" href="#">&lt;</a></li>
-                                                    <li><a href="#">&gt;</a></li>
+                                                <ul id="pagination" class="pagination">
+                                                    <li><a href="#" id="prevPage">&lt;</a></li>
+                                                    <li><span id="currentPage">1</span> / <span id="totalPages">1</span></li>
+                                                    <li><a href="#" id="nextPage">&gt;</a></li>
                                                 </ul>
+
                                             </div>
                                         </div>
                                     </div>
@@ -221,7 +218,7 @@
             var status = document.getElementById('statusFilter').value;
             var rows = document.querySelectorAll('tbody tr');
             rows.forEach(function (row) {
-                var statusCell = row.querySelector('td:nth-child(9)');
+                var statusCell = row.querySelector('td:nth-child(6)');
                 if (status === 'all' || statusCell.textContent.trim() === status) {
                     row.style.display = 'table-row';
                 } else {
@@ -256,7 +253,50 @@
                 noResultMessage.style.display = 'none';
             }
         }
+        var currentPage = 1;
+        var rowsPerPage = 10;
+        var totalRows = document.querySelectorAll('tbody tr').length;
 
+        function updatePagination() {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            document.getElementById('totalPages').textContent = totalPages;
+            document.getElementById('currentPage').textContent = currentPage;
+        }
+
+        function showRowsForCurrentPage() {
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var rows = document.querySelectorAll('tbody tr');
+            rows.forEach(function (row, index) {
+                if (index >= startIndex && index < endIndex) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('prevPage').addEventListener('click', function () {
+            if (currentPage > 1) {
+                currentPage--;
+                showRowsForCurrentPage();
+                updatePagination();
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', function () {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                showRowsForCurrentPage();
+                updatePagination();
+            }
+        });
+
+        window.onload = function () {
+            showRowsForCurrentPage();
+            updatePagination();
+        };
 
 
     </script>   

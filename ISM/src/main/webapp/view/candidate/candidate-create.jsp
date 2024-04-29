@@ -41,7 +41,7 @@
                             </div>
                             <!-- class="content-2" -->
                             <div class="card-body">
-                                <form action="candidate-create" method="post" enctype="multipart/form-data"> 
+                                <form action="candidate-create" method="post" enctype="multipart/form-data" id="formCreate"> 
                                     <h5 style="font-weight: bold;">I. Personal information</h5>
                                     <div class="part1 mt-3">
                                         <!-- row1 -->
@@ -192,9 +192,8 @@
                                                     <div class="input-group" style="padding: 0px !important;">
                                                         <select class="form-select" name="status" required="" id="status" onchange="checkAll()">
                                                             <option value="" selected="" disabled="">Status</option>
-                                                            <c:forEach var="s" items="${status}">                                                           
-                                                                <option value="${s.candidateStatusId}">${s.statusName}</option>
-                                                            </c:forEach>
+                                                            <option value="1">Open</option>
+                                                            <option value="2">Banned</option>
                                                         </select>
                                                     </div>
                                                     <small id="statusAlert" style="color: #FF6B6B">Choose status</small>
@@ -274,16 +273,18 @@
                                         <div class="row mt-2">
                                             <div class="col-md-2"></div>
                                             <div class="col-md-2">
-                                                <button
-                                                    style="border: none; background-color: #ffffff; text-decoration: underline;">
-                                                    Assign me
-                                                </button>
+                                                <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.userRoleId == 2}">
+                                                    <button
+                                                        style="border: none; background-color: #ffffff; text-decoration: underline;" id="assignMeBtn" type="button">
+                                                        Assign me
+                                                    </button>
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>
                                     <br><br>
                                     <div class="d-flex justify-content-center">
-                                        <button class="button-2" type="submit" id="submitBtn" disabled=""
+                                        <button class="button-2" type="button" id="submitBtn" disabled="" onclick="submitForm()"
                                                 style="background-color: #9b9b9b; color: #fff;">Submit</button>
                                         <button class="button-2" type="reset"
                                                 style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Reset</button>
@@ -296,6 +297,26 @@
             </div>
             <%@include file="../notification/notification.jsp" %>
         </div>
+        <div class="modal fade" id="popUp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm create candidate</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        Are you sure want to add new candidate
+                        <!--<input type="hidden" value="" name="candidateId" id="candidateId">-->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="formCreate">Confirm</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
         <!-- jQuery -->
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
@@ -307,8 +328,8 @@
 
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>
-                                                            //icon lucide
-                                                            lucide.createIcons();
+                                            //icon lucide
+                                            lucide.createIcons();
         </script>
         <script>
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -337,9 +358,33 @@
         </script>
 
         <script>
-            var mess = '${sessionScope.mess}';
+            var mess = '${sessionScope.messCreate}';
         </script>
         <script src="${pageContext.request.contextPath}/JS/toast.js"></script>
         <script src="${pageContext.request.contextPath}/JS/Candidate/check-validate.js"></script>
+        <script>
+//            document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("assignMeBtn").addEventListener("click", function (event) {
+                console.log("OK");
+                event.preventDefault();
+                var hiddenValue = ${sessionScope.loggedInUser.userId};
+                var selectElement = document.querySelector('select[name="recruiter"]');
+                var options = selectElement.options;
+                for (var i = 0; i < options.length; i++) {
+                    console.log("OK2");
+                    if (options[i].value == hiddenValue) {
+                        options[i].selected = true;
+                        break;
+                    }
+                }
+                checkAll();
+            });
+//            });
+        </script>
+        <script>
+            function submitForm() {
+                $("#popUp").modal("show");
+            }
+        </script>
     </body>
 </html>

@@ -55,6 +55,9 @@ public class OfferReminder implements ServletContextListener {
         public void run() {
             OfferDAO offerDAO = new OfferDAO();
             List<OfferRemindDTO> offers = offerDAO.getOfferWithDueDateToday();
+            if (offers.isEmpty()) {
+                System.out.println("No offer need to remind today");
+            }
             for (OfferRemindDTO offer : offers) {
                 String content = "<p>This is email from IMS system,</p><br>\n"
                         + "<p>You have an offer to take action For Candidate " + offer.getCandidateName() + " position " + offer.getCandidatePosition() + " before " + offer.getDueDate() + ", the contract is attached with this no-reply-email.</p>\n"

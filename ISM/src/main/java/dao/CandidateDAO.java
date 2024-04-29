@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import model.Candidate;
 import model.CandidateStatus;
+import model.InterviewSchedule;
 import model.Level;
 import model.Position;
 import model.Skill;
@@ -36,21 +37,21 @@ public class CandidateDAO {
                 .positionName(rs.getString("PositionName")).build();
         return p;
     }
-
+    
     private CandidateStatus resultCandidateStatus(ResultSet rs) throws SQLException {
         CandidateStatus cs = CandidateStatus.builder()
                 .candidateStatusId(rs.getLong("CandidateStatusID"))
                 .statusName(rs.getString("StatusName")).build();
         return cs;
     }
-
+    
     private Skill resultSkill(ResultSet rs) throws SQLException {
         Skill s = Skill.builder()
                 .skillId(rs.getLong("SkillID"))
                 .skillName(rs.getString("SkillName")).build();
         return s;
     }
-
+    
     private Level resultLevel(ResultSet rs) throws SQLException {
         Level l = Level.builder()
                 .levelId(rs.getLong("LevelID"))
@@ -171,12 +172,12 @@ public class CandidateDAO {
             preparedStatement.setLong(13, candidate.getCreateBy());
             preparedStatement.setDate(14, Date.valueOf(LocalDate.now()));
             preparedStatement.setLong(15, candidate.getRecruiterId());
-
+            
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Creating candidate failed, no rows affected.");
             }
-
+            
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     return generatedKeys.getLong(1); // Lấy ID của candidate vừa được thêm vào
@@ -248,7 +249,7 @@ public class CandidateDAO {
                 Position p = resultPosition(rs);
                 return p;
             }
-
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -266,7 +267,7 @@ public class CandidateDAO {
                 CandidateStatus cs = resultCandidateStatus(rs);
                 return cs;
             }
-
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -283,10 +284,10 @@ public class CandidateDAO {
                 Level p = resultLevel(rs);
                 return p;
             }
-
+            
         } catch (SQLException e) {
             e.printStackTrace();
-
+            
         }
         return null;
     }
@@ -346,7 +347,7 @@ public class CandidateDAO {
                         .recruiter(recruiter).build();
                 return c;
             }
-
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -365,7 +366,7 @@ public class CandidateDAO {
             if (rowAffected > 0) {
                 return true;
             }
-
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -377,7 +378,7 @@ public class CandidateDAO {
     public void updateCandidate(Candidate candidate) {
         String sql = "UPDATE Candidate SET FullName = ?, DOB = ?, PhoneNumber = ?,"
                 + " Email = ?, Address = ?, Gender = ?, CVAttachment = ?, PositionID = ?,"
-                + " Note = ?, YearOfExperience = ?, HighestLevel = ?, LastUpdateAt = ?, CandidateStatusID = ?"
+                + " Note = ?, YearOfExperience = ?, HighestLevel = ?, LastUpdateAt = ?, CandidateStatusID = ?, Recruiter = ?"
                 + " WHERE CandidateID = ?";
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, candidate.getFullName());
@@ -393,7 +394,8 @@ public class CandidateDAO {
             preparedStatement.setLong(11, candidate.getHighestLevel());
             preparedStatement.setDate(12, Date.valueOf(LocalDate.now()));
             preparedStatement.setLong(13, candidate.getCandidateStatusId());
-            preparedStatement.setLong(14, candidate.getCandidateId()); // CandidateID is used in WHERE clause
+            preparedStatement.setLong(14, candidate.getRecruiterId());
+            preparedStatement.setLong(15, candidate.getCandidateId()); // CandidateID is used in WHERE clause
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -436,7 +438,7 @@ public class CandidateDAO {
                     + "ORDER BY c.CandidateID DESC\n"
                     + "OFFSET (?-1)*? ROWS\n"
                     + "FETCH NEXT ? ROWS ONLY";
-
+            
         } else {
             sql += "SELECT c.CandidateID, c.FullName, c.Email,c.PhoneNumber, p.PositionName, r.Usename, cs.StatusName FROM Candidate c\n"
                     + "JOIN Position p\n"
@@ -459,7 +461,7 @@ public class CandidateDAO {
             preparedStatement.setInt(6, pageNumber);
             preparedStatement.setInt(7, amount);
             preparedStatement.setInt(8, amount);
-
+            
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 CandidateDTO c = CandidateDTO.builder()
@@ -525,6 +527,77 @@ public class CandidateDAO {
         return 0;
     }
 
+    //6. Delete
+    private List<InterviewSchedule> getInteviewId(String candidateId) {
+        List<InterviewSchedule> l = new ArrayList<>();
+        String sql = "SELECT * FROM InterviewSchedule WHERE CandidateID = ?";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, candidateId);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                InterviewSchedule i = InterviewSchedule.builder()
+                        .interviewScheduleId(rs.getLong("InterviewScheduleId"))
+                        .build();
+                l.add(i);
+            }
+            return l;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+    
+    private void deleteInterviewer(Long interviewId) {
+        String sql = "DELETE FROM Interviewer where InterviewScheduleID = ?";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setLong(1, interviewId);
+            stm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void deleteInterviewSchedule(String candidateId) {
+        String sql = "DELETE FROM InterviewSchedule where CandidateID = ?";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, candidateId);
+            stm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void deleteAll(String candidateId) {
+        deleteSkillByCandidateId(Long.parseLong(candidateId));
+        deleteOffer(candidateId);
+        List<InterviewSchedule> l = getInteviewId(candidateId);
+        if (!l.isEmpty()) {
+            for (InterviewSchedule ll : l) {
+                deleteInterviewer(ll.getInterviewScheduleId());
+            }
+        }
+        deleteInterviewSchedule(candidateId);
+        String sql = "DELETE FROM Candidate WHERE CandidateID = ?";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, candidateId);
+            stm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
+    
+    private void deleteOffer(String candidateId) {
+        String sql = "DELETE FROM [dbo].[Offer]\n"
+                + "      WHERE CandidateID = ?";
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, candidateId);
+            stm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //Ending
     //Test code
     public static void main(String[] args) {
@@ -559,6 +632,7 @@ public class CandidateDAO {
 //        for (CandidateDTO c : dao.getAll("01", "", 5, 3)) {
 //            System.out.println(c);
 //        }
-        System.out.println(dao.getTotalPage(5, "", ""));
+//        System.out.println(dao.getTotalPage(5, "", ""));  
+        dao.deleteAll("28");
     }
 }

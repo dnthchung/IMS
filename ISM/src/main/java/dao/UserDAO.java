@@ -38,7 +38,7 @@ public class UserDAO {
     //get list all user
     public ArrayList<User> getAllUser()  {
         ArrayList<User> userList = new ArrayList<>();
-        String sql = "SELECT * FROM [User]";
+        String sql = "SELECT * FROM [User] ORDER BY UserID DESC";
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {

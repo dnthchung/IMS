@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InterviewStatus {
     private Long interviewStatusId;
-    private Long statusName;
+    private String statusName;
 }

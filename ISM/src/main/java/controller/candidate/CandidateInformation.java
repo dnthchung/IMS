@@ -80,6 +80,7 @@ public class CandidateInformation extends HttpServlet {
         request.setAttribute("skill", dao.getAllSkillByCandidateId(id));
         request.setAttribute("c", dto);
         System.out.println(dto);
+        request.setAttribute("URL", "Candidate");
         request.getRequestDispatcher("view/candidate/candidate-information.jsp").forward(request, response);
     } 
 

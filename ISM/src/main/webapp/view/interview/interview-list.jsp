@@ -3,6 +3,7 @@
     Created on : Apr 6, 2024, 12:47:46 AM 
     Author : chun 
 --%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -75,7 +76,7 @@
                                 <div class="me-auto p-2 "></div>
                                 <div class="p-2 mt-3">
                                     <!--hr, manager-->
-                                    <a href="job-create.jsp" style="text-decoration: none;" type="button" class="button3">
+                                    <a href="interview-create" style="text-decoration: none;" type="button" class="button3">
                                         <span class="button-text">Add New</span>
                                         <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                        viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
@@ -106,37 +107,37 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                
                                                 <!--  table data rows  -->
+                                                 <c:forEach var="i" items="${isl}">
                                                 <tr>
-                                                    <td>Interview Senior Backend Developer</td>
-                                                    <td>Doan Thanh Chung</td>
-                                                    <td>Le Viet Anh</td>
+                                                    <td>${i.scheduleTitle}</td>
+                                                    <td>${i.candidateName}</td>
+                                                    <td>${i.interviewerUsername}</td>
                                                     <td>
-                                                        <span>22/05/2022</span>
-                                                        <strong>09:00</strong>
+                                                        <span>${i.getScheduleDateToCustom()}</span>
+                                                        <strong>${i.getTimeFrom()}</strong>
                                                         -
-                                                        <strong>10:30</strong>
+                                                        <strong>${i.getTimeTo()}</strong>
                                                     </td>
-                                                    <td>N/A</td>
-                                                    <td>New</td>                                                    
-                                                    <td>Account Manager</td>
+                                                    <td>${i.result}</td>
+                                                    <td>${i.statusName}</td>                                                    
+                                                    <td>${i.jobName}</td>
                                                     <td>
+                                                        
                                                         <a style="margin-right: 5px;text-decoration: none; color: black; "
-                                                           href="#" class="icon-button">
+                                                           href="interview-details?id=${i.interviewScheduleID}" class="icon-button">
                                                             <i data-lucide="eye"></i>
                                                         </a>
                                                         <!--button edit : hr, manager-->
                                                         <a style="margin-right: 5px;text-decoration: none; color: black;"
-                                                           href="#" class="icon-button">
+                                                           href="interview-edit?id=${i.interviewScheduleID}" class="icon-button">
                                                             <i data-lucide="file-pen-line"></i>
                                                         </a>
-                                                        <!--button submit result : interview-->
-                                                        <a style="text-decoration: none; color: black;" href="#"
-                                                           class="icon-button">
-                                                            <i data-lucide="circle-check-big"></i>
-                                                        </a>
+                                                        
                                                     </td>
                                                 </tr>
+                                                </c:forEach>  
                                             </tbody>
                                         </table>
                                         <div class="container row">

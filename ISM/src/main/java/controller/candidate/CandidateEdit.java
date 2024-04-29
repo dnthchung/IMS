@@ -74,7 +74,7 @@ public class CandidateEdit extends HttpServlet {
 //        processRequest(request, response);
         HttpSession session = request.getSession();
         User u = (User) session.getAttribute("loggedInUser");
-        if(u == null || u.getUserRoleId() == 2){
+        if(u == null || u.getUserRoleId() == 3){
             response.sendRedirect("candidate-list");
             return;
         }
@@ -90,6 +90,7 @@ public class CandidateEdit extends HttpServlet {
         request.setAttribute("listSkill", dao.getAllSkill());
         request.setAttribute("listLevel", dao.getAllLevel());
         request.setAttribute("listRecruiter", dao.getAllRecruiter());
+        request.setAttribute("URL", "Candidate");
         request.getRequestDispatcher("view/candidate/candidate-edit-info.jsp").forward(request, response);
     }
 
@@ -153,9 +154,9 @@ public class CandidateEdit extends HttpServlet {
         dao.updateCandidate(can, skill);
         request.setAttribute("candidateId", candidateId);
         HttpSession session = request.getSession();
-        session.setAttribute("mess", "Update successfully");
-        System.out.println(session.getAttribute("mess"));
-        expirationTimer.timerOTP(20, request, "mess");
+        session.setAttribute("messEdit", "Update successfully");
+//        System.out.println(session.getAttribute("mess"));
+        expirationTimer.timerOTP(5, request, "messEdit");
         response.sendRedirect("candidate-edit?id="+candidateId);
     }
 

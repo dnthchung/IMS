@@ -42,7 +42,22 @@ public class Offer {
     
     public String getFormatedSalary() {
         String val = String.format("%.0f", basicSalary);
-        return val.replace(".", "");
+        String amount = val.replace(".", "");
+        StringBuilder formattedAmount = new StringBuilder();
+        int endPoint = amount.indexOf(".");
+        if (endPoint < 0) {
+            endPoint = amount.length();
+        }
+        int count = 0;
+        for (int i = endPoint - 1; i >= 0; i--) {
+            formattedAmount.insert(0, amount.charAt(i));
+            count++;
+
+            if (count % 3 == 0 && i > 0) {
+                formattedAmount.insert(0, ",");
+            }
+        }
+        return formattedAmount.toString() + " VND";
     }
     
     public String getFormatedDate(LocalDate date) {

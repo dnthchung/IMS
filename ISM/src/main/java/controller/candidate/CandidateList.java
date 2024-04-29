@@ -80,6 +80,7 @@ public class CandidateList extends HttpServlet {
         request.setAttribute("listStatus", dao.getAllStatus());
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("p", p);
+        request.setAttribute("URL", "Candidate");
         request.getRequestDispatcher("view/candidate/candidate-list.jsp").forward(request, response);
     }
 

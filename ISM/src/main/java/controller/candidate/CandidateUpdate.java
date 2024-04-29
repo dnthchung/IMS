@@ -64,7 +64,7 @@ public class CandidateUpdate extends HttpServlet {
 //        processRequest(request, response);
         HttpSession session = request.getSession();
         User u = (User) session.getAttribute("loggedInUser");
-        if (u == null || u.getUserRoleId() == 2) {
+        if (u == null || u.getUserRoleId() == 3) {
             response.sendRedirect("candidate-list");
             return;
         }
@@ -75,10 +75,10 @@ public class CandidateUpdate extends HttpServlet {
         }
         CandidateDAO dao = new CandidateDAO();
         dao.updateCandidateStatus(id, "2");
-        
-        session.setAttribute("mess", "Ban candidate successfully");
-        System.out.println(session.getAttribute("mess"));
-        expirationTimer.timerOTP(20, request, "mess");
+
+        session.setAttribute("messUpdate", "Ban candidate successfully");
+//        System.out.println(session.getAttribute("mess"));
+        expirationTimer.timerOTP(2, request, "messUpdate");
         response.sendRedirect("candidate-info?id=" + id);
     }
 
@@ -93,7 +93,20 @@ public class CandidateUpdate extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+//        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User u = (User) session.getAttribute("loggedInUser");
+        if (u == null || u.getUserRoleId() == 3) {
+            response.sendRedirect("candidate-list");
+            return;
+        }
+        String id = request.getParameter("candidateId");
+//        System.out.println(id);
+        CandidateDAO dao = new CandidateDAO();
+        dao.deleteAll(id);
+        session.setAttribute("messDelete", "Delete candidate successfully");
+        expirationTimer.timerOTP(2, request, "messDelete");
+        response.sendRedirect("candidate-list");
     }
 
     /**

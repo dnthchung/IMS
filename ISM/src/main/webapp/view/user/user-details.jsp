@@ -40,30 +40,32 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                 </div>
-                                <div class="col-md-6">
-                                    <!--manager-->
-                                    <c:if test="${user.userStatusId == 2}">
-                                        <button class="button33blue" style="margin-right: 10px; width: 180px !important" onclick="changeUserStatus(2)">
-                                            <span class="button-text">Activate User</span>
-                                            <span class="button-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
-                                                <path d="M20 6 9 17l-5-5"/>
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </c:if>
-                                    <c:if test="${user.userStatusId == 1}">
-                                        <button class="button33orange" style="margin-right: 10px; width: 180px !important" onclick="changeUserStatus(1)">
-                                            <span class="button-text">De-active User</span>
-                                            <span class="button-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                                <path d="M18 6 6 18"/>
-                                                <path d="m6 6 12 12"/>
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </c:if>
-                                </div>
+                                <c:if test="${user.userRoleId != 1}">
+                                    <div class="col-md-6">
+                                        <!--manager-->
+                                        <c:if test="${user.userStatusId == 2}">
+                                            <button class="button33blue" style="margin-right: 10px; width: 180px !important" onclick="changeUserStatus(2)">
+                                                <span class="button-text">Activate User</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
+                                                    <path d="M20 6 9 17l-5-5"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${user.userStatusId == 1}">
+                                            <button class="button33orange" style="margin-right: 10px; width: 180px !important" onclick="changeUserStatus(1)">
+                                                <span class="button-text">De-active User</span>
+                                                <span class="button-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                    <path d="M18 6 6 18"/>
+                                                    <path d="m6 6 12 12"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                        </c:if>
+                                    </div>
+                                </c:if>
                             </div>
                             <form action="">
                                 <div class="card-body">
@@ -188,8 +190,8 @@
 
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>
-            //icon lucide
-            lucide.createIcons();
+                                                //icon lucide
+                                                lucide.createIcons();
         </script>
         <script>
             //skill multi choice
@@ -215,7 +217,7 @@
             var formattedDOB = day.toString().padStart(2, '0') + '-' + month.toString().padStart(2, '0') + '-' + year;
             dobElement.innerText = formattedDOB;
 
-            document.getElementById('cancelButton').addEventListener('click', function() {
+            document.getElementById('cancelButton').addEventListener('click', function () {
                 Swal.fire({
                     title: 'Are you sure?',
                     text: 'You will lose unsaved changes!',
@@ -226,14 +228,14 @@
                     confirmButtonText: 'Yes!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '${pageContext.request.contextPath}/user-list'; 
+                        window.location.href = '${pageContext.request.contextPath}/user-list';
                     }
                 });
             });
-            
+
             function changeUserStatus(flag) {
                 var userId = ${user.userId};
-                
+
                 Swal.fire({
                     title: flag === 1 ? 'De-activate User' : 'Activate User',
                     text: flag === 1 ? 'Do you want to de-activate this user?' : 'Do you want to activate this user?',

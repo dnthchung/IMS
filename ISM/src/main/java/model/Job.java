@@ -3,17 +3,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+
 import java.time.LocalDate;
-
-
-
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import lombok.*;
 
 @Builder
 @Data
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
-public class Job  {
+public class Job {
+
     private int jobId;
     private String jobTitle;
     private LocalDate startDate;
@@ -23,11 +24,32 @@ public class Job  {
     private String workAddress;
     private String description;
     private Boolean status;
-    private Benefit benefit;
-    
-    private Skill skill;
-    private Level level;
+    private ArrayList<Benefit> benefit;
+    private ArrayList<Skill> skill;
+    private ArrayList<Level> level;
 
-  
+    public String getFormatedSalary(double salary) {
+        String val = String.format("%.0f", salary);
+        String amount = val.replace(".", "");
+        StringBuilder formattedAmount = new StringBuilder();
+        int endPoint = amount.indexOf(".");
+        if (endPoint < 0) {
+            endPoint = amount.length();
+        }
+        int count = 0;
+        for (int i = endPoint - 1; i >= 0; i--) {
+            formattedAmount.insert(0, amount.charAt(i));
+            count++;
+
+            if (count % 3 == 0 && i > 0) {
+                formattedAmount.insert(0, ",");
+            }
+        }
+        return formattedAmount.toString() + " VND";
+    }
     
+    public String getFormatedDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return date.format(formatter);
+    }
 }

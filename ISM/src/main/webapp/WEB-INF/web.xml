@@ -19,4 +19,7 @@
     <listener>
         <listener-class>controller.offer.OfferReminder</listener-class>
     </listener>
+    <listener>
+        <listener-class>controller.offer.OfferAutoCancel</listener-class>
+    </listener>
 </web-app>

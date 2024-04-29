@@ -5,6 +5,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,8 +24,8 @@ public class InterviewSchedule {
     private String scheduleTitle;
     private Long jobId;
     private Long candidateId;
-    private LocalDate scheduleDateFrom;
-    private LocalDate scheduleDateTo;
+    private LocalDateTime scheduleDateFrom;
+    private LocalDateTime scheduleDateTo;
     private String location;
     private Long userId;
     private String notes;

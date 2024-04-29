@@ -74,7 +74,7 @@ public class CandidateCreate extends HttpServlet {
 //        processRequest(request, response);
         HttpSession session = request.getSession();
         User u = (User) session.getAttribute("loggedInUser");
-        if(u == null || u.getUserRoleId() == 2){
+        if(u == null || u.getUserRoleId() == 3){
             response.sendRedirect("candidate-list");
             return;
         }
@@ -84,7 +84,9 @@ public class CandidateCreate extends HttpServlet {
         request.setAttribute("status", dao.getAllStatus());
         request.setAttribute("skill", dao.getAllSkill());
         request.setAttribute("level", dao.getAllLevel());
+        request.setAttribute("URL", "Candidate");
         request.getRequestDispatcher("view/candidate/candidate-create.jsp").forward(request, response);
+        
 //            request.getRequestDispatcher("view/candidate/candidate-list.jsp").forward(request, response);
     }
 
@@ -140,9 +142,9 @@ public class CandidateCreate extends HttpServlet {
                 .build(); 
         dao.addCandidate(can, skill);
         HttpSession session = request.getSession();
-        session.setAttribute("mess", "Add candidate successfully");
-        System.out.println(session.getAttribute("mess"));
-        expirationTimer.timerOTP(20, request, "mess");
+        session.setAttribute("messCreate", "Add candidate successfully");
+//        System.out.println(session.getAttribute("mess"));
+        expirationTimer.timerOTP(5, request, "messCreate");
         response.sendRedirect("candidate-create");
 //        doGet(request, response);
     }

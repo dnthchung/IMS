@@ -51,52 +51,46 @@
                                                 <thead>
                                                 </thead>
                                                 <tbody>
-                                                    <c:forEach var="jd" items="${job}" varStatus="loop">
-                                                        <c:if test="${loop.index == 0 || jd.jobTitle != job[loop.index - 1].jobTitle}">
-                                                            <tr>
-                                                                <td class="part-title">Job title</td>
-                                                                <td>${jd.jobTitle}</td>  
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="part-title">Start Date</td>
-                                                                <td>${jd.startDate}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="part-title">Salary Range</td>
-                                                                <td class="">
-                                                                    <div class="d-flex justify-content-between">
-                                                                        <p>From</p>
-                                                                        <p>
-                                                                            <strong>${jd.salaryFrom}</strong>
-                                                                            <span> VND</span>
-                                                                        </p>
-                                                                        <p>To</p>
-                                                                        <p>
-                                                                            <strong>${jd.salaryTo}</strong>
-                                                                            <span>VND</span>
-                                                                        </p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="part-title">Working address</td>
-                                                                <td>${jd.workAddress}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="part-title">Status</td>
-                                                                <td>
-                                                                    <c:choose>
-                                                                        <c:when test="${jd.status eq true}">
-                                                                            Open
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            Closed
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </td>
-                                                            </tr>
-                                                        </c:if>
-                                                    </c:forEach>
+                                                    <tr>
+                                                        <td class="part-title">Job title</td>
+                                                        <td>${job.jobTitle}</td>  
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="part-title">Start Date</td>
+                                                        <td>${job.getFormatedDate(job.startDate)}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="part-title">Salary Range</td>
+                                                        <td class="">
+                                                            <div class="d-flex justify-content-between">
+                                                                <p>From</p>
+                                                                <p>
+                                                                    <strong>${job.getFormatedSalary(job.salaryFrom)}</strong>
+                                                                </p>
+                                                                <p>To</p>
+                                                                <p>
+                                                                    <strong>${job.getFormatedSalary(job.salaryTo)}</strong>
+                                                                </p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="part-title">Working address</td>
+                                                        <td>${job.workAddress}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="part-title">Status</td>
+                                                        <td>
+                                                            <c:choose>
+                                                                <c:when test="${job.status eq true}">
+                                                                    Open
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    Closed
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -108,12 +102,10 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="part-title">Skills</td>
-                                                        <c:forEach var="jd" items="${job}">
-
+                                                        <c:forEach var="skill" items="${job.skill}">
                                                             <td>
                                                                 <div class="d-flex flex-wrap-limit justify-content-between">
-                                                                    <span class="badge text-bg-success">${jd.skill.skillName}</span>
-
+                                                                    <span class="badge text-bg-success">${skill.skillName}</span>
                                                                 </div>
                                                             </td>
                                                         </c:forEach>
@@ -122,36 +114,25 @@
 
                                                     <tr>
                                                         <td class="part-title">End Date</td>
-                                                        <c:set var="previousEndDate" value="" />
-                                                        <c:forEach var="jd" items="${job}">
-                                                            <c:if test="${jd.endDate != previousEndDate}">
-                                                                <c:set var="previousEndDate" value="${jd.endDate}" />
-                                                                <td>${jd.endDate}</td>
-                                                            </c:if>
-                                                        </c:forEach>
+                                                        <td>${job.getFormatedDate(job.endDate)}</td>
                                                     </tr>
-
-
                                                     <tr>
                                                         <td class="part-title">Benefits</td>
-                                                        <c:forEach var="jd" items="${job}">
+                                                        <c:forEach var="benefit" items="${job.benefit}">
                                                             <td>
                                                                 <div class="d-flex flex-wrap-limit justify-content-between">
-                                                                    <span class="badge text-bg-success">${jd.benefit.benefitName}</span>
-
+                                                                    <span class="badge text-bg-success">${benefit.benefitName}</span>
                                                                 </div>
                                                             </td>
                                                         </c:forEach>
                                                     </tr>
                                                     <tr>
-
                                                         <td class="part-title">Level</td>
-                                                        <c:forEach var="jd" items="${job}">
+                                                        <c:forEach var="level" items="${job.level}">
                                                             <td>
                                                                 <div
                                                                     class="d-flex flex-wrap-limit justify-content-between">
-                                                                    <span class="badge text-bg-success">${jd.level.levelName}</span>
-
+                                                                    <span class="badge text-bg-success">${level.levelName}</span>
                                                                 </div>
                                                             </td>
                                                         </c:forEach>
@@ -159,15 +140,9 @@
 
                                                     <tr>
                                                         <td class="part-title">Description</td>
-                                                        <c:set var="previousDescription" value="" />
-                                                        <c:forEach var="jd" items="${job}">
-                                                            <c:if test="${jd.description ne previousDescription}">
-                                                                <c:set var="previousDescription" value="${jd.description}" />
-                                                                <td>
-                                                                    <p>${jd.description}</p>
-                                                                </td>
-                                                            </c:if>
-                                                        </c:forEach>
+                                                        <td>
+                                                            <p>${job.description}</p>
+                                                        </td>
                                                     </tr>   
                                                 </tbody>
                                             </table>
@@ -175,8 +150,10 @@
                                     </div>
 
                                     <div class="d-flex justify-content-center mt-5">
-                                        <a type="button" href="job-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
-                                        <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
+                                        <c:if test="${isAdmin || isRecuiter || isManager}">
+                                            <a type="button" href="job-edit?id=${job.jobId}" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
+                                        </c:if>
+                                        <a href="job-list" class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</a>
                                     </div>
                                 </div>
                             </form>

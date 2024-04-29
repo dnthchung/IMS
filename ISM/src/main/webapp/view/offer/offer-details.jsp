@@ -27,9 +27,9 @@
                 <div class="container-fluid mt-3">
                     <nav aria-label="breadcrumb" style="margin-left: 1em">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="offer-list">Offer List</a></li>
+                            <li class="breadcrumb-item"><a style="text-decoration: none" href="offer-list">Offer List</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <a href="#">Offer Details</a>
+                                <a>Offer Details</a>
                             </li>
                         </ol>
                     </nav>
@@ -45,7 +45,7 @@
                                 <div class="col-md-6">
                                     <!-- Manager approve this offer can access btn -->
                                     <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Waiting for Approval' && offerInf.approverUsename == sessionScope.loggedInUser.useName && sessionScope.loggedInUser.userRoleId == 4}">
-                                        <form action="offer-action" method="POST">
+                                        <form action="offer-action" method="POST" id="offer-action-form">
                                             <input type="hidden" name="offerId" value="${offerInf.offerId}">
                                             <button type="submit" class="button323" style="margin-right: 10px" name="btnAction" value="Approve">
                                                 <span class="button-text">Approve</span>
@@ -65,7 +65,7 @@
                                                 </span>
                                             </button>
                                             <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName != 'Declined Offer' &&  offerInf.statusName != 'Cancelled'}">
-                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel">
+                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel" id="cancelBtn">
                                                     <span class="button-text">Cancel Offer</span>
                                                     <span class="button-icon">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -82,7 +82,7 @@
 
                                     <!-- Admin can access btn -->
                                     <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Waiting for Approval' && sessionScope.loggedInUser.userRoleId == 1}">
-                                        <form action="offer-action" method="POST">
+                                        <form action="offer-action" method="POST" id="offer-action-form">
                                             <input type="hidden" name="offerId" value="${offerInf.offerId}">
                                             <button type="submit" class="button323" style="margin-right: 10px" name="btnAction" value="Approve">
                                                 <span class="button-text">Approve</span>
@@ -102,7 +102,7 @@
                                                 </span>
                                             </button>
                                             <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName != 'Declined Offer' &&  offerInf.statusName != 'Cancelled'}">
-                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel">
+                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel" id="cancelBtn">
                                                     <span class="button-text">Cancel Offer</span>
                                                     <span class="button-icon">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -117,8 +117,8 @@
                                         </form>
                                     </c:if>
 
-                                    <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Approved'}">
-                                        <form action="offer-action" method="POST">
+                                    <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Approved' && (sessionScope.loggedInUser.userRoleId == 2 || sessionScope.loggedInUser.userRoleId == 1) && offerInf.recruiter == sessionScope.loggedInUser.useName}">
+                                        <form action="offer-action" method="POST" id="offer-action-form">
                                             <input type="hidden" name="offerId" value="${offerInf.offerId}">
                                             <button class="button33blue" style="margin-right: 10px" name="btnAction" value="Mark">
                                                 <span class="button-text">Mark as Sent to Candidate</span>
@@ -130,7 +130,7 @@
                                                 </span>
                                             </button>
                                             <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName != 'Declined Offer' &&  offerInf.statusName != 'Cancelled'}">
-                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel">
+                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel" id="cancelBtn">
                                                     <span class="button-text">Cancel Offer</span>
                                                     <span class="button-icon">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -145,8 +145,8 @@
                                         </form>
                                     </c:if>
 
-                                    <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Waiting for Response'}">
-                                        <form action="offer-action" method="POST">
+                                    <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName == 'Waiting for Response' && (sessionScope.loggedInUser.userRoleId == 2 || sessionScope.loggedInUser.userRoleId == 1) && offerInf.recruiter == sessionScope.loggedInUser.useName}">
+                                        <form action="offer-action" method="POST" id="offer-action-form">
                                             <input type="hidden" name="offerId" value="${offerInf.offerId}">
                                             <button class="button33blue" style="margin-right: 10px; width: 180px !important" name="btnAction" value="Accept">
                                                 <span class="button-text">Accepted Offer</span>
@@ -166,7 +166,7 @@
                                                 </span>
                                             </button>
                                             <c:if test="${sessionScope.loggedInUser != null && offerInf.statusName != 'Declined Offer' &&  offerInf.statusName != 'Cancelled'}">
-                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel">
+                                                <button type="submit" class="button32" style="width: 170px !important" name="btnAction" value="Cancel" id="cancelBtn">
                                                     <span class="button-text">Cancel Offer</span>
                                                     <span class="button-icon">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -319,20 +319,44 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
         <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             //icon lucide
             lucide.createIcons();
         </script>
+
         <script>
-            //skill multi choice
-            $('#small-select2-options-multiple-field').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: true,
-                selectionCssClass: 'select2--small',
-                dropdownCssClass: 'select2--small'
+            document.addEventListener('DOMContentLoaded', function () {
+                // Lắng nghe sự kiện khi nút có id là cancelBtn được nhấn
+                document.getElementById("cancelBtn").addEventListener("click", function (event) {
+                    event.preventDefault(); // Ngăn chặn hành vi mặc định của nút
+                    confirmCancel(); // Gọi hàm confirmCancel() khi nút được nhấn
+                });
+
+                // Hàm xác nhận việc hủy bỏ
+                function confirmCancel() {
+                    const swalWithBootstrapButtons = Swal.mixin({
+                        customClass: {
+                            confirmButton: "btn btn-danger",
+                            cancelButton: "btn btn-secondary"
+                        },
+                        buttonsStyling: true
+                    });
+                    swalWithBootstrapButtons.fire({
+                        text: "Are you sure you want to cancel this offer?",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes",
+                        cancelButtonText: "No"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Nếu người dùng nhấn Yes, thực hiện submit form
+                            const form = document.getElementById("offer-action-form");
+                            form.submit();
+                        }
+                    });
+                }
             });
         </script>
+
     </body>
 </html>

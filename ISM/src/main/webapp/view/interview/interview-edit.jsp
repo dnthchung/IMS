@@ -59,7 +59,7 @@
                             </div>
                             <!-- class="content-2" -->
                             <div class="card-body">
-                                <form action="">
+                                <form action="interview-edit" method="post">
                                     <div class="part1 mt-3">
                                         <!-- row1 -->
                                         <div class="row mb-3">
@@ -69,9 +69,10 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type a title..." required>
+                                                        <input type="text" class="form-control" name="scheduleTitle" value="${interviewTitle}" placeholder="Type a title..." required>
                                                     </div>
                                                 </div>
+                                                    <input type="text" class="form-control" name="id" value="${id}" placeholder="Type a title..." hidden>
                                             </div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-5 row">
@@ -80,12 +81,15 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select"
+                                                        <select class="form-select" name="jobName"
                                                                 data-placeholder="Select a job ...">
                                                             <option selected disabled>Select a job...</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach var="i" items="${jobNameList}">
+                                                                <option value="1"
+                                                                        <c:if test="${jobName == i.jobTitle}">selected</c:if>
+                                                                        >${i.jobTitle}</option>
+
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -99,11 +103,13 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select" placeholder="Select candidate ...">
+                                                        <select class="form-select" name="candidate-name" placeholder="Select candidate ...">
                                                             <option selected disabled>Select candidate...</option>
-                                                            <option>Fresher</option>
-                                                            <option>Junior</option>
-                                                            <option>Intern</option>
+                                                            <c:forEach var="candidate" items="${candidateList}">
+                                                                <option value="${candidate.candidateId}" 
+                                                                         <c:if test="${candidateName == candidate.fullName}">selected</c:if>
+                                                                        >${candidate.fullName}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -115,12 +121,16 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <select class="form-select"
+                                                        <select class="form-select" name="interviewName"
                                                                 data-placeholder="Choose benefits ..."
-                                                                id="small-select2-options-multiple-field-interviews" multiple>
-                                                            <option>Lunch</option>
-                                                            <option>25 days off</option>
-                                                            <option>Team building</option>
+                                                                id="small-select2-options-multiple-field-interviews" multiple >
+                                                            <c:forEach var="h" items="${isl}">
+                                                                  <c:forEach var="j" items="${interviewer}">
+                                                                <option value="${h.userID}" 
+                                                                        <c:if test="${h.usename == j}">selected</c:if>
+                                                                        >${h.usename}</option>
+                                                                </c:forEach>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -134,17 +144,17 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="date" class="form-control">
+                                                        <input name="dateSchedule" value="${dateSchedule}" type="date" class="form-control">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-12 d-flex mt-3">
                                                     <span style="margin-right: 10px;margin-left: 182px;margin-top: 5px;">From </span>
                                                     <div class="cs-form col-md-3" style="margin-right: 10px">
-                                                        <input type="time" class="form-control" />
+                                                        <input name="timeStart" value="${timeFrom}" type="time" class="form-control" />
                                                     </div>
                                                     <span style="margin-right: 10px;margin-top: 5px;">To </span>
                                                     <div class="cs-form col-md-3">
-                                                        <input type="time" class="form-control" />
+                                                        <input name="timeEnd" value="${timeTo}" type="time" class="form-control" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -155,7 +165,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="Type a location...">
+                                                        <input type="text" name="location" value="${locations}" class="form-control" placeholder="Type a location...">
                                                     </div>
                                                 </div>
                                             </div>
@@ -170,7 +180,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="form-floating" style="padding: 0px !important;">
-                                                        <textarea style="height: 200px" class="form-control" placeholder="Type description" id="floatingTextarea"></textarea>
+                                                        <textarea style="height: 200px" class="form-control" name="notes" placeholder="Type description" id="floatingTextarea">${notes}</textarea>
                                                         <label for="floatingTextarea">Type schedule note ...</label>
                                                     </div>
                                                 </div>
@@ -182,7 +192,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="input-group" style="padding: 0px !important;">
-                                                        <input type="text" class="form-control" placeholder="">
+                                                        <input type="text" class="form-control"  placeholder="">
                                                     </div>
                                                     <div style="margin-top: 15px">
                                                         <a href="#" style="color: #000">Assign me</a>
@@ -194,7 +204,7 @@
                                                     </div>
                                                     <div class="col-md-8" >
                                                         <div class="input-group" style="margin-left: 5px;padding: 0px !important;">
-                                                            <input type="text" class="form-control" placeholder="">
+                                                            <input type="text" class="form-control" name="meetingID" value="${meetingID}" placeholder="">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -204,12 +214,14 @@
                                                     </div>
                                                     <div class="col-md-8">
                                                         <div class="input-group" style="margin-left: 5px;padding: 0px !important;">
-                                                            <select class="form-select"
+                                                            <select class="form-select " name="result"
                                                                     data-placeholder="Select a job ...">
                                                                 <option selected disabled>Please select a result...</option>
-                                                                <option>Fresher</option>
-                                                                <option>Junior</option>
-                                                                <option>Intern</option>
+                                                                <c:forEach var="s" items="${statusList}">
+                                                                    <option value="${s}"
+                                                                             <c:if test="${s == result}">selected</c:if>
+                                                                            >${s}</option>
+                                                                 </c:forEach>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -260,8 +272,8 @@
                                     <div class="d-flex justify-content-center">
                                         <button class="button-2"
                                                 style="background-color: #ABDF75; color: #fff;">Submit</button>
-                                        <button class="button-2"
-                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</button>
+                                                <a href="interview-list" class="button-2"
+                                                style="background-color: #EFA9AE; color: #fff; margin-left: 3em;">Cancel</a>
                                     </div>
                                 </form>
                             </div>

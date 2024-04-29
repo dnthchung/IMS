@@ -93,6 +93,40 @@ public class AuthenticationDAO {
         }
         return null;
     }
+    
+    public User getUserByID(Long Id) {
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT * FROM [User] WHERE UserId = ?")) {
+            preparedStatement.setLong(1, Id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return User.builder()
+                        .userId(rs.getLong("UserID"))
+                        .fullName(rs.getString("FullName"))
+                        .useName(rs.getString("Usename"))
+                        .password(rs.getString("Password"))
+                        .dob(rs.getDate("DOB").toLocalDate())
+                        .phoneNumber(rs.getString("PhoneNumber"))
+                        .userRoleId(rs.getInt("UserRoleID"))
+                        .userStatusId(rs.getInt("UserStatusID"))
+                        .email(rs.getString("Email"))
+                        .address(rs.getString("Address"))
+                        .gender(rs.getInt("Gender"))
+                        .departmentId(rs.getLong("DepartmentID"))
+                        .note(rs.getString("Note"))
+                        .build();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public boolean saveResetPasswordToken(User user, String token) {
         try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
@@ -140,6 +174,52 @@ public class AuthenticationDAO {
                         + "WHERE UserID = ?;")) {
             preparedStatement.setString(1, password);
             preparedStatement.setLong(2, userId);
+            int result = preparedStatement.executeUpdate();
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+            if (result > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isUserAlreadyHaveAValidToken(Long userId) {
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("SELECT * \n"
+                        + "FROM ResetPasswordLink \n"
+                        + "WHERE UserID = ? \n"
+                        + "AND IsUsed = 'False' \n"
+                        + "AND LinkGeneratedTime > DATEADD(hour, -24, GETDATE())")) {
+            preparedStatement.setLong(1, userId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean disableAllValidTokenOfUser(Long userId) {
+        try (Connection connection = DBContext.makeConnection(); PreparedStatement preparedStatement
+                = connection.prepareStatement("UPDATE ResetPasswordLink\n"
+                        + "SET IsUsed = 'True'\n"
+                        + "WHERE UserID = ? AND IsUsed = 'False'")) {
+            preparedStatement.setLong(1, userId);
             int result = preparedStatement.executeUpdate();
             if (preparedStatement != null) {
                 preparedStatement.close();

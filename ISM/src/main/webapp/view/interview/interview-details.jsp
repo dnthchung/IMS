@@ -66,25 +66,25 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="part-title">Schedule title</td>
-                                                        <td>Interview Junior Business Analyst</td>
+                                                        <td>${InterviewScheduleById.scheduleTitle}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Candidate Name</td>
-                                                        <td>Le Viet Anh</td>
+                                                        <td>${InterviewScheduleById.candidateName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Schedule Time</td>
                                                         <td class="">
-                                                            <p style="margin-bottom: 3px">22/05/2022</p>
+                                                            <p style="margin-bottom: 3px">${InterviewScheduleById.getScheduleDateToCustom()}</p>
                                                             From
-                                                            <strong>09:00 am</strong>
+                                                            <strong>${InterviewScheduleById.getTimeFrom()}</strong>
                                                             To
-                                                            <strong>10:30 am</strong>
+                                                            <strong>${InterviewScheduleById.getTimeTo()}</strong>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Note</td>
-                                                        <td>N/A</td>
+                                                        <td>${InterviewScheduleById.notes}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -97,7 +97,7 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="part-title">Job</td>
-                                                        <td>Senior BA</td>
+                                                        <td>${InterviewScheduleById.jobName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Interviewer</td>
@@ -120,12 +120,12 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Location</td>
-                                                        <td>Online</td>
+                                                        <td>${InterviewScheduleById.location}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Meeting ID</td>
                                                         <td>
-                                                            <a href="https://meet.google.com/">https://meet.google.com/</a>
+                                                            <a href="${InterviewScheduleById.meetingId}">${InterviewScheduleById.meetingId}</a>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -135,13 +135,13 @@
                                                     <tr>
                                                         <td class="part-title">Result</td>
                                                         <td>
-                                                            <p>N/A</p>
+                                                            <p>${InterviewScheduleById.result}</p>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="part-title">Status</td>
                                                         <td>
-                                                            <p>Open</p>
+                                                            <p>${InterviewScheduleById.statusName}</p>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -155,7 +155,7 @@
                                         <!--manager button-->
                                         <a type="button" href="interview-edit.jsp" class="button-2" style="background-color: #1e96fc; color: #fff; margin-right: 2em">Edit</a>
 
-                                        <button class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</button>
+                                        <a href="interview-list" class="button-2" style="background-color: #EFA9AE; color: #fff">Cancel</a>
                                     </div>
                                 </div>
                             </form>

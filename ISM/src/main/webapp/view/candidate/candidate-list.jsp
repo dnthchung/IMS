@@ -68,7 +68,7 @@
                             <div class="container row">
                                 <div class="col-md-10"></div>
                                 <div class="col-md-2">
-                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 2}">
+                                    <c:if test="${sessionScope.loggedInUser.userRoleId != 3}">
                                         <a href="candidate-create" style="text-decoration: none;" class="button3">
                                             <span class="button-text">Add New</span>
                                             <span class="button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
@@ -117,7 +117,7 @@
                                                                 <td>${lc.candidateStatus.statusName}</td>
                                                                 <td>
                                                                     <c:choose>
-                                                                        <c:when test="${sessionScope.loggedInUser.userRoleId == 2}">
+                                                                        <c:when test="${sessionScope.loggedInUser.userRoleId == 3}">
                                                                             <a style="margin-right: 5px;text-decoration: none; color: black; "
                                                                                href="candidate-info?id=${lc.candidateId}" class="icon-button">
                                                                                 <i data-lucide="eye"></i>
@@ -132,6 +132,10 @@
                                                                                href="candidate-edit?id=${lc.candidateId}" class="icon-button">
                                                                                 <i data-lucide="file-pen-line"></i>
                                                                             </a>                     
+                                                                            <button style="margin-right: 5px;text-decoration: none; color: black; border: none;"
+                                                                                    class="icon-button" onclick="alertDelete(${lc.candidateId})">
+                                                                                <i data-lucide="trash-2"></i>
+                                                                            </button>                     
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -175,8 +179,32 @@
                     </div>
                 </div>
             </div>
+            <%@include file="../notification/notification.jsp" %>
         </div>
+        <!-- Button trigger modal -->
 
+        <!-- Modal -->
+        <div class="modal fade" id="popUp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm delete candidate</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="candidate-update">
+                        <div class="modal-body">
+                            Are you sure want to delete this candidate?
+                            This action will delete all skill, offer, interview schedule of candidate (if any)
+                            <input type="hidden" value="" name="candidateId" id="candidateId">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <!-- jQuery -->
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -187,8 +215,8 @@
 
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>
-            //icon lucide
-            lucide.createIcons();
+                                                                                        //icon lucide
+                                                                                        lucide.createIcons();
         </script>
         <script>
             //skill multi choice
@@ -201,6 +229,18 @@
                 dropdownCssClass: 'select2--small'
             });
         </script>
+        <script>
+            function alertDelete(id) {
+                var candidateId = document.getElementById("candidateId").value = id;
+                $("#popUp").modal("show");
+            }
+        </script>
+        <script>
+
+            var mess = '${sessionScope.messDelete}';
+
+        </script>
+        <script src="${pageContext.request.contextPath}/JS/toast.js"></script>
     </body>
 
 </html>

@@ -335,14 +335,11 @@ public class UserCreate extends HttpServlet {
         ArrayList<User> listUser = userDAO.getAllUser();
         for(User u : listUser){
             if(u.getEmail().trim().equalsIgnoreCase(email.trim())){
-                System.out.println("===== CHECK MAIL FUNC USER CREATE SVL =====");
-                System.out.println("mail db: " + u.getEmail());
-                System.out.println("mail input: " + email);
+
                 return true;
             }
         }
-        System.out.println("===== CHECK MAIL FUNC =====");
-        System.out.println("Mail ok ko van de gi");
+
         return false;
     }
     
